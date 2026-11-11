@@ -1,0 +1,19 @@
+# Caché de descargas de la WCA (se regenera con actualizar.sh)
+tools/data/
+
+# Artefactos intermedios de compilación del APK
+android/build/
+*.idsig
+
+# Python
+__pycache__/
+*.pyc
+
+# Sistema
+Thumbs.db
+desktop.ini
+.DS_Store
+~$*.xlsx
+
+# Clave de firma del APK: solo en local (repo público). Haz copia de seguridad aparte.
+*.keystore

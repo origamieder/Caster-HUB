@@ -1,0 +1,578 @@
+<title>Speedcubing Caster Hub</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#0D1016">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: app shell — nav rail (left, bottom on phones) + sticky top bar + one scrolling view; profile opens as a right-side drawer. Landscape tablet first. */
+:root {
+  --bg: #0D1016; --panel: #151A23; --panel2: #1C2330; --line: #283142; --fg: #E9EDF3; --muted: #8E99AB; --dim: #5F6B7E;
+  --accent: #FFC81F; --accent-ink: #1A1300; --red: #F0565B; --green: #33C27A; --blue: #4C86FF; --orange: #FF8A2B; --white: #F4F6FA;
+  --gold: #E9B949; --silver: #AEB7C4; --bronze: #CC8A5A; --up-bg: rgba(51,194,122,.14); --down-bg: rgba(240,86,91,.14);
+  --shadow: 0 12px 40px rgba(0,0,0,.45);
+  --f-display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", "Segoe UI", Roboto, system-ui, sans-serif;
+  --f-time: "JetBrains Mono", "Cascadia Mono", Consolas, "Roboto Mono", monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) {
+  --bg: #F2F4F7; --panel: #FFFFFF; --panel2: #EBEEF3; --line: #D7DCE4; --fg: #111722; --muted: #566174; --dim: #8A94A5;
+  --accent: #F2B705; --accent-ink: #1A1300; --red: #D33A40; --green: #138A50; --blue: #2C64E0; --orange: #E06A0A; --white: #FFFFFF;
+  --gold: #C9971B; --silver: #8C96A5; --bronze: #A8693B; --up-bg: rgba(19,138,80,.12); --down-bg: rgba(211,58,64,.12);
+  --shadow: 0 12px 40px rgba(20,30,50,.18); color-scheme: light; } }
+:root[data-theme="light"] {
+  --bg: #F2F4F7; --panel: #FFFFFF; --panel2: #EBEEF3; --line: #D7DCE4; --fg: #111722; --muted: #566174; --dim: #8A94A5;
+  --accent: #F2B705; --accent-ink: #1A1300; --red: #D33A40; --green: #138A50; --blue: #2C64E0; --orange: #E06A0A; --white: #FFFFFF;
+  --gold: #C9971B; --silver: #8C96A5; --bronze: #A8693B; --up-bg: rgba(19,138,80,.12); --down-bg: rgba(211,58,64,.12);
+  --shadow: 0 12px 40px rgba(20,30,50,.18); color-scheme: light; }
+
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--fg); font-family: var(--f-body); font-size: 15px; line-height: 1.4; -webkit-tap-highlight-color: transparent; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--panel); }
+* { box-sizing: border-box; }
+button, input, select { font: inherit; color: inherit; }
+a { color: var(--blue); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.num, .t { font-variant-numeric: tabular-nums; }
+.t { font-family: var(--f-time); font-weight: 500; letter-spacing: -.02em; }
+
+.shell { display: grid; grid-template-columns: 84px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); height: 100%; }
+.rail { background: var(--panel); border-right: 1px solid var(--line); display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding-block: 14px; padding-left: env(safe-area-inset-left, 0px); }
+.logo { width: 46px; height: 46px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-bottom: 14px; }
+.logo i { border-radius: 3px; }
+.navbtn { width: 70px; border: 0; background: none; border-radius: 12px; padding: 10px 4px 8px; display: flex; flex-direction: column; align-items: center; gap: 4px;
+  color: var(--muted); font-size: 11px; font-weight: 600; letter-spacing: .02em; cursor: pointer; }
+.navbtn svg { width: 24px; height: 24px; }
+.navbtn[aria-current="page"] { background: var(--panel2); color: var(--accent); }
+.navbtn:hover { color: var(--fg); }
+.rail .spacer { flex: 1; }
+
+.main { display: flex; flex-direction: column; min-width: 0; min-height: 0; height: 100%; }
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; align-items: center; gap: 14px; background: var(--panel);
+  border-bottom: 1px solid var(--line); padding-block: 10px; padding-left: 20px; padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.brand { display: flex; flex-direction: column; line-height: 1.05; min-width: 0; }
+.brand b { font-family: var(--f-display); font-size: 22px; letter-spacing: .01em; text-transform: uppercase; white-space: nowrap; }
+.brand span { font-size: 12px; color: var(--muted); white-space: nowrap; }
+.gsearch { position: relative; flex: 1; max-width: 560px; margin-left: auto; }
+.gsearch input { width: 100%; height: 44px; border-radius: 22px; border: 1px solid var(--line); background: var(--panel2); padding: 0 16px 0 44px; font-size: 15px; }
+.gsearch svg { position: absolute; left: 15px; top: 12px; width: 20px; height: 20px; color: var(--muted); }
+.gsearch kbd { position: absolute; right: 12px; top: 11px; font-family: var(--f-time); font-size: 11px; color: var(--dim); border: 1px solid var(--line); border-radius: 5px; padding: 1px 6px; }
+.suggest { position: absolute; left: 0; right: 0; top: 50px; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); overflow: hidden; z-index: 20; }
+.suggest button { display: flex; width: 100%; align-items: center; gap: 12px; padding: 10px 14px; border: 0; background: none; text-align: left; cursor: pointer; }
+.suggest button:hover, .suggest button.on { background: var(--panel2); }
+.iconbtn { width: 44px; height: 44px; border-radius: 22px; border: 1px solid var(--line); background: var(--panel2); display: grid; place-items: center; cursor: pointer; flex: none; }
+.iconbtn svg { width: 20px; height: 20px; }
+
+.view { flex: 1; overflow-y: auto; overflow-x: hidden; padding-block: 18px 40px; padding-left: 20px; padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--f-display); text-transform: uppercase; letter-spacing: .01em; margin: 0; text-wrap: balance; }
+h1 { font-size: 40px; line-height: 1; }
+h2 { font-size: 24px; }
+.eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+
+/* KPIs */
+.kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin: 16px 0 22px; }
+.kpi { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px 16px; display: flex; align-items: baseline; gap: 10px; }
+.kpi b { font-family: var(--f-display); font-size: 40px; line-height: 1; }
+.kpi span { color: var(--muted); font-size: 13px; line-height: 1.2; }
+
+/* event cards */
+.evgrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.evcard { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px 12px; cursor: pointer; text-align: left; display: flex; flex-direction: column; gap: 8px; position: relative; overflow: hidden; }
+.evcard::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 5px; background: var(--evc); }
+.evcard:hover { border-color: var(--evc); }
+.evcard h3 { font-size: 26px; }
+.evcard .fav { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.evcard .fav .name { font-weight: 700; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.evcard .fav .t { font-size: 20px; color: var(--accent); }
+.evcard .row { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: var(--muted); }
+.evcard .row b { color: var(--fg); font-weight: 600; text-align: right; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.evcard .foot { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 2px; }
+
+/* pills & chips */
+.pill { display: inline-flex; align-items: center; gap: 4px; height: 22px; padding: 0 8px; border-radius: 11px; font-size: 11px; font-weight: 700; letter-spacing: .04em; white-space: nowrap; background: var(--panel2); color: var(--muted); border: 1px solid var(--line); }
+.pill.es { background: linear-gradient(180deg, #C8102E 0 25%, #F1BF00 25% 75%, #C8102E 75%); color: #3B0A0A; border: 0; }
+.pill.nr { background: var(--red); color: #fff; border: 0; }
+.pill.ch { background: var(--accent); color: var(--accent-ink); border: 0; }
+.pill.ok { background: var(--up-bg); color: var(--green); border-color: transparent; }
+.pill.no { background: var(--down-bg); color: var(--red); border-color: transparent; }
+.pill.intl { background: var(--blue); color: #fff; border: 0; }
+.pill.new { background: var(--green); color: #fff; border: 0; }
+.cc { font-family: var(--f-time); font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 5px; background: var(--panel2); color: var(--muted); border: 1px solid var(--line); }
+.cc.es { background: #C8102E; color: #FFD43B; border-color: #C8102E; }
+
+.chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin; }
+.chip { flex: none; height: 40px; padding: 0 16px; border-radius: 20px; border: 1px solid var(--line); background: var(--panel); cursor: pointer; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; }
+.chip i { width: 10px; height: 10px; border-radius: 3px; background: var(--evc); }
+.chip[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.toggle { display: inline-flex; background: var(--panel2); border: 1px solid var(--line); border-radius: 12px; padding: 3px; gap: 2px; }
+.toggle button { border: 0; background: none; height: 36px; padding: 0 14px; border-radius: 9px; font-weight: 600; font-size: 14px; cursor: pointer; color: var(--muted); white-space: nowrap; }
+.toggle button[aria-pressed="true"] { background: var(--panel); color: var(--fg); box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.toggle button[data-v="es"][aria-pressed="true"] { background: #C8102E; color: #FFD43B; }
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 14px 0; }
+.field { height: 42px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel); padding: 0 12px; min-width: 0; }
+select.field { padding-right: 30px; }
+.count { color: var(--muted); font-size: 13px; margin-left: auto; }
+
+/* event header */
+.evhead { display: grid; grid-template-columns: minmax(0, 1.2fr) repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+.evtitle { display: flex; flex-direction: column; justify-content: center; gap: 4px; padding-left: 14px; border-left: 6px solid var(--evc); }
+.evtitle h1 { font-size: 52px; }
+.box { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; min-width: 0; }
+.box .big { font-weight: 700; font-size: 17px; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.box .sub { color: var(--muted); font-size: 13px; margin-top: 2px; }
+
+/* table */
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); }
+table { border-collapse: collapse; width: 100%; min-width: 1040px; }
+thead th { position: sticky; top: 0; background: var(--panel2); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted);
+  padding: 10px 8px; text-align: center; white-space: nowrap; border-bottom: 1px solid var(--line); cursor: pointer; user-select: none; }
+thead th.l { text-align: left; }
+thead th.grp { cursor: default; font-size: 10px; letter-spacing: .14em; padding: 6px 8px; border-bottom: 2px solid var(--gc); color: var(--fg); background: var(--panel); }
+thead th.sorted { color: var(--accent); }
+tbody td { padding: 8px; text-align: center; border-bottom: 1px solid var(--line); white-space: nowrap; }
+tbody tr { cursor: pointer; }
+tbody tr:hover td { background: var(--panel2); }
+tbody tr:last-child td { border-bottom: 0; }
+td.l { text-align: left; }
+.seed { font-family: var(--f-display); font-size: 24px; font-weight: 800; width: 52px; }
+tr.p1 .seed { color: var(--gold); } tr.p2 .seed { color: var(--silver); } tr.p3 .seed { color: var(--bronze); }
+.seedes { font-family: var(--f-display); font-size: 18px; font-weight: 700; color: var(--red); }
+.who { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.who .nm { font-weight: 700; font-size: 15px; }
+.who .meta { display: flex; gap: 6px; align-items: center; margin-top: 2px; }
+.av { width: 38px; height: 38px; border-radius: 50%; flex: none; background: var(--panel2); border: 1px solid var(--line); display: grid; place-items: center; overflow: hidden;
+  font-family: var(--f-display); font-weight: 700; font-size: 15px; color: var(--muted); }
+.av img { width: 100%; height: 100%; object-fit: cover; }
+td .t { font-size: 15px; }
+td.key .t { font-size: 18px; font-weight: 700; color: var(--accent); }
+.rk { font-size: 12px; color: var(--muted); }
+.delta { display: inline-block; min-width: 64px; padding: 3px 8px; border-radius: 8px; font-family: var(--f-time); font-size: 13px; font-weight: 700; }
+.delta.up { background: var(--up-bg); color: var(--green); } .delta.down { background: var(--down-bg); color: var(--red); } .delta.flat { color: var(--muted); }
+.spark { display: block; }
+.tit { font-family: var(--f-display); font-size: 20px; font-weight: 800; color: var(--accent); }
+.zero { color: var(--dim); }
+.newrow td { color: var(--muted); font-style: italic; cursor: default; }
+
+/* people grid */
+.pgrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.pcard { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; display: flex; gap: 12px; align-items: center; cursor: pointer; text-align: left; min-width: 0; }
+.pcard:hover { border-color: var(--accent); }
+.pcard .av { width: 52px; height: 52px; font-size: 19px; }
+.pcard .info { min-width: 0; flex: 1; }
+.pcard .nm { font-weight: 700; font-size: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pcard .line { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-top: 4px; font-size: 12px; color: var(--muted); }
+.pcard .stats { display: flex; gap: 14px; margin-top: 6px; font-size: 13px; }
+.pcard .stats b { font-family: var(--f-display); font-size: 18px; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.fchip { height: 36px; padding: 0 14px; border-radius: 18px; border: 1px solid var(--line); background: var(--panel); cursor: pointer; font-size: 13px; font-weight: 600; color: var(--muted); }
+.fchip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.bigsearch { flex: 1 1 320px; height: 48px; font-size: 16px; border-radius: 24px; padding: 0 20px; }
+.empty { padding: 40px; text-align: center; color: var(--muted); }
+
+/* drawer */
+.scrim { position: fixed; inset: 0; background: rgba(5,8,14,.55); z-index: 30; }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(880px, 92vw); background: var(--bg); border-left: 1px solid var(--line); z-index: 31; overflow-y: auto; box-shadow: var(--shadow);
+  padding-block: calc(env(safe-area-inset-top, 0px) + 18px) calc(env(safe-area-inset-bottom, 0px) + 30px); padding-left: 24px; padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+@media (prefers-reduced-motion: no-preference) { .drawer { animation: slide .18s ease-out; } @keyframes slide { from { transform: translateX(40px); opacity: .6; } } }
+.phead { display: flex; gap: 18px; align-items: center; }
+.phead .av { width: 92px; height: 92px; font-size: 32px; border-width: 3px; }
+.phead h1 { font-size: 44px; }
+.phead .line { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 6px; color: var(--muted); }
+.close { margin-left: auto; align-self: flex-start; }
+.tiles { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin: 18px 0; }
+.tile { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
+.tile b { display: block; font-family: var(--f-display); font-size: 32px; line-height: 1.05; }
+.tile span { font-size: 12px; color: var(--muted); }
+.medals { display: flex; gap: 10px; align-items: baseline; }
+.medals em { font-style: normal; font-family: var(--f-display); font-size: 26px; font-weight: 800; }
+.m1 { color: var(--gold); } .m2 { color: var(--silver); } .m3 { color: var(--bronze); }
+.sect { margin-top: 20px; }
+.sect h2 { margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+.podlist { display: flex; flex-wrap: wrap; gap: 6px; }
+.pod { display: inline-flex; gap: 6px; align-items: center; padding: 5px 10px; border-radius: 9px; background: var(--panel); border: 1px solid var(--line); font-size: 13px; }
+.pod i { width: 12px; height: 12px; border-radius: 50%; }
+.pod.g i { background: var(--gold); } .pod.s i { background: var(--silver); } .pod.b i { background: var(--bronze); }
+.cols3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.ptable table { min-width: 760px; }
+.note { color: var(--muted); font-size: 12px; margin-top: 8px; }
+.yrs { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+.yrs span { font-family: var(--f-time); font-size: 11px; padding: 2px 6px; border-radius: 5px; background: var(--panel2); color: var(--muted); }
+
+/* palmarés */
+.paltable table { min-width: 720px; }
+.paltable td.here { color: var(--accent); font-weight: 700; }
+.yearcell { font-family: var(--f-display); font-size: 22px; font-weight: 800; }
+
+@media (max-width: 1180px) { .evgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 980px) { .pgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .evhead { grid-template-columns: 1fr 1fr; } .tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); } .cols3 { grid-template-columns: 1fr; } }
+/* Portrait (tablet or phone) and narrow screens: quick-access bar pinned to the bottom edge */
+@media (orientation: portrait), (max-width: 700px) {
+  :root { --barh: 76px; }
+  .shell { grid-template-columns: minmax(0, 1fr); }
+  .rail { position: fixed; left: 0; right: 0; bottom: 0; z-index: 32; flex-direction: row; justify-content: space-around; align-items: stretch; gap: 4px;
+    border-right: 0; border-top: 1px solid var(--line); box-shadow: 0 -8px 24px rgba(0,0,0,.18);
+    padding-block: 6px calc(6px + env(safe-area-inset-bottom, 0px)); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .navbtn { flex: 1; max-width: 180px; width: auto; font-size: 12px; }
+  .logo, .rail .spacer { display: none; }
+  .view { padding-bottom: calc(var(--barh) + 28px + env(safe-area-inset-bottom, 0px)); }
+  .view, .topbar { padding-left: max(16px, env(safe-area-inset-left, 0px)); }
+  .scrim, .drawer { bottom: calc(var(--barh) + env(safe-area-inset-bottom, 0px)); }
+  .drawer { width: 100vw; border-left: 0; padding-bottom: 24px; }
+  .gsearch { max-width: none; }
+}
+@media (max-width: 700px) {
+  .brand span, .gsearch kbd { display: none; }
+  .evgrid, .pgrid, .kpis { grid-template-columns: 1fr; }
+  .evhead { grid-template-columns: 1fr; }
+  .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  h1, .evtitle h1, .phead h1 { font-size: 32px; }
+  .phead .av { width: 64px; height: 64px; }
+}
+</style>
+
+<div class="shell">
+  <nav class="rail" aria-label="Secciones">
+    <div class="logo" aria-hidden="true"></div>
+    <button class="navbtn" data-nav="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Resumen</button>
+    <button class="navbtn" data-nav="evento"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6M12 2v3"/></svg>Eventos</button>
+    <button class="navbtn" data-nav="competidores"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6.5 7-6.5s7 2.5 7 6.5"/><path d="M16 4a4 4 0 0 1 0 8M22 21c0-3.2-2-5.6-5-6.3"/></svg>Competidores</button>
+    <button class="navbtn" data-nav="palmares"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>Palmarés</button>
+    <div class="spacer"></div>
+  </nav>
+  <div class="main">
+    <header class="topbar">
+      <div class="brand"><b id="brandName">Campeonato de España 2026</b><span id="brandSub"></span></div>
+      <div class="gsearch">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="gq" type="search" placeholder="Buscar competidor, WCA ID o país…" autocomplete="off" aria-label="Buscar competidor">
+        <kbd>/</kbd>
+        <div class="suggest" id="suggest" hidden></div>
+      </div>
+      <button class="iconbtn" id="themeBtn" aria-label="Cambiar tema claro u oscuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    </header>
+    <main class="view" id="view"></main>
+  </div>
+</div>
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" hidden aria-label="Ficha del competidor"></aside>
+
+<script>
+const DATA = /*__DATA__*/;
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const norm = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+const store = { get(k, d) { try { const v = localStorage.getItem("sch:" + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+                set(k, v) { try { localStorage.setItem("sch:" + k, JSON.stringify(v)); } catch (e) {} } };
+
+const CUBE = ["#F4F6FA", "#FFC81F", "#E8333A", "#FF8A2B", "#3D7BFF", "#21B36B"];
+const EVC = {}; DATA.events.forEach((e, i) => EVC[e.id] = CUBE[[4, 1, 2, 3, 5, 4, 0, 1, 2, 3, 5, 4, 0, 2, 3, 5][i % 16]]);
+const EVBYID = Object.fromEntries(DATA.events.map(e => [e.id, e]));
+const PERS = Object.fromEntries(DATA.persons.map(p => [p.id, p]));
+const ROW = {}; DATA.events.forEach(e => e.rows.forEach(r => (ROW[r.id] ||= {})[e.id] = r));
+const COUNTRY = {}; DATA.persons.forEach(p => { if (p.country) COUNTRY[p.iso] = p.country; });
+DATA.persons.forEach(p => { p.country ||= COUNTRY[p.iso] || p.iso; p._q = norm(p.name + " " + p.id + " " + p.country);
+  p._titles = (p.es?.pod || []).filter(x => x[2] === 1).length; p._intl = (p.eu?.pod?.length || 0) + (p.wc?.pod?.length || 0);
+  p._medals = p.medals ? p.medals[0] + p.medals[1] + p.medals[2] : 0;
+  p._bestSeed = p.seeds ? Math.min(99999, ...Object.values(p.seeds).map(s => s[0] || 99999)) : 99999; });
+const ES = { a: "Media", s: "Single" };
+const initials = n => n.replace(/\(.*?\)/g, "").trim().split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0]).join("").toUpperCase();
+const av = p => `<span class="av">${p.avatar ? `<img src="${esc(p.avatar)}" alt="" loading="lazy" onerror="this.remove()">` : ""}${esc(initials(p.name))}</span>`;
+const avFix = () => document.querySelectorAll(".av").forEach(a => { const img = a.querySelector("img"); if (img) { a.style.color = "transparent"; img.addEventListener("error", () => a.style.color = ""); } });
+const cc = iso => `<span class="cc ${iso === "ES" ? "es" : ""}">${esc(iso)}</span>`;
+const fmtYears = ys => ys.length ? ys.join(", ") : "—";
+
+function toSec(t) {
+  if (!t || t === "—") return null;
+  if (t.includes("/")) { const [a, b] = t.split(" ")[0].split("/").map(Number); return -(a - (b - a)); }
+  const p = t.split(":"); return p.length === 2 ? +p[0] * 60 + +p[1] : +t;
+}
+function spark(years) {
+  const ys = DATA.meta.years.map(String), vals = ys.map(y => toSec(years?.[y]));
+  const pts = vals.map((v, i) => [i, v]).filter(p => p[1] != null);
+  if (pts.length < 2) return `<span class="zero">—</span>`;
+  const lo = Math.min(...pts.map(p => p[1])), hi = Math.max(...pts.map(p => p[1])), W = 104, H = 30, pad = 4;
+  const X = i => pad + i * (W - 2 * pad) / (ys.length - 1), Y = v => hi === lo ? H / 2 : pad + (v - lo) / (hi - lo) * (H - 2 * pad);
+  const d = pts.map((p, k) => (k ? "L" : "M") + X(p[0]).toFixed(1) + " " + Y(p[1]).toFixed(1)).join(" ");
+  const last = pts[pts.length - 1];
+  const area = d + ` L${X(last[0]).toFixed(1)} ${H} L${X(pts[0][0]).toFixed(1)} ${H} Z`;
+  const tip = ys.map((y, i) => vals[i] != null ? `${y}: ${years[y]}` : null).filter(Boolean).join(" · ");
+  return `<svg class="spark" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Mejor marca por año"><title>${esc(tip)}</title>
+    <path d="${area}" fill="var(--accent)" opacity=".12"/><path d="${d}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/>
+    <circle cx="${X(last[0])}" cy="${Y(last[1])}" r="3.2" fill="var(--accent)"/></svg>`;
+}
+const delta = v => v == null ? `<span class="zero">—</span>` : `<span class="delta ${v > 0.05 ? "up" : v < -0.05 ? "down" : "flat"}">${v > 0 ? "+" : ""}${v.toFixed(1)}%</span>`;
+const pbOf = (ev, r) => ev.metric === "single" ? r.pbS : r.pbA;
+const name = id => PERS[id]?.name || id;
+
+/* ---------------- state & routing ---------------- */
+const S = { ev: store.get("ev", DATA.events[0].id), nat: store.get("nat", "all"), lim: store.get("lim", 20), sort: null, evq: "",
+            q: "", pNat: "all", pIso: "", pEv: "", pFlags: new Set(), pSort: "seed", palEv: "", palHere: false };
+function go(hash) { if (location.hash !== "#" + hash) location.hash = hash; else render(); }
+window.addEventListener("hashchange", render);
+document.querySelectorAll("[data-nav]").forEach(b => b.addEventListener("click", () => go(b.dataset.nav === "evento" ? "evento-" + S.ev : b.dataset.nav)));
+
+function render() {
+  const h = location.hash.slice(1) || "inicio";
+  let sec = h.split("-")[0];
+  if (sec === "c") { const id = h.slice(2); if (PERS[id]) openProfile(id, false); sec = store.get("lastSec", "inicio"); }
+  else closeProfile(false);
+  if (sec === "evento") { const id = h.slice(7); if (EVBYID[id]) { S.ev = id; store.set("ev", id); } }
+  document.querySelectorAll("[data-nav]").forEach(b => b.setAttribute("aria-current", b.dataset.nav === sec ? "page" : "false"));
+  if (sec !== "c") store.set("lastSec", sec);
+  const v = $("#view"); v.scrollTop = 0;
+  ({ inicio: viewHome, evento: viewEvent, competidores: viewPeople, palmares: viewPal }[sec] || viewHome)(v);
+  avFix();
+}
+
+/* ---------------- home ---------------- */
+function viewHome(v) {
+  const k = DATA.meta.kpis;
+  v.innerHTML = `
+    <div class="eyebrow">5 – 7 diciembre 2026 · Datos WCA a ${new Date(DATA.meta.updated).toLocaleDateString("es-ES")}</div>
+    <h1>Resumen del campeonato</h1>
+    <div class="kpis">
+      <div class="kpi"><b>${k.competitors}</b><span>competidores<br>inscritos</span></div>
+      <div class="kpi"><b>${k.countries}</b><span>países</span></div>
+      <div class="kpi"><b>${k.newcomers}</b><span>debutantes<br>sin WCA ID</span></div>
+      <div class="kpi"><b>${k.events}</b><span>eventos</span></div>
+      <div class="kpi"><b>${k.defend}<small style="font-size:22px;color:var(--muted)">/${k.events}</small></b><span>campeones 2025<br>defienden título</span></div>
+    </div>
+    <div class="evgrid">${DATA.events.map(evCard).join("")}</div>`;
+  v.querySelectorAll(".evcard").forEach(c => c.addEventListener("click", () => go("evento-" + c.dataset.ev)));
+}
+function evCard(e) {
+  const f = e.rows[0], es = e.rows.find(r => r.seedES === 1), c = e.champ2025;
+  const nrs = e.rows.filter(r => r.seed <= 20 && r.nrv.length).length;
+  return `<button class="evcard" data-ev="${e.id}" style="--evc:${EVC[e.id]}">
+    <div style="display:flex;justify-content:space-between;align-items:center"><h3>${esc(e.name)}</h3><span class="pill">${e.rows.length + e.newcomers.length} inscritos</span></div>
+    <div class="fav"><span class="name">${esc(name(f.id))}</span><span class="t">${esc(pbOf(e, f))}</span></div>
+    <div class="row"><span>Mejor español</span><b>${es ? esc(name(es.id)) + ` <span class="t" style="color:var(--muted)">${esc(pbOf(e, es))}</span>` : "—"}</b></div>
+    <div class="row"><span>Campeón 2025</span><b>${esc(c.esName || "—")}</b></div>
+    <div class="foot">${c.es ? `<span class="pill ${c.defends ? "ok" : "no"}">${c.defends ? "Defiende título" : "No defiende"}</span>` : ""}
+      ${nrs ? `<span class="pill nr">${nrs} con NR vigente</span>` : ""}<span class="pill">por ${ES[e.metric[0]]}</span></div>
+  </button>`;
+}
+
+/* ---------------- event ---------------- */
+const COLS = [
+  { k: "seed", t: "#", g: "c" }, { k: "seedES", t: "ESP", g: "c" }, { k: "name", t: "Competidor", g: "c", l: 1 },
+  { k: "pbS", t: "Single", g: "pb", time: 1 }, { k: "nrS", t: "NR", g: "pb" }, { k: "pbA", t: "Media", g: "pb", time: 1 }, { k: "nrA", t: "NR", g: "pb" }, { k: "wr", t: "WR", g: "pb" },
+  { k: "b12", t: "Mejor 12 m", g: "f", time: 1 }, { k: "m12", t: "Media 12 m", g: "f", time: 1 }, { k: "iy", t: "Δ año", g: "f" }, { k: "spark", t: "Evolución", g: "f", ns: 1 },
+  { k: "tit", t: "Títulos", g: "h" }, { k: "pod", t: "Podios", g: "h" }, { k: "bp", t: "Mejor puesto", g: "h" }, { k: "intl", t: "Europa / Mundo", g: "h", ns: 1 },
+];
+const GROUPS = [["c", "Competidor", 3, "var(--fg)"], ["pb", "Marcas personales", 5, "var(--blue)"], ["f", "Forma actual", 4, "var(--green)"], ["h", "Historial Cto. España y fuera", 4, "var(--accent)"]];
+function viewEvent(v) {
+  const e = EVBYID[S.ev];
+  const c = e.champ2025, top3es = e.rows.filter(r => r.seedES && r.seedES <= 3).sort((a, b) => a.seedES - b.seedES);
+  v.innerHTML = `
+    <div class="chips" role="toolbar" aria-label="Eventos">${DATA.events.map(x => `<button class="chip" style="--evc:${EVC[x.id]}" data-ev="${x.id}" aria-pressed="${x.id === e.id}"><i></i>${esc(x.name)}</button>`).join("")}</div>
+    <div class="evhead" style="--evc:${EVC[e.id]}">
+      <div class="evtitle"><div class="eyebrow">Psych sheet · ordenado por ${ES[e.metric[0]].toLowerCase()}</div><h1>${esc(e.name)}</h1>
+        <div class="sub" style="color:var(--muted);font-size:13px">${e.rows.length} con marca previa${e.newcomers.length ? ` · ${e.newcomers.length} debutantes` : ""}</div></div>
+      <div class="box"><div class="eyebrow">Favorito</div><div class="big">${esc(name(e.rows[0].id))}</div><div class="sub"><span class="t" style="color:var(--accent);font-size:16px">${esc(pbOf(e, e.rows[0]))}</span> · ${esc(PERS[e.rows[0].id].country)}</div></div>
+      <div class="box"><div class="eyebrow">Mejores españoles</div>${top3es.map(r => `<div class="sub" style="color:var(--fg)"><b style="color:var(--red)">${r.seedES}.</b> ${esc(name(r.id))} <span class="t" style="color:var(--muted)">${esc(pbOf(e, r))}</span> <span style="color:var(--dim)">(${r.seed}º gral.)</span></div>`).join("") || "—"}</div>
+      <div class="box"><div class="eyebrow">Campeón de España 2025</div><div class="big">${esc(c.esName || "—")}</div>
+        <div class="sub">${c.es ? `<span class="pill ${c.defends ? "ok" : "no"}">${c.defends ? "Defiende título" : "No compite"}</span>` : ""} ${c.abs.length ? "Ganador absoluto: " + c.abs.map(a => esc(a.name) + " " + cc(a.iso)).join(", ") : ""}</div></div>
+    </div>
+    <div class="controls">
+      <div class="toggle" role="group" aria-label="Nacionalidad">${[["all", "Todos"], ["es", "Solo españoles"], ["fx", "Extranjeros"]].map(([k, t]) => `<button data-v="${k}" data-nat aria-pressed="${S.nat === k}">${t}</button>`).join("")}</div>
+      <div class="toggle" role="group" aria-label="Cuántos">${[[10, "Top 10"], [20, "Top 20"], [50, "Top 50"], [9999, "Todos"]].map(([k, t]) => `<button data-lim="${k}" aria-pressed="${S.lim == k}">${t}</button>`).join("")}</div>
+      <input class="field" id="evq" type="search" placeholder="Filtrar por nombre…" value="${esc(S.evq)}" style="width:220px">
+      <span class="count" id="evcount"></span>
+    </div>
+    <div class="tablewrap"><table id="evtable"></table></div>
+    <div class="note">Δ año: mejor marca de los últimos 12 meses frente a los 12 anteriores (verde = ha mejorado). Evolución: mejor marca de cada año ${DATA.meta.years[0]}–${DATA.meta.years.at(-1)} (abajo = más rápido; pasa el dedo o el ratón para ver los tiempos). Títulos/podios: Campeonato de España en este evento (entre españoles).</div>`;
+  v.querySelectorAll(".chip").forEach(b => b.addEventListener("click", () => { S.sort = null; go("evento-" + b.dataset.ev); }));
+  v.querySelectorAll("[data-nat]").forEach(b => b.addEventListener("click", () => { S.nat = b.dataset.v; store.set("nat", S.nat); viewEvent(v); avFix(); }));
+  v.querySelectorAll("[data-lim]").forEach(b => b.addEventListener("click", () => { S.lim = +b.dataset.lim; store.set("lim", S.lim); viewEvent(v); avFix(); }));
+  $("#evq").addEventListener("input", ev => { S.evq = ev.target.value; drawEvTable(e); avFix(); });
+  drawEvTable(e);
+}
+function drawEvTable(e) {
+  let rows = e.rows.slice();
+  if (S.nat === "es") rows = rows.filter(r => r.seedES); else if (S.nat === "fx") rows = rows.filter(r => !r.seedES);
+  rows = rows.slice(0, S.lim);
+  if (S.evq) { const q = norm(S.evq); rows = rows.filter(r => PERS[r.id]._q.includes(q)); }
+  if (S.sort) {
+    const { k, dir } = S.sort, val = r => k === "name" ? norm(name(r.id)) : k === "wr" ? (e.metric === "single" ? r.wrS : r.wrA) : COLS.find(c => c.k === k)?.time ? toSec(r[k]) : r[k];
+    rows.sort((a, b) => { const x = val(a), y = val(b); if (x == null) return 1; if (y == null) return -1; return (x > y ? 1 : x < y ? -1 : 0) * dir; });
+  }
+  const key = e.metric === "single" ? "pbS" : "pbA";
+  const t = $("#evtable");
+  t.innerHTML = `<thead><tr>${GROUPS.map(g => `<th class="grp" colspan="${g[2]}" style="--gc:${g[3]}">${g[1]}</th>`).join("")}</tr>
+    <tr>${COLS.map(c => `<th data-k="${c.k}" class="${c.l ? "l" : ""} ${S.sort?.k === c.k ? "sorted" : ""}">${c.t}${S.sort?.k === c.k ? (S.sort.dir > 0 ? " ▲" : " ▼") : ""}</th>`).join("")}</tr></thead>
+    <tbody>${rows.map(r => evRow(e, r, key)).join("")}
+    ${S.lim > 50 && S.nat !== "fx" && e.newcomers.length && !S.evq ? `<tr class="newrow"><td colspan="${COLS.length}">+ ${e.newcomers.length} debutante(s) sin WCA ID inscritos en este evento</td></tr>` : ""}</tbody>`;
+  $("#evcount").textContent = `${rows.length} competidores`;
+  t.querySelectorAll("th[data-k]").forEach(th => th.addEventListener("click", () => {
+    const k = th.dataset.k; if (COLS.find(c => c.k === k).ns) return;
+    S.sort = S.sort?.k === k ? (S.sort.dir > 0 ? { k, dir: -1 } : null) : { k, dir: (k === "iy" || k === "tit" || k === "pod") ? -1 : 1 };
+    drawEvTable(e); avFix(); }));
+  t.querySelectorAll("tbody tr[data-id]").forEach(tr => tr.addEventListener("click", () => openProfile(tr.dataset.id)));
+}
+function evRow(e, r, key) {
+  const p = PERS[r.id], wr = e.metric === "single" ? r.wrS : r.wrA;
+  const badges = [r.nrv.length ? `<span class="pill nr">NR ${r.nrv.join("+")}</span>` : "", r.tit ? `<span class="pill ch">${r.tit}× campeón</span>` : "",
+                  e.champ2025.es === r.id ? `<span class="pill ok">Vigente</span>` : ""].join("");
+  const td = (k, extra = "") => `<td class="${k === key ? "key" : ""} ${extra}"><span class="t">${esc(r[k] || "—")}</span></td>`;
+  return `<tr data-id="${r.id}" class="${r.seed <= 3 && S.nat === "all" ? "p" + r.seed : ""}">
+    <td class="seed">${r.seed}</td><td class="seedes">${r.seedES || ""}</td>
+    <td class="l"><div class="who">${av(p)}<div><div class="nm">${esc(p.name)}</div><div class="meta">${cc(p.iso)}${badges}</div></div></div></td>
+    ${td("pbS")}<td class="rk">${r.nrS ?? "—"}</td>${td("pbA")}<td class="rk">${r.nrA ?? "—"}</td><td class="rk">${wr ?? "—"}</td>
+    <td><span class="t">${esc(r.b12 || "—")}</span></td><td><span class="t" style="color:var(--muted)">${esc(r.m12 || (e.id === "333mbf" ? r.n12 + " int." : "—"))}</span></td>
+    <td>${delta(r.iy)}</td><td>${spark(r.years)}</td>
+    <td>${r.tit ? `<span class="tit">${r.tit}</span>` : `<span class="zero">0</span>`}</td><td>${r.pod || `<span class="zero">0</span>`}</td>
+    <td>${r.bp ? r.bp + "º" : `<span class="zero">—</span>`}</td>
+    <td>${r.intl.map(x => `<span class="pill intl" title="${x[0]} ${x[1]}">${x[2]}º ${x[0] === "Mundial" ? "WC" : "EC"} ${String(x[1]).slice(2)}</span>`).join(" ") || `<span class="zero">—</span>`}</td></tr>`;
+}
+
+/* ---------------- people ---------------- */
+const FLAGS = [["champ", "Campeones de España"], ["nr", "Récord nacional vigente"], ["intl", "Podio Europeo / Mundial"], ["firstES", "Primer Cto. de España"], ["new", "Debutantes"], ["top20", "Top 20 en algún evento"]];
+function peopleList() {
+  const q = norm(S.q);
+  let L = DATA.persons.filter(p => (!q || p._q.includes(q)) &&
+    (S.pNat === "all" || (S.pNat === "es" ? p.iso === "ES" : p.iso !== "ES")) && (!S.pIso || p.iso === S.pIso) && (!S.pEv || p.events.includes(S.pEv)));
+  for (const f of S.pFlags) L = L.filter({ champ: p => p._titles > 0, nr: p => p.nrv?.length, intl: p => p._intl > 0,
+    firstES: p => !p.newcomer && !p.es?.years.length, new: p => p.newcomer, top20: p => p._bestSeed <= 20 }[f]);
+  const by = { seed: p => S.pEv ? (p.seeds?.[S.pEv]?.[0] ?? 1e6) : p._bestSeed, name: p => norm(p.name), medals: p => -p._medals, comps: p => -(p.comps || 0), titles: p => -p._titles - p._medals / 1e5 }[S.pSort];
+  return L.sort((a, b) => { const x = by(a), y = by(b); return x > y ? 1 : x < y ? -1 : 0; });
+}
+function viewPeople(v) {
+  const isos = [...new Set(DATA.persons.map(p => p.iso))].sort((a, b) => (COUNTRY[a] || a).localeCompare(COUNTRY[b] || b, "es"));
+  v.innerHTML = `
+    <h1>Competidores</h1>
+    <div class="controls">
+      <input class="field bigsearch" id="pq" type="search" placeholder="Nombre, WCA ID o país…" value="${esc(S.q)}" aria-label="Buscar competidor">
+      <div class="toggle" role="group" aria-label="Nacionalidad">${[["all", "Todos"], ["es", "Españoles"], ["fx", "Extranjeros"]].map(([k, t]) => `<button data-v="${k}" data-pnat aria-pressed="${S.pNat === k}">${t}</button>`).join("")}</div>
+      <select class="field" id="pIso" aria-label="País"><option value="">Todos los países</option>${isos.map(i => `<option value="${i}" ${S.pIso === i ? "selected" : ""}>${esc(COUNTRY[i] || i)}</option>`).join("")}</select>
+      <select class="field" id="pEv" aria-label="Evento"><option value="">Cualquier evento</option>${DATA.events.map(e => `<option value="${e.id}" ${S.pEv === e.id ? "selected" : ""}>${esc(e.name)}</option>`).join("")}</select>
+      <select class="field" id="pSort" aria-label="Ordenar"><option value="seed">Orden: mejor seed</option><option value="name">Orden: nombre</option><option value="medals">Orden: más medallas</option><option value="titles">Orden: más títulos de España</option><option value="comps">Orden: más competiciones</option></select>
+    </div>
+    <div class="filters">${FLAGS.map(([k, t]) => `<button class="fchip" data-f="${k}" aria-pressed="${S.pFlags.has(k)}">${t}</button>`).join("")}
+      <button class="fchip" id="clear">Limpiar filtros</button><span class="count" id="pcount"></span></div>
+    <div class="pgrid" id="pgrid" style="margin-top:14px"></div>`;
+  $("#pSort").value = S.pSort;
+  const draw = () => {
+    const L = peopleList();
+    $("#pcount").textContent = `${L.length} de ${DATA.persons.length}`;
+    $("#pgrid").innerHTML = L.length ? L.map(pCard).join("") : `<div class="empty">Nadie cumple estos filtros. Prueba a quitar alguno.</div>`;
+    $("#pgrid").querySelectorAll(".pcard").forEach(c => c.addEventListener("click", () => openProfile(c.dataset.id)));
+    avFix();
+  };
+  $("#pq").addEventListener("input", e => { S.q = e.target.value; draw(); });
+  v.querySelectorAll("[data-pnat]").forEach(b => b.addEventListener("click", () => { S.pNat = b.dataset.v; v.querySelectorAll("[data-pnat]").forEach(x => x.setAttribute("aria-pressed", x === b)); draw(); }));
+  $("#pIso").addEventListener("change", e => { S.pIso = e.target.value; draw(); });
+  $("#pEv").addEventListener("change", e => { S.pEv = e.target.value; draw(); });
+  $("#pSort").addEventListener("change", e => { S.pSort = e.target.value; draw(); });
+  v.querySelectorAll("[data-f]").forEach(b => b.addEventListener("click", () => { S.pFlags.has(b.dataset.f) ? S.pFlags.delete(b.dataset.f) : S.pFlags.add(b.dataset.f); b.setAttribute("aria-pressed", S.pFlags.has(b.dataset.f)); draw(); }));
+  $("#clear").addEventListener("click", () => { Object.assign(S, { q: "", pNat: "all", pIso: "", pEv: "", pSort: "seed" }); S.pFlags.clear(); viewPeople(v); });
+  draw();
+}
+function pCard(p) {
+  const seedTxt = S.pEv && p.seeds?.[S.pEv] ? `#${p.seeds[S.pEv][0]} en ${EVBYID[S.pEv].name}` : (p._bestSeed < 99999 ? `Mejor seed #${p._bestSeed}` : "");
+  return `<button class="pcard" data-id="${p.id}">${av(p)}<div class="info">
+    <div class="nm">${esc(p.name)}</div>
+    <div class="line">${cc(p.iso)} ${esc(p.country)} ${p.newcomer ? `<span class="pill new">Debutante</span>` : `· ${esc(p.id)}`}</div>
+    ${!p.medals ? `<div class="line">${p.events.length} eventos</div>` : `<div class="stats"><span><b class="m1">${p.medals[0]}</b> oros</span><span><b>${p._medals}</b> medallas</span><span><b>${p.comps}</b> comps</span>${p._titles ? `<span><b style="color:var(--accent)">${p._titles}</b> títulos ESP</span>` : ""}</div>
+    <div class="line">${seedTxt}${p.nrv?.length ? ` <span class="pill nr">NR</span>` : ""}${p._intl ? ` <span class="pill intl">Podio internacional</span>` : ""}</div>`}
+  </div></button>`;
+}
+
+/* ---------------- profile drawer ---------------- */
+function openProfile(id, push = true) {
+  const p = PERS[id]; if (!p) return;
+  const d = $("#drawer");
+  const podsHtml = (arr) => arr?.length ? `<div class="podlist">${arr.map(x => `<span class="pod ${["", "g", "s", "b"][x[2]]}"><i></i>${esc(x[0])} ${x[1]}</span>`).join("")}</div>` : `<span class="zero">Sin podios</span>`;
+  const evs = p.events.filter(e => EVBYID[e]).map(eid => ({ e: EVBYID[eid], r: ROW[id]?.[eid] }));
+  d.innerHTML = `
+    <div class="phead">${av(p)}<div style="min-width:0"><div class="eyebrow">${p.newcomer ? "Debutante" : esc(p.id)}</div><h1>${esc(p.name)}</h1>
+      <div class="line">${cc(p.iso)} ${esc(p.country)} ${p.debut ? `· compite desde ${p.debut}` : ""} ${p.url ? `· <a href="${esc(p.url)}" target="_blank" rel="noopener">Perfil WCA ↗</a>` : ""}</div></div>
+      <button class="iconbtn close" id="closeP" aria-label="Cerrar ficha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    ${!p.medals ? `<p class="note" style="font-size:15px">${p.newcomer ? "Primera competición oficial: todavía no tiene resultados WCA" : "Sin datos WCA descargados"}. Inscrito en ${p.events.map(e => EVBYID[e]?.name || e).join(", ")}.</p>` : `
+    <div class="tiles">
+      <div class="tile"><b>${p.comps}</b><span>competiciones</span></div>
+      <div class="tile"><b>${(p.solves || 0).toLocaleString("es-ES")}</b><span>solves oficiales</span></div>
+      <div class="tile"><div class="medals"><em class="m1">${p.medals[0]}</em><em class="m2">${p.medals[1]}</em><em class="m3">${p.medals[2]}</em></div><span>medallas WCA (oro · plata · bronce)</span></div>
+      <div class="tile"><b>${p.records[0]}<small style="font-size:16px;color:var(--muted)"> NR</small> ${p.records[1]}<small style="font-size:16px;color:var(--muted)"> ER</small> ${p.records[2]}<small style="font-size:16px;color:var(--muted)"> WR</small></b><span>récords batidos</span></div>
+      <div class="tile"><b style="color:var(--accent)">${p._titles}</b><span>títulos de Campeón de España</span></div>
+    </div>
+    ${p.nrv?.length ? `<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"><span class="eyebrow">Récord nacional vigente:</span>${p.nrv.map(x => `<span class="pill nr">${esc(x)}</span>`).join("")}</div>` : ""}
+    <div class="sect"><h2>En este campeonato</h2>
+      <div class="tablewrap ptable"><table><thead><tr><th class="l">Evento</th><th>Seed</th><th>ESP</th><th>Single</th><th>Media</th><th>Mejor 12 m</th><th>Δ año</th><th>Evolución</th><th>Títulos</th><th>Mejor puesto</th></tr></thead><tbody>
+      ${evs.map(({ e, r }) => r ? `<tr data-ev="${e.id}"><td class="l"><b>${esc(e.name)}</b></td><td class="seed" style="font-size:20px">${r.seed}</td><td class="seedes">${r.seedES || ""}</td>
+        <td class="${e.metric === "single" ? "key" : ""}"><span class="t">${esc(r.pbS || "—")}</span></td><td class="${e.metric !== "single" ? "key" : ""}"><span class="t">${esc(r.pbA || "—")}</span></td>
+        <td><span class="t">${esc(r.b12 || "—")}</span></td><td>${delta(r.iy)}</td><td>${spark(r.years)}</td><td>${r.tit ? `<span class="tit">${r.tit}</span>` : `<span class="zero">0</span>`}</td><td>${r.bp ? r.bp + "º" : "—"}</td></tr>`
+        : `<tr><td class="l"><b>${esc(e.name)}</b></td><td colspan="9" class="zero">Primera vez en este evento</td></tr>`).join("")}
+      </tbody></table></div><div class="note">Toca un evento para abrir su clasificación.</div></div>
+    <div class="sect cols3">
+      <div class="box"><div class="eyebrow">Campeonato de España · ${p.es.years.length} ediciones</div>${podsHtml(p.es.pod)}<div class="yrs">${p.es.years.map(y => `<span>${y}</span>`).join("")}</div></div>
+      <div class="box"><div class="eyebrow">Campeonato de Europa · ${p.eu.years.length} ediciones</div>${podsHtml(p.eu.pod)}<div class="yrs">${p.eu.years.map(y => `<span>${y}</span>`).join("")}</div></div>
+      <div class="box"><div class="eyebrow">Mundial · ${p.wc.years.length} ediciones</div>${podsHtml(p.wc.pod)}<div class="yrs">${p.wc.years.map(y => `<span>${y}</span>`).join("")}</div></div>
+    </div>`}`;
+  d.hidden = false; $("#scrim").hidden = false; d.scrollTop = 0; avFix();
+  $("#closeP").addEventListener("click", () => closeProfile());
+  d.querySelectorAll("tr[data-ev]").forEach(tr => tr.addEventListener("click", () => { closeProfile(false); go("evento-" + tr.dataset.ev); }));
+  if (push && location.hash !== "#c-" + id) history.pushState(null, "", "#c-" + id);
+}
+function closeProfile(back = true) {
+  if ($("#drawer").hidden) return;
+  $("#drawer").hidden = true; $("#scrim").hidden = true;
+  if (back && location.hash.startsWith("#c-")) history.back();
+}
+$("#scrim").addEventListener("click", () => closeProfile());
+
+/* ---------------- palmarés ---------------- */
+function viewPal(v) {
+  const evs = [...new Set(DATA.palmares.map(x => x.ev))];
+  v.innerHTML = `<h1>Palmarés del Campeonato de España</h1>
+    <div class="controls"><div class="chips" style="flex:1">${["", ...evs].map(e => `<button class="chip" data-pe="${e}" aria-pressed="${S.palEv === e}">${e || "Todos los eventos"}</button>`).join("")}</div></div>
+    <div class="filters" style="margin-bottom:12px"><button class="fchip" id="palHere" aria-pressed="${S.palHere}">Solo podios con inscritos de 2026</button><span class="note" style="margin:0">Podio entre españoles en la final de cada evento. En amarillo, quien compite este año.</span></div>
+    <div class="tablewrap paltable"><table><thead><tr><th>Año</th><th class="l">Evento</th><th class="l">🥇 Oro</th><th class="l">🥈 Plata</th><th class="l">🥉 Bronce</th></tr></thead><tbody id="palb"></tbody></table></div>`;
+  const draw = () => {
+    const L = DATA.palmares.filter(x => (!S.palEv || x.ev === S.palEv) && (!S.palHere || x.pod.some(p => p.here)));
+    $("#palb").innerHTML = L.map(x => `<tr style="cursor:default"><td class="yearcell">${x.y}</td><td class="l"><b>${esc(x.ev)}</b></td>${[0, 1, 2].map(i => { const p = x.pod[i];
+      return p ? `<td class="l ${p.here ? "here" : ""}" ${p.here ? `data-id="${p.id}" style="cursor:pointer"` : ""}>${esc(p.name)}</td>` : "<td></td>"; }).join("")}</tr>`).join("");
+    $("#palb").querySelectorAll("td[data-id]").forEach(td => td.addEventListener("click", () => openProfile(td.dataset.id)));
+  };
+  v.querySelectorAll("[data-pe]").forEach(b => b.addEventListener("click", () => { S.palEv = b.dataset.pe; v.querySelectorAll("[data-pe]").forEach(x => x.setAttribute("aria-pressed", x === b)); draw(); }));
+  $("#palHere").addEventListener("click", e => { S.palHere = !S.palHere; e.target.setAttribute("aria-pressed", S.palHere); draw(); });
+  draw();
+}
+
+/* ---------------- global search ---------------- */
+const gq = $("#gq"), sug = $("#suggest"); let sel = 0, hits = [];
+function drawSug() {
+  const q = norm(gq.value.trim());
+  hits = q ? DATA.persons.filter(p => p._q.includes(q)).sort((a, b) => (norm(a.name).startsWith(q) ? 0 : 1) - (norm(b.name).startsWith(q) ? 0 : 1) || a._bestSeed - b._bestSeed).slice(0, 8) : [];
+  sug.hidden = !hits.length; sel = 0;
+  sug.innerHTML = hits.map((p, i) => `<button data-id="${p.id}" class="${i === sel ? "on" : ""}">${av(p)}<span style="flex:1;min-width:0"><b>${esc(p.name)}</b><br><span style="color:var(--muted);font-size:12px">${esc(p.country)} · ${p.newcomer ? "Debutante" : esc(p.id)}</span></span>${cc(p.iso)}</button>`).join("");
+  sug.querySelectorAll("button").forEach(b => b.addEventListener("mousedown", e => { e.preventDefault(); pick(b.dataset.id); }));
+  avFix();
+}
+function pick(id) { gq.value = ""; sug.hidden = true; gq.blur(); openProfile(id); }
+gq.addEventListener("input", drawSug);
+gq.addEventListener("blur", () => setTimeout(() => sug.hidden = true, 120));
+gq.addEventListener("keydown", e => {
+  if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); sel = (sel + (e.key === "ArrowDown" ? 1 : -1) + hits.length) % hits.length; sug.querySelectorAll("button").forEach((b, i) => b.classList.toggle("on", i === sel)); }
+  else if (e.key === "Enter" && hits[sel]) pick(hits[sel].id);
+  else if (e.key === "Escape") { gq.value = ""; sug.hidden = true; gq.blur(); }
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "/" && document.activeElement.tagName !== "INPUT") { e.preventDefault(); gq.focus(); }
+  if (e.key === "Escape" && !$("#drawer").hidden) closeProfile();
+});
+
+/* ---------------- theme, brand, wake lock ---------------- */
+const root = document.documentElement;
+const savedTheme = store.get("theme", null); if (savedTheme) root.dataset.theme = savedTheme;
+$("#themeBtn").addEventListener("click", () => {
+  const cur = root.dataset.theme || (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+  root.dataset.theme = cur === "dark" ? "light" : "dark"; store.set("theme", root.dataset.theme);
+});
+$("#brandSub").textContent = `${DATA.meta.kpis.competitors} competidores · ${DATA.meta.kpis.events} eventos`;
+$(".logo").innerHTML = ["#FFC81F", "#E8333A", "#3D7BFF", "#21B36B", "#F4F6FA", "#FF8A2B", "#E8333A", "#3D7BFF", "#FFC81F"].map(c => `<i style="background:${c}"></i>`).join("");
+async function wake() { try { await navigator.wakeLock?.request("screen"); } catch (e) {} }
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") wake(); }); wake();
+render();
+</script>
