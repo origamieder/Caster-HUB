@@ -312,6 +312,8 @@ function spark(years) {
 const delta = v => v == null ? `<span class="zero">—</span>` : `<span class="delta ${v > 0.05 ? "up" : v < -0.05 ? "down" : "flat"}">${v > 0 ? "+" : ""}${v.toFixed(1)}%</span>`;
 const pbOf = (ev, r) => ev.metric === "single" ? r.pbS : r.pbA;
 const name = id => PERS[id]?.name || id;
+/* Favorito = mejor español inscrito (es el Campeonato de España); si no hay ninguno, el mejor general. */
+const favOf = e => e.rows.find(r => r.seedES === 1) || e.rows[0];
 
 /* ---------------- state & routing ---------------- */
 const S = { ev: store.get("ev", DATA.events[0].id), nat: store.get("nat", "all"), lim: store.get("lim", 20), sort: null, evq: "",
@@ -350,12 +352,12 @@ function viewHome(v) {
   v.querySelectorAll(".evcard").forEach(c => c.addEventListener("click", () => go("evento-" + c.dataset.ev)));
 }
 function evCard(e) {
-  const f = e.rows[0], es = e.rows.find(r => r.seedES === 1), c = e.champ2025;
+  const top = e.rows[0], f = favOf(e), c = e.champ2025;
   const nrs = e.rows.filter(r => r.seed <= 20 && r.nrv.length).length;
   return `<button class="evcard" data-ev="${e.id}" style="--evc:${EVC[e.id]}">
     <div style="display:flex;justify-content:space-between;align-items:center"><h3>${esc(e.name)}</h3><span class="pill">${e.rows.length + e.newcomers.length} inscritos</span></div>
     <div class="fav"><span class="name">${esc(name(f.id))}</span><span class="t">${esc(pbOf(e, f))}</span></div>
-    <div class="row"><span>Mejor español</span><b>${es ? esc(name(es.id)) + ` <span class="t" style="color:var(--muted)">${esc(pbOf(e, es))}</span>` : "—"}</b></div>
+    <div class="row"><span>Mejor general</span><b>${esc(name(top.id))} <span class="t" style="color:var(--muted)">${esc(pbOf(e, top))}</span></b></div>
     <div class="row"><span>Campeón 2025</span><b>${esc(c.esName || "—")}</b></div>
     <div class="foot">${c.es ? `<span class="pill ${c.defends ? "ok" : "no"}">${c.defends ? "Defiende título" : "No defiende"}</span>` : ""}
       ${nrs ? `<span class="pill nr">${nrs} con NR vigente</span>` : ""}<span class="pill">por ${ES[e.metric[0]]}</span></div>
@@ -372,13 +374,14 @@ const COLS = [
 const GROUPS = [["c", "Competidor", 3, "var(--fg)"], ["pb", "Marcas personales", 5, "var(--blue)"], ["f", "Forma actual", 4, "var(--green)"], ["h", "Historial Cto. España y fuera", 4, "var(--accent)"]];
 function viewEvent(v) {
   const e = EVBYID[S.ev];
+  const fav = favOf(e);
   const c = e.champ2025, top3es = e.rows.filter(r => r.seedES && r.seedES <= 3).sort((a, b) => a.seedES - b.seedES);
   v.innerHTML = `
     <div class="chips" role="toolbar" aria-label="Eventos">${DATA.events.map(x => `<button class="chip" style="--evc:${EVC[x.id]}" data-ev="${x.id}" aria-pressed="${x.id === e.id}"><i></i>${esc(x.name)}</button>`).join("")}</div>
     <div class="evhead" style="--evc:${EVC[e.id]}">
       <div class="evtitle"><div class="eyebrow">Psych sheet · ordenado por ${ES[e.metric[0]].toLowerCase()}</div><h1>${esc(e.name)}</h1>
         <div class="sub" style="color:var(--muted);font-size:13px">${e.rows.length} con marca previa${e.newcomers.length ? ` · ${e.newcomers.length} debutantes` : ""}</div></div>
-      <div class="box"><div class="eyebrow">Favorito</div><div class="big">${esc(name(e.rows[0].id))}</div><div class="sub"><span class="t" style="color:var(--accent);font-size:16px">${esc(pbOf(e, e.rows[0]))}</span> · ${esc(PERS[e.rows[0].id].country)}</div></div>
+      <div class="box"><div class="eyebrow">Favorito</div><div class="big">${esc(name(fav.id))}</div><div class="sub"><span class="t" style="color:var(--accent);font-size:16px">${esc(pbOf(e, fav))}</span> · ${esc(PERS[fav.id].country)} · ${fav.seed}º gral.</div></div>
       <div class="box"><div class="eyebrow">Mejores españoles</div>${top3es.map(r => `<div class="sub" style="color:var(--fg)"><b style="color:var(--red)">${r.seedES}.</b> ${esc(name(r.id))} <span class="t" style="color:var(--muted)">${esc(pbOf(e, r))}</span> <span style="color:var(--dim)">(${r.seed}º gral.)</span></div>`).join("") || "—"}</div>
       <div class="box"><div class="eyebrow">Campeón de España 2025</div><div class="big">${esc(c.esName || "—")}</div>
         <div class="sub">${c.es ? `<span class="pill ${c.defends ? "ok" : "no"}">${c.defends ? "Defiende título" : "No compite"}</span>` : ""} ${c.abs.length ? "Ganador absoluto: " + c.abs.map(a => esc(a.name) + " " + cc(a.iso)).join(", ") : ""}</div></div>
