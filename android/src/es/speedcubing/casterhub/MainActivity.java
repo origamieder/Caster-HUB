@@ -20,11 +20,11 @@ public class MainActivity extends Activity {
         super.onCreate(state);
         // Casters keep the tablet on the desk for hours: never let the screen dim.
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        getWindow().setStatusBarColor(Color.parseColor("#0D1016"));
-        getWindow().setNavigationBarColor(Color.parseColor("#0D1016"));
+        getWindow().setStatusBarColor(Color.parseColor("#0D1330"));
+        getWindow().setNavigationBarColor(Color.parseColor("#0D1330"));
 
         web = new WebView(this);
-        web.setBackgroundColor(Color.parseColor("#0D1016"));
+        web.setBackgroundColor(Color.parseColor("#0D1330"));
         WebSettings s = web.getSettings();
         s.setJavaScriptEnabled(true);
         s.setDomStorageEnabled(true);
