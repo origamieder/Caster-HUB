@@ -34,6 +34,17 @@ Si actualizas los datos, vuelve a ejecutar el instalador para que el PC use la v
 - En el PC, la tecla `/` lleva directamente al buscador.
 - En Android la app gira con el dispositivo (respeta el bloqueo de rotación), va a pantalla completa y no deja que se apague la pantalla.
 
+### Herramientas para el directo
+
+- **Favorito:** en cada evento es el mejor español inscrito, con su ventaja sobre el segundo español. El mejor general sigue siendo el nº 1 de la tabla.
+- **Fijados (☆):** marca a los competidores que vas a comentar con la estrella de la tabla o de la ficha. Aparecen en *Resumen* y con el filtro **★ Fijados** de cada evento y de *Competidores*.
+- **Datos clave:** cada ficha abre con frases cortas listas para decir (títulos, récords vigentes, podios internacionales, forma actual, participaciones).
+- **Notas del caster:** en cada ficha, para pronunciación o anécdotas. Quien tiene notas sale marcado con ✎.
+- **Cara a cara:** en un evento, pulsa *Cara a cara* y toca de 2 a 4 competidores para compararlos lado a lado. En verde, el mejor dato de cada fila.
+- **Texto grande (Aa):** agranda nombres y tiempos para leer de lejos.
+- **Atajos de teclado:** `←` `→` cambian de evento, o de competidor si hay una ficha abierta; `F` fija al competidor de la ficha; `Esc` la cierra.
+- Los fijados y las notas se guardan **solo en ese dispositivo y navegador**: no se comparten entre el PC y la tablet.
+
 ---
 
 ## 2. Actualizar los datos antes del campeonato

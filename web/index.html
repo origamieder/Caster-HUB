@@ -212,6 +212,48 @@ td.key .t { font-size: 18px; font-weight: 700; color: var(--accent); }
 .paltable td.here { color: var(--accent); font-weight: 700; }
 .yearcell { font-family: var(--f-display); font-size: 22px; font-weight: 800; }
 
+/* caster tools: pins, notes, key facts, head-to-head, big text */
+.star { border: 0; background: none; cursor: pointer; padding: 2px 4px; color: var(--dim); font-size: 22px; line-height: 1; border-radius: 8px; flex: none; }
+.star[aria-pressed="true"], .star:hover { color: var(--accent); }
+.pbtns { margin-left: auto; align-self: flex-start; display: flex; align-items: center; gap: 8px; flex: none; }
+.pbtns .star { font-size: 30px; }
+.mark { color: var(--accent); font-weight: 700; }
+.mark.n { color: var(--blue); }
+.facts { margin: 8px 0 0; padding-left: 20px; display: grid; gap: 5px; font-size: 15px; }
+.facts li::marker { color: var(--accent); }
+.notes { display: block; width: 100%; min-height: 88px; resize: vertical; border-radius: 12px; border: 1px solid var(--line); background: var(--panel); padding: 10px 12px; font: inherit; color: inherit; }
+.iconbtn[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+#evtable td.l, #evtable thead th[data-k="name"] { position: sticky; left: 0; z-index: 1; }
+#evtable thead th[data-k="name"] { z-index: 2; }
+#evtable td.l { background: var(--panel); box-shadow: 1px 0 0 var(--line); }
+#evtable tbody tr:hover td.l { background: var(--panel2); }
+#evtable tbody tr.sel td, #evtable tbody tr.sel td.l { background: color-mix(in srgb, var(--accent) 16%, var(--panel)); }
+.evcard .row > span { white-space: nowrap; }
+.cmp { margin-bottom: 12px; }
+.cmp .cmphead { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.cmp table { min-width: 0; margin-top: 8px; }
+.cmp thead th { position: static; background: none; text-transform: none; letter-spacing: 0; font-size: 14px; color: var(--fg); white-space: normal; vertical-align: bottom; }
+.cmp thead th .av { margin: 0 auto 4px; }
+.cmp tbody tr { cursor: default; }
+.cmp tbody tr:hover td { background: none; }
+.cmp td.l { color: var(--muted); font-size: 13px; }
+.cmp td.best, .cmp td.best .t { color: var(--green); font-weight: 700; }
+:root[data-big] body { font-size: 17px; }
+:root[data-big] .who .nm, :root[data-big] .pcard .nm { font-size: 19px; }
+:root[data-big] td .t { font-size: 18px; }
+:root[data-big] td.key .t { font-size: 23px; }
+:root[data-big] .seed { font-size: 30px; }
+:root[data-big] .seedes { font-size: 22px; }
+:root[data-big] .rk { font-size: 15px; }
+:root[data-big] .pill { font-size: 13px; height: 26px; }
+:root[data-big] .cc { font-size: 13px; }
+:root[data-big] thead th { font-size: 13px; }
+:root[data-big] .eyebrow { font-size: 13px; }
+:root[data-big] .box .big { font-size: 21px; }
+:root[data-big] .box .sub, :root[data-big] .note, :root[data-big] .evcard .row, :root[data-big] .cmp td.l, :root[data-big] .pcard .line, :root[data-big] .tile span { font-size: 15px; }
+:root[data-big] .facts { font-size: 19px; }
+:root[data-big] .delta { font-size: 15px; }
+
 @media (max-width: 1180px) { .evgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 980px) { .pgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .evhead { grid-template-columns: 1fr 1fr; } .tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); } .cols3 { grid-template-columns: 1fr; } }
 /* Portrait (tablet or phone) and narrow screens: quick-access bar pinned to the bottom edge */
@@ -257,6 +299,7 @@ td.key .t { font-size: 18px; font-weight: 700; color: var(--accent); }
         <kbd>/</kbd>
         <div class="suggest" id="suggest" hidden></div>
       </div>
+      <button class="iconbtn" id="bigBtn" aria-pressed="false" aria-label="Texto grande" title="Texto grande, para leer de lejos"><b style="font-size:15px">Aa</b></button>
       <button class="iconbtn" id="themeBtn" aria-label="Cambiar tema claro u oscuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
     </header>
     <main class="view" id="view"></main>
@@ -315,9 +358,64 @@ const name = id => PERS[id]?.name || id;
 /* Favorito = mejor español inscrito (es el Campeonato de España); si no hay ninguno, el mejor general. */
 const favOf = e => e.rows.find(r => r.seedES === 1) || e.rows[0];
 
+/* ---------------- caster tools: pins, notes, key facts ---------------- */
+const PINS = new Set(store.get("pins", []).filter(id => PERS[id]));
+const NOTES = store.get("notes", {});
+const starBtn = id => `<button class="star" data-pin="${id}" aria-pressed="${PINS.has(id)}" aria-label="Fijar competidor" title="Fijar competidor (F)">${PINS.has(id) ? "★" : "☆"}</button>`;
+const marks = id => (PINS.has(id) ? ` <span class="mark" title="Fijado">★</span>` : "") + (NOTES[id] ? ` <span class="mark n" title="Tiene notas">✎</span>` : "");
+function togglePin(id) {
+  PINS.has(id) ? PINS.delete(id) : PINS.add(id); store.set("pins", [...PINS]);
+  document.querySelectorAll(`[data-pin="${id}"]`).forEach(x => { x.setAttribute("aria-pressed", PINS.has(id)); x.textContent = PINS.has(id) ? "★" : "☆"; });
+  const pt = $('[data-nat][data-v="pin"]'); if (pt) pt.textContent = `★ Fijados (${PINS.size})`;
+  if (S.nat === "pin" && $("#evtable")) { drawEvTable(EVBYID[S.ev]); avFix(); }
+}
+document.addEventListener("click", ev => {
+  const b = ev.target.closest?.("[data-pin]"); if (!b) return;
+  ev.stopPropagation(); ev.preventDefault(); togglePin(b.dataset.pin);
+}, true);
+const fmtDiff = x => x < 60 ? x.toFixed(2) + " s" : Math.floor(x / 60) + ":" + (x % 60).toFixed(2).padStart(5, "0");
+const listEs = a => a.length > 1 ? a.slice(0, -1).join(", ") + " y " + a.at(-1) : a[0] || "";
+const pct = v => v.toFixed(1).replace(".", ",") + " %";
+/* Frases cortas, listas para decir en directo, a partir de los datos del competidor. */
+function facts(p) {
+  const F = [], fem = p.gender === "f", es = p.iso === "ES";
+  const rows = p.events.filter(e => EVBYID[e] && ROW[p.id]?.[e]).map(e => [EVBYID[e], ROW[p.id][e]]);
+  const names = L => listEs(L.map(([e]) => e.name));
+  const def = rows.filter(([e]) => e.champ2025.es === p.id);
+  if (def.length) F.push(`Defiende el título de ${fem ? "campeona" : "campeón"} de España en ${names(def)}.`);
+  if (p._titles) {
+    const by = {}; p.es.pod.filter(x => x[2] === 1).forEach(x => (by[x[0]] ||= []).push(x[1]));
+    F.push(`${p._titles} ${p._titles > 1 ? "títulos" : "título"} de España: ${Object.entries(by).map(([ev, ys]) => `${ev} (${ys.sort().join(", ")})`).join("; ")}.`);
+  }
+  if (p.nrv?.length) F.push(`Récord nacional vigente${es ? "" : " de " + p.country}: ${p.nrv.join(", ")}.`);
+  const s1 = rows.filter(([, r]) => r.seed === 1);
+  if (s1.length) F.push(`Nº 1 del psych sheet en ${names(s1)}.`);
+  if (es) {
+    const best = rows.filter(([, r]) => r.seedES === 1 && r.seed !== 1);
+    if (best.length) F.push(`${fem ? "Mejor española inscrita" : "Mejor español inscrito"} en ${names(best)}.`);
+    const t3 = rows.filter(([, r]) => r.seedES === 2 || r.seedES === 3);
+    if (t3.length) F.push(`Aspirante al podio en ${listEs(t3.map(([e, r]) => `${e.name} (${r.seedES}º español)`))}.`);
+  } else {
+    const t3 = rows.filter(([, r]) => r.seed === 2 || r.seed === 3);
+    if (t3.length) F.push(`Top 3 del psych sheet en ${listEs(t3.map(([e, r]) => `${e.name} (${r.seed}º)`))}.`);
+  }
+  for (const [k, lab] of [["wc", "el Mundial"], ["eu", "el Europeo"]])
+    if (p[k]?.pod?.length) F.push(`Podios en ${lab}: ${p[k].pod.map(x => `${x[2]}º en ${x[0]} (${x[1]})`).join(", ")}.`);
+  const fresh = rows.filter(([e, r]) => r.b12 && r.b12 === pbOf(e, r));
+  if (fresh.length) F.push(`Llega en forma: PB de los últimos 12 meses en ${fresh.length > 4 ? `${fresh.length} de sus ${rows.length} eventos` : names(fresh)}.`);
+  const imp = rows.filter(([, r]) => r.iy >= 3).sort((a, b) => b[1].iy - a[1].iy)[0];
+  if (imp) F.push(`Mayor progresión: ${imp[0].name}, mejora del ${pct(imp[1].iy)} respecto al año anterior.`);
+  if (p.es) {
+    const prev = p.es.years.filter(y => y < +DATA.meta.start.slice(0, 4));
+    F.push(prev.length ? `${prev.length + 1}.ª participación en el Campeonato de España (la primera, en ${Math.min(...prev)}).` : "Primer Campeonato de España.");
+  }
+  if (!es) F.push(`No opta al título de España: compite por ${p.country}.`);
+  return F;
+}
+
 /* ---------------- state & routing ---------------- */
 const S = { ev: store.get("ev", DATA.events[0].id), nat: store.get("nat", "all"), lim: store.get("lim", 20), sort: null, evq: "",
-            q: "", pNat: "all", pIso: "", pEv: "", pFlags: new Set(), pSort: "seed", palEv: "", palHere: false };
+            q: "", pNat: "all", pIso: "", pEv: "", pFlags: new Set(), pSort: "seed", palEv: "", palHere: false, cmpMode: false, cmp: [], navList: [], cur: null };
 function go(hash) { if (location.hash !== "#" + hash) location.hash = hash; else render(); }
 window.addEventListener("hashchange", render);
 document.querySelectorAll("[data-nav]").forEach(b => b.addEventListener("click", () => go(b.dataset.nav === "evento" ? "evento-" + S.ev : b.dataset.nav)));
@@ -348,7 +446,10 @@ function viewHome(v) {
       <div class="kpi"><b>${k.events}</b><span>eventos</span></div>
       <div class="kpi"><b>${k.defend}<small style="font-size:22px;color:var(--muted)">/${k.events}</small></b><span>campeones 2025<br>defienden título</span></div>
     </div>
+    ${PINS.size ? `<div class="sect" style="margin:0 0 22px"><h2>★ Fijados</h2><div class="pgrid">${[...PINS].map(id => pCard(PERS[id])).join("")}</div></div>` : ""}
     <div class="evgrid">${DATA.events.map(evCard).join("")}</div>`;
+  S.navList = [...PINS];
+  v.querySelectorAll(".pcard").forEach(c => c.addEventListener("click", () => openProfile(c.dataset.id)));
   v.querySelectorAll(".evcard").forEach(c => c.addEventListener("click", () => go("evento-" + c.dataset.ev)));
 }
 function evCard(e) {
@@ -374,35 +475,71 @@ const COLS = [
 const GROUPS = [["c", "Competidor", 3, "var(--fg)"], ["pb", "Marcas personales", 5, "var(--blue)"], ["f", "Forma actual", 4, "var(--green)"], ["h", "Historial Cto. España y fuera", 4, "var(--accent)"]];
 function viewEvent(v) {
   const e = EVBYID[S.ev];
-  const fav = favOf(e);
+  const fav = favOf(e), es2 = e.rows.find(r => r.seedES === 2);
+  const tf = toSec(pbOf(e, fav)), t2 = es2 && toSec(pbOf(e, es2));
+  const gap = fav.seedES === 1 && e.id !== "333mbf" && tf != null && t2 != null ? t2 - tf : null;
   const c = e.champ2025, top3es = e.rows.filter(r => r.seedES && r.seedES <= 3).sort((a, b) => a.seedES - b.seedES);
   v.innerHTML = `
     <div class="chips" role="toolbar" aria-label="Eventos">${DATA.events.map(x => `<button class="chip" style="--evc:${EVC[x.id]}" data-ev="${x.id}" aria-pressed="${x.id === e.id}"><i></i>${esc(x.name)}</button>`).join("")}</div>
     <div class="evhead" style="--evc:${EVC[e.id]}">
       <div class="evtitle"><div class="eyebrow">Psych sheet · ordenado por ${ES[e.metric[0]].toLowerCase()}</div><h1>${esc(e.name)}</h1>
         <div class="sub" style="color:var(--muted);font-size:13px">${e.rows.length} con marca previa${e.newcomers.length ? ` · ${e.newcomers.length} debutantes` : ""}</div></div>
-      <div class="box"><div class="eyebrow">Favorito</div><div class="big">${esc(name(fav.id))}</div><div class="sub"><span class="t" style="color:var(--accent);font-size:16px">${esc(pbOf(e, fav))}</span> · ${esc(PERS[fav.id].country)} · ${fav.seed}º gral.</div></div>
+      <div class="box"><div class="eyebrow">Favorito</div><div class="big">${esc(name(fav.id))}</div><div class="sub"><span class="t" style="color:var(--accent);font-size:16px">${esc(pbOf(e, fav))}</span> · ${esc(PERS[fav.id].country)} · ${fav.seed}º gral.</div>${gap != null ? `<div class="sub">${gap > 0 ? fmtDiff(gap) + " de ventaja sobre el 2º español" : "Empatado con el 2º español"}</div>` : ""}</div>
       <div class="box"><div class="eyebrow">Mejores españoles</div>${top3es.map(r => `<div class="sub" style="color:var(--fg)"><b style="color:var(--red)">${r.seedES}.</b> ${esc(name(r.id))} <span class="t" style="color:var(--muted)">${esc(pbOf(e, r))}</span> <span style="color:var(--dim)">(${r.seed}º gral.)</span></div>`).join("") || "—"}</div>
       <div class="box"><div class="eyebrow">Campeón de España 2025</div><div class="big">${esc(c.esName || "—")}</div>
         <div class="sub">${c.es ? `<span class="pill ${c.defends ? "ok" : "no"}">${c.defends ? "Defiende título" : "No compite"}</span>` : ""} ${c.abs.length ? "Ganador absoluto: " + c.abs.map(a => esc(a.name) + " " + cc(a.iso)).join(", ") : ""}</div></div>
     </div>
     <div class="controls">
-      <div class="toggle" role="group" aria-label="Nacionalidad">${[["all", "Todos"], ["es", "Solo españoles"], ["fx", "Extranjeros"]].map(([k, t]) => `<button data-v="${k}" data-nat aria-pressed="${S.nat === k}">${t}</button>`).join("")}</div>
+      <div class="toggle" role="group" aria-label="Nacionalidad">${[["all", "Todos"], ["es", "Solo españoles"], ["fx", "Extranjeros"], ["pin", `★ Fijados (${PINS.size})`]].map(([k, t]) => `<button data-v="${k}" data-nat aria-pressed="${S.nat === k}">${t}</button>`).join("")}</div>
       <div class="toggle" role="group" aria-label="Cuántos">${[[10, "Top 10"], [20, "Top 20"], [50, "Top 50"], [9999, "Todos"]].map(([k, t]) => `<button data-lim="${k}" aria-pressed="${S.lim == k}">${t}</button>`).join("")}</div>
+      <button class="fchip" id="cmpBtn" aria-pressed="${S.cmpMode}" title="Compara de 2 a 4 competidores lado a lado">Cara a cara</button>
       <input class="field" id="evq" type="search" placeholder="Filtrar por nombre…" value="${esc(S.evq)}" style="width:220px">
       <span class="count" id="evcount"></span>
     </div>
+    <div id="cmp"></div>
     <div class="tablewrap"><table id="evtable"></table></div>
+    <div class="note">Atajos: ← → cambia de evento (o de competidor con la ficha abierta) · F fija al competidor de la ficha · / busca · ☆ fija a un competidor para tenerlo a mano en «Fijados».</div>
     <div class="note">Δ año: mejor marca de los últimos 12 meses frente a los 12 anteriores (verde = ha mejorado). Evolución: mejor marca de cada año ${DATA.meta.years[0]}–${DATA.meta.years.at(-1)} (abajo = más rápido; pasa el dedo o el ratón para ver los tiempos). Títulos/podios: Campeonato de España en este evento (entre españoles).</div>`;
   v.querySelectorAll(".chip").forEach(b => b.addEventListener("click", () => { S.sort = null; go("evento-" + b.dataset.ev); }));
   v.querySelectorAll("[data-nat]").forEach(b => b.addEventListener("click", () => { S.nat = b.dataset.v; store.set("nat", S.nat); viewEvent(v); avFix(); }));
   v.querySelectorAll("[data-lim]").forEach(b => b.addEventListener("click", () => { S.lim = +b.dataset.lim; store.set("lim", S.lim); viewEvent(v); avFix(); }));
   $("#evq").addEventListener("input", ev => { S.evq = ev.target.value; drawEvTable(e); avFix(); });
-  drawEvTable(e);
+  $("#cmpBtn").addEventListener("click", () => { S.cmpMode = !S.cmpMode; $("#cmpBtn").setAttribute("aria-pressed", S.cmpMode); drawEvTable(e); drawCmp(e); avFix(); });
+  drawEvTable(e); drawCmp(e);
+}
+function drawCmp(e) {
+  const box = $("#cmp"); if (!box) return;
+  if (!S.cmpMode) { box.innerHTML = ""; return; }
+  const rs = S.cmp.map(id => ROW[id]?.[e.id]).filter(Boolean);
+  if (rs.length < 2) { box.innerHTML = `<div class="box cmp"><div class="eyebrow">Cara a cara · ${esc(e.name)}</div><div class="sub">Toca de 2 a 4 competidores en la tabla para compararlos.${rs.length ? ` Elegido: <b style="color:var(--fg)">${esc(name(rs[0].id))}</b>.` : ""}</div></div>`; return; }
+  const time = k => ({ v: r => toSec(r[k]), s: r => `<span class="t">${esc(r[k] || "—")}</span>` });
+  const M = [
+    { t: "Puesto general", v: r => r.seed, s: r => r.seed + "º" },
+    { t: "Puesto entre españoles", v: r => r.seedES ?? null, s: r => r.seedES ? r.seedES + "º" : "—" },
+    { t: "PB single", ...time("pbS") }, { t: "PB media", ...time("pbA") },
+    { t: "Mejor marca, 12 meses", ...time("b12") }, { t: "Media de los 12 meses", ...time("m12") },
+    { t: "Δ año", v: r => r.iy, s: r => delta(r.iy), hi: 1 },
+    { t: "Ranking mundial", v: r => e.metric === "single" ? r.wrS : r.wrA, s: r => (e.metric === "single" ? r.wrS : r.wrA) ?? "—" },
+    { t: "Títulos de España", v: r => r.tit || 0, s: r => r.tit || 0, hi: 1 },
+    { t: "Podios Cto. de España", v: r => r.pod || 0, s: r => r.pod || 0, hi: 1 },
+    { t: "Mejor puesto Cto. de España", v: r => r.bp || null, s: r => r.bp ? r.bp + "º" : "—" },
+  ];
+  const a = toSec(pbOf(e, rs[0])), b = toSec(pbOf(e, rs[1]));
+  const diff = rs.length === 2 && e.id !== "333mbf" && a != null && b != null && a !== b
+    ? `${esc(name((a < b ? rs[0] : rs[1]).id))} es ${fmtDiff(Math.abs(a - b))} más rápido en PB de ${ES[e.metric[0]].toLowerCase()}.` : "";
+  box.innerHTML = `<div class="box cmp"><div class="cmphead"><div class="eyebrow">Cara a cara · ${esc(e.name)}</div><span class="sub" style="margin:0">${diff}</span>
+      <button class="fchip" id="cmpClear" style="margin-left:auto">Vaciar</button></div>
+    <div style="overflow-x:auto"><table><thead><tr><th></th>${rs.map(r => `<th data-id="${r.id}">${av(PERS[r.id])}${esc(name(r.id))} ${cc(PERS[r.id].iso)}</th>`).join("")}</tr></thead><tbody>
+    ${M.map(m => { const vs = rs.map(m.v), ok = vs.filter(x => x != null), best = ok.length ? (m.hi ? Math.max(...ok) : Math.min(...ok)) : null;
+      const mark = ok.length > 1 && ok.some(x => x !== best);
+      return `<tr><td class="l">${m.t}</td>${rs.map((r, i) => `<td class="${mark && vs[i] === best ? "best" : ""}">${m.s(r)}</td>`).join("")}</tr>`; }).join("")}
+    </tbody></table></div><div class="note">En verde, el mejor dato de cada fila. Toca un nombre para abrir su ficha.</div></div>`;
+  $("#cmpClear").addEventListener("click", () => { S.cmp = []; drawEvTable(e); drawCmp(e); avFix(); });
+  box.querySelectorAll("th[data-id]").forEach(th => th.addEventListener("click", () => openProfile(th.dataset.id)));
 }
 function drawEvTable(e) {
   let rows = e.rows.slice();
-  if (S.nat === "es") rows = rows.filter(r => r.seedES); else if (S.nat === "fx") rows = rows.filter(r => !r.seedES);
+  if (S.nat === "es") rows = rows.filter(r => r.seedES); else if (S.nat === "fx") rows = rows.filter(r => !r.seedES); else if (S.nat === "pin") rows = rows.filter(r => PINS.has(r.id));
   rows = rows.slice(0, S.lim);
   if (S.evq) { const q = norm(S.evq); rows = rows.filter(r => PERS[r.id]._q.includes(q)); }
   if (S.sort) {
@@ -416,20 +553,25 @@ function drawEvTable(e) {
     <tbody>${rows.map(r => evRow(e, r, key)).join("")}
     ${S.lim > 50 && S.nat !== "fx" && e.newcomers.length && !S.evq ? `<tr class="newrow"><td colspan="${COLS.length}">+ ${e.newcomers.length} debutante(s) sin WCA ID inscritos en este evento</td></tr>` : ""}</tbody>`;
   $("#evcount").textContent = `${rows.length} competidores`;
+  S.navList = rows.map(r => r.id);
   t.querySelectorAll("th[data-k]").forEach(th => th.addEventListener("click", () => {
     const k = th.dataset.k; if (COLS.find(c => c.k === k).ns) return;
     S.sort = S.sort?.k === k ? (S.sort.dir > 0 ? { k, dir: -1 } : null) : { k, dir: (k === "iy" || k === "tit" || k === "pod") ? -1 : 1 };
     drawEvTable(e); avFix(); }));
-  t.querySelectorAll("tbody tr[data-id]").forEach(tr => tr.addEventListener("click", () => openProfile(tr.dataset.id)));
+  t.querySelectorAll("tbody tr[data-id]").forEach(tr => tr.addEventListener("click", () => {
+    const id = tr.dataset.id; if (!S.cmpMode) return openProfile(id);
+    S.cmp = S.cmp.filter(x => ROW[x]?.[e.id]);
+    if (S.cmp.includes(id)) S.cmp = S.cmp.filter(x => x !== id); else if (S.cmp.length < 4) S.cmp.push(id); else return;
+    tr.classList.toggle("sel", S.cmp.includes(id)); drawCmp(e); avFix(); }));
 }
 function evRow(e, r, key) {
   const p = PERS[r.id], wr = e.metric === "single" ? r.wrS : r.wrA;
   const badges = [r.nrv.length ? `<span class="pill nr">NR ${r.nrv.join("+")}</span>` : "", r.tit ? `<span class="pill ch">${r.tit}× campeón</span>` : "",
                   e.champ2025.es === r.id ? `<span class="pill ok">Vigente</span>` : ""].join("");
   const td = (k, extra = "") => `<td class="${k === key ? "key" : ""} ${extra}"><span class="t">${esc(r[k] || "—")}</span></td>`;
-  return `<tr data-id="${r.id}" class="${r.seed <= 3 && S.nat === "all" ? "p" + r.seed : ""}">
+  return `<tr data-id="${r.id}" class="${r.seed <= 3 && S.nat === "all" ? "p" + r.seed : ""}${S.cmpMode && S.cmp.includes(r.id) ? " sel" : ""}">
     <td class="seed">${r.seed}</td><td class="seedes">${r.seedES || ""}</td>
-    <td class="l"><div class="who">${av(p)}<div><div class="nm">${esc(p.name)}</div><div class="meta">${cc(p.iso)}${badges}</div></div></div></td>
+    <td class="l"><div class="who">${starBtn(r.id)}${av(p)}<div><div class="nm">${esc(p.name)}${NOTES[r.id] ? ` <span class="mark n" title="Tiene notas">✎</span>` : ""}</div><div class="meta">${cc(p.iso)}${badges}</div></div></div></td>
     ${td("pbS")}<td class="rk">${r.nrS ?? "—"}</td>${td("pbA")}<td class="rk">${r.nrA ?? "—"}</td><td class="rk">${wr ?? "—"}</td>
     <td><span class="t">${esc(r.b12 || "—")}</span></td><td><span class="t" style="color:var(--muted)">${esc(r.m12 || (e.id === "333mbf" ? r.n12 + " int." : "—"))}</span></td>
     <td>${delta(r.iy)}</td><td>${spark(r.years)}</td>
@@ -439,13 +581,13 @@ function evRow(e, r, key) {
 }
 
 /* ---------------- people ---------------- */
-const FLAGS = [["champ", "Campeones de España"], ["nr", "Récord nacional vigente"], ["intl", "Podio Europeo / Mundial"], ["firstES", "Primer Cto. de España"], ["new", "Debutantes"], ["top20", "Top 20 en algún evento"]];
+const FLAGS = [["champ", "Campeones de España"], ["nr", "Récord nacional vigente"], ["intl", "Podio Europeo / Mundial"], ["firstES", "Primer Cto. de España"], ["new", "Debutantes"], ["top20", "Top 20 en algún evento"], ["pin", "★ Fijados"], ["note", "✎ Con notas"]];
 function peopleList() {
   const q = norm(S.q);
   let L = DATA.persons.filter(p => (!q || p._q.includes(q)) &&
     (S.pNat === "all" || (S.pNat === "es" ? p.iso === "ES" : p.iso !== "ES")) && (!S.pIso || p.iso === S.pIso) && (!S.pEv || p.events.includes(S.pEv)));
   for (const f of S.pFlags) L = L.filter({ champ: p => p._titles > 0, nr: p => p.nrv?.length, intl: p => p._intl > 0,
-    firstES: p => !p.newcomer && !p.es?.years.length, new: p => p.newcomer, top20: p => p._bestSeed <= 20 }[f]);
+    firstES: p => !p.newcomer && !p.es?.years.length, new: p => p.newcomer, top20: p => p._bestSeed <= 20, pin: p => PINS.has(p.id), note: p => NOTES[p.id] }[f]);
   const by = { seed: p => S.pEv ? (p.seeds?.[S.pEv]?.[0] ?? 1e6) : p._bestSeed, name: p => norm(p.name), medals: p => -p._medals, comps: p => -(p.comps || 0), titles: p => -p._titles - p._medals / 1e5 }[S.pSort];
   return L.sort((a, b) => { const x = by(a), y = by(b); return x > y ? 1 : x < y ? -1 : 0; });
 }
@@ -465,7 +607,7 @@ function viewPeople(v) {
     <div class="pgrid" id="pgrid" style="margin-top:14px"></div>`;
   $("#pSort").value = S.pSort;
   const draw = () => {
-    const L = peopleList();
+    const L = peopleList(); S.navList = L.map(p => p.id);
     $("#pcount").textContent = `${L.length} de ${DATA.persons.length}`;
     $("#pgrid").innerHTML = L.length ? L.map(pCard).join("") : `<div class="empty">Nadie cumple estos filtros. Prueba a quitar alguno.</div>`;
     $("#pgrid").querySelectorAll(".pcard").forEach(c => c.addEventListener("click", () => openProfile(c.dataset.id)));
@@ -483,7 +625,7 @@ function viewPeople(v) {
 function pCard(p) {
   const seedTxt = S.pEv && p.seeds?.[S.pEv] ? `#${p.seeds[S.pEv][0]} en ${EVBYID[S.pEv].name}` : (p._bestSeed < 99999 ? `Mejor seed #${p._bestSeed}` : "");
   return `<button class="pcard" data-id="${p.id}">${av(p)}<div class="info">
-    <div class="nm">${esc(p.name)}</div>
+    <div class="nm">${esc(p.name)}${marks(p.id)}</div>
     <div class="line">${cc(p.iso)} ${esc(p.country)} ${p.newcomer ? `<span class="pill new">Debutante</span>` : `· ${esc(p.id)}`}</div>
     ${!p.medals ? `<div class="line">${p.events.length} eventos</div>` : `<div class="stats"><span><b class="m1">${p.medals[0]}</b> oros</span><span><b>${p._medals}</b> medallas</span><span><b>${p.comps}</b> comps</span>${p._titles ? `<span><b style="color:var(--accent)">${p._titles}</b> títulos ESP</span>` : ""}</div>
     <div class="line">${seedTxt}${p.nrv?.length ? ` <span class="pill nr">NR</span>` : ""}${p._intl ? ` <span class="pill intl">Podio internacional</span>` : ""}</div>`}
@@ -493,13 +635,16 @@ function pCard(p) {
 /* ---------------- profile drawer ---------------- */
 function openProfile(id, push = true) {
   const p = PERS[id]; if (!p) return;
-  const d = $("#drawer");
+  S.cur = id;
+  const d = $("#drawer"), nav = S.navList || [], ni = nav.indexOf(id), F = p.medals ? facts(p) : [];
+  const chev = dir => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="${dir < 0 ? "M15 5l-7 7 7 7" : "M9 5l7 7-7 7"}"/></svg>`;
   const podsHtml = (arr) => arr?.length ? `<div class="podlist">${arr.map(x => `<span class="pod ${["", "g", "s", "b"][x[2]]}"><i></i>${esc(x[0])} ${x[1]}</span>`).join("")}</div>` : `<span class="zero">Sin podios</span>`;
   const evs = p.events.filter(e => EVBYID[e]).map(eid => ({ e: EVBYID[eid], r: ROW[id]?.[eid] }));
   d.innerHTML = `
     <div class="phead">${av(p)}<div style="min-width:0"><div class="eyebrow">${p.newcomer ? "Debutante" : esc(p.id)}</div><h1>${esc(p.name)}</h1>
       <div class="line">${cc(p.iso)} ${esc(p.country)} ${p.debut ? `· compite desde ${p.debut}` : ""} ${p.url ? `· <a href="${esc(p.url)}" target="_blank" rel="noopener">Perfil WCA ↗</a>` : ""}</div></div>
-      <button class="iconbtn close" id="closeP" aria-label="Cerrar ficha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+      <div class="pbtns">${ni >= 0 && nav.length > 1 ? `<span class="count" style="margin:0">${ni + 1} / ${nav.length}</span><button class="iconbtn" id="prevP" aria-label="Competidor anterior" title="Anterior (←)">${chev(-1)}</button><button class="iconbtn" id="nextP" aria-label="Competidor siguiente" title="Siguiente (→)">${chev(1)}</button>` : ""}
+        ${starBtn(id)}<button class="iconbtn" id="closeP" aria-label="Cerrar ficha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div>
     ${!p.medals ? `<p class="note" style="font-size:15px">${p.newcomer ? "Primera competición oficial: todavía no tiene resultados WCA" : "Sin datos WCA descargados"}. Inscrito en ${p.events.map(e => EVBYID[e]?.name || e).join(", ")}.</p>` : `
     <div class="tiles">
       <div class="tile"><b>${p.comps}</b><span>competiciones</span></div>
@@ -508,7 +653,7 @@ function openProfile(id, push = true) {
       <div class="tile"><b>${p.records[0]}<small style="font-size:16px;color:var(--muted)"> NR</small> ${p.records[1]}<small style="font-size:16px;color:var(--muted)"> ER</small> ${p.records[2]}<small style="font-size:16px;color:var(--muted)"> WR</small></b><span>récords batidos</span></div>
       <div class="tile"><b style="color:var(--accent)">${p._titles}</b><span>títulos de Campeón de España</span></div>
     </div>
-    ${p.nrv?.length ? `<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"><span class="eyebrow">Récord nacional vigente:</span>${p.nrv.map(x => `<span class="pill nr">${esc(x)}</span>`).join("")}</div>` : ""}
+    ${F.length ? `<div class="box"><div class="eyebrow">Datos clave para el directo</div><ul class="facts">${F.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}
     <div class="sect"><h2>En este campeonato</h2>
       <div class="tablewrap ptable"><table><thead><tr><th class="l">Evento</th><th>Seed</th><th>ESP</th><th>Single</th><th>Media</th><th>Mejor 12 m</th><th>Δ año</th><th>Evolución</th><th>Títulos</th><th>Mejor puesto</th></tr></thead><tbody>
       ${evs.map(({ e, r }) => r ? `<tr data-ev="${e.id}"><td class="l"><b>${esc(e.name)}</b></td><td class="seed" style="font-size:20px">${r.seed}</td><td class="seedes">${r.seedES || ""}</td>
@@ -520,11 +665,22 @@ function openProfile(id, push = true) {
       <div class="box"><div class="eyebrow">Campeonato de España · ${p.es.years.length} ediciones</div>${podsHtml(p.es.pod)}<div class="yrs">${p.es.years.map(y => `<span>${y}</span>`).join("")}</div></div>
       <div class="box"><div class="eyebrow">Campeonato de Europa · ${p.eu.years.length} ediciones</div>${podsHtml(p.eu.pod)}<div class="yrs">${p.eu.years.map(y => `<span>${y}</span>`).join("")}</div></div>
       <div class="box"><div class="eyebrow">Mundial · ${p.wc.years.length} ediciones</div>${podsHtml(p.wc.pod)}<div class="yrs">${p.wc.years.map(y => `<span>${y}</span>`).join("")}</div></div>
-    </div>`}`;
+    </div>`}
+    <div class="sect"><h2>Notas del caster</h2>
+      <textarea class="notes" id="pnote" placeholder="Pronunciación del nombre, anécdotas, qué contar en directo…" aria-label="Notas del caster">${esc(NOTES[id] || "")}</textarea>
+      <div class="note">Se guardan solas, solo en este dispositivo. Quien tiene notas aparece marcado con ✎.</div></div>`;
+  $("#pnote").addEventListener("input", ev => { if (ev.target.value.trim()) NOTES[id] = ev.target.value; else delete NOTES[id]; store.set("notes", NOTES); });
+  $("#prevP")?.addEventListener("click", () => stepProfile(-1));
+  $("#nextP")?.addEventListener("click", () => stepProfile(1));
   d.hidden = false; $("#scrim").hidden = false; d.scrollTop = 0; avFix();
   $("#closeP").addEventListener("click", () => closeProfile());
   d.querySelectorAll("tr[data-ev]").forEach(tr => tr.addEventListener("click", () => { closeProfile(false); go("evento-" + tr.dataset.ev); }));
   if (push && location.hash !== "#c-" + id) history.pushState(null, "", "#c-" + id);
+}
+function stepProfile(dir) {
+  const nav = S.navList || [], i = nav.indexOf(S.cur); if (i < 0 || nav.length < 2) return;
+  const id = nav[(i + dir + nav.length) % nav.length]; openProfile(id, false);
+  if (location.hash.startsWith("#c-")) history.replaceState(null, "", "#c-" + id); else history.pushState(null, "", "#c-" + id);
 }
 function closeProfile(back = true) {
   if ($("#drawer").hidden) return;
@@ -570,8 +726,16 @@ gq.addEventListener("keydown", e => {
   else if (e.key === "Escape") { gq.value = ""; sug.hidden = true; gq.blur(); }
 });
 document.addEventListener("keydown", e => {
-  if (e.key === "/" && document.activeElement.tagName !== "INPUT") { e.preventDefault(); gq.focus(); }
-  if (e.key === "Escape" && !$("#drawer").hidden) closeProfile();
+  const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName), open = !$("#drawer").hidden;
+  if (e.key === "Escape" && open) return closeProfile();
+  if (typing || e.ctrlKey || e.metaKey || e.altKey) return;
+  if (e.key === "/") { e.preventDefault(); gq.focus(); }
+  else if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+    const dir = e.key === "ArrowRight" ? 1 : -1;
+    if (open) { e.preventDefault(); stepProfile(dir); }
+    else if (location.hash.startsWith("#evento")) { e.preventDefault(); const L = DATA.events, i = L.findIndex(x => x.id === S.ev); S.sort = null; go("evento-" + L[(i + dir + L.length) % L.length].id); }
+  }
+  else if ((e.key === "f" || e.key === "F") && open && S.cur) togglePin(S.cur);
 });
 
 /* ---------------- theme, brand, wake lock ---------------- */
@@ -581,6 +745,9 @@ $("#themeBtn").addEventListener("click", () => {
   const cur = root.dataset.theme || (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
   root.dataset.theme = cur === "dark" ? "light" : "dark"; store.set("theme", root.dataset.theme);
 });
+if (store.get("big", false)) root.dataset.big = "1";
+$("#bigBtn").setAttribute("aria-pressed", !!root.dataset.big);
+$("#bigBtn").addEventListener("click", () => { const on = !root.dataset.big; if (on) root.dataset.big = "1"; else delete root.dataset.big; store.set("big", on); $("#bigBtn").setAttribute("aria-pressed", on); });
 $("#brandSub").textContent = `${DATA.meta.kpis.competitors} competidores · ${DATA.meta.kpis.events} eventos`;
 $(".logo").innerHTML = ["#FFC81F", "#E8333A", "#3D7BFF", "#21B36B", "#F4F6FA", "#FF8A2B", "#E8333A", "#3D7BFF", "#FFC81F"].map(c => `<i style="background:${c}"></i>`).join("");
 async function wake() { try { await navigator.wakeLock?.request("screen"); } catch (e) {} }
