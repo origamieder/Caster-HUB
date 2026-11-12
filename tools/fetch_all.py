@@ -18,7 +18,7 @@ def get(url, path):
     print("FAIL", url)
 
 wcif = json.load(open(os.path.join(D, "wcif.json"), encoding="utf-8"))
-ids = sorted(p["wcaId"] for p in wcif["persons"] if p.get("wcaId") and p.get("registration") and p["registration"]["status"] == "accepted")
+ids = sorted(p["wcaId"] for p in wcif["persons"] if p.get("wcaId") and p.get("registration") and p["registration"]["status"] == "accepted" and p["registration"].get("isCompeting", True))
 print(len(ids), "persons")
 
 def fetch_person(w):

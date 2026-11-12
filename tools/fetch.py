@@ -20,7 +20,7 @@ def get(url, path):
 
 wcif = json.load(open(os.path.join(D, "wcif.json"), encoding="utf-8"))
 events = [e["id"] for e in wcif["events"]]
-persons = [p for p in wcif["persons"] if p.get("registration") and p["registration"]["status"] == "accepted" and p.get("wcaId")]
+persons = [p for p in wcif["persons"] if p.get("registration") and p["registration"]["status"] == "accepted" and p["registration"].get("isCompeting", True) and p.get("wcaId")]
 
 def key(p, ev):
     pbs = {(b["eventId"], b["type"]): b["best"] for b in p["personalBests"]}

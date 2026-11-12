@@ -52,11 +52,11 @@ def _key(p, ev):
 _wc = load(os.path.join(D, "wcif.json"))
 full_rank = {}
 for _ev in [e["id"] for e in _wc["events"]]:
-    _c = sorted((k, p["wcaId"]) for p in _wc["persons"] if p.get("wcaId") and p.get("registration") and p["registration"]["status"] == "accepted"
+    _c = sorted((k, p["wcaId"]) for p in _wc["persons"] if p.get("wcaId") and p.get("registration") and p["registration"]["status"] == "accepted" and p["registration"].get("isCompeting", True)
                 and _ev in p["registration"]["eventIds"] for k in [_key(p, _ev)] if k is not None)
     full_rank[_ev] = {w: i for i, (_, w) in enumerate(_c, 1)}
 reg = {p["wcaId"]: p for p in wcif["persons"] if p.get("wcaId")}
-accepted = [p for p in wcif["persons"] if p.get("registration") and p["registration"]["status"] == "accepted"]
+accepted = [p for p in wcif["persons"] if p.get("registration") and p["registration"]["status"] == "accepted" and p["registration"].get("isCompeting", True)]
 
 # ---------- championships ----------
 champ_info, champ_res = {}, {}
