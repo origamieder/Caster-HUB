@@ -1,0 +1,992 @@
+<title>Cto. España 2026 · Competidores</title>
+<meta name="theme-color" content="#0D1330">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* App para competidores del Campeonato de España 2026. Mismo sistema visual que Caster Hub (paleta del logo),
+   pensada para el móvil en vertical: barra de secciones abajo, una vista con scroll y hojas modales. */
+:root {
+  --bg: #0D1330; --panel: #141C40; --panel2: #1B2550; --line: #2B3767; --fg: #EEF1F8; --muted: #9CA6C6; --dim: #66719C;
+  --accent: #F39200; --accent-ink: #1E1000; --red: #E8424E; --green: #22B866; --blue: #8EA2EE;
+  --b-green: #12A04A; --b-orange: #F39200; --b-red: #D3202F; --b-navy: #5A72D0;
+  --up-bg: rgba(34,184,102,.16); --down-bg: rgba(232,66,78,.16); --shadow: 0 12px 40px rgba(0,0,0,.5);
+  --card: rgba(20, 28, 68, .70); --card-line: rgba(80, 98, 170, .32); --logo-dark: block; --logo-light: none;
+  --bg-grad: radial-gradient(60% 40% at 92% 2%, rgba(243,146,0,.40), transparent 100%),
+             radial-gradient(55% 45% at 0% 45%, rgba(0,139,59,.36), transparent 100%),
+             radial-gradient(60% 40% at 55% 104%, rgba(179,13,27,.36), transparent 100%),
+             linear-gradient(160deg, #1E2E80 0%, #142062 45%, #0F1848 100%);
+  --nav-bg: rgba(16, 23, 58, .94);
+  --f-display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", "Segoe UI", Roboto, system-ui, sans-serif;
+  --f-time: "JetBrains Mono", "Cascadia Mono", Consolas, "Roboto Mono", monospace;
+  --barh: 64px;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) {
+  --bg: #F3F4F9; --panel: #FFFFFF; --panel2: #ECEEF6; --line: #D6DAE8; --fg: #1A2350; --muted: #535D84; --dim: #8D94B2;
+  --accent: #B96A00; --accent-ink: #FFFFFF; --red: #B30D1B; --green: #00803A; --blue: #25346C;
+  --b-green: #008B3B; --b-orange: #F39200; --b-red: #B30D1B; --b-navy: #25346C;
+  --up-bg: rgba(0,139,59,.12); --down-bg: rgba(179,13,27,.10); --shadow: 0 12px 40px rgba(37,52,108,.18);
+  --card: rgba(255,255,255,.82); --card-line: rgba(37,52,108,.14); --logo-dark: none; --logo-light: block;
+  --bg-grad: radial-gradient(60% 40% at 92% 2%, rgba(243,146,0,.26), transparent 100%),
+             radial-gradient(55% 45% at 0% 45%, rgba(0,139,59,.18), transparent 100%),
+             radial-gradient(60% 40% at 55% 104%, rgba(179,13,27,.16), transparent 100%),
+             linear-gradient(160deg, #FFFFFF 0%, #F1F3FA 50%, #E9ECF6 100%);
+  --nav-bg: rgba(255,255,255,.95); color-scheme: light; } }
+:root[data-theme="light"] {
+  --bg: #F3F4F9; --panel: #FFFFFF; --panel2: #ECEEF6; --line: #D6DAE8; --fg: #1A2350; --muted: #535D84; --dim: #8D94B2;
+  --accent: #B96A00; --accent-ink: #FFFFFF; --red: #B30D1B; --green: #00803A; --blue: #25346C;
+  --b-green: #008B3B; --b-orange: #F39200; --b-red: #B30D1B; --b-navy: #25346C;
+  --up-bg: rgba(0,139,59,.12); --down-bg: rgba(179,13,27,.10); --shadow: 0 12px 40px rgba(37,52,108,.18);
+  --card: rgba(255,255,255,.82); --card-line: rgba(37,52,108,.14); --logo-dark: none; --logo-light: block;
+  --bg-grad: radial-gradient(60% 40% at 92% 2%, rgba(243,146,0,.26), transparent 100%),
+             radial-gradient(55% 45% at 0% 45%, rgba(0,139,59,.18), transparent 100%),
+             radial-gradient(60% 40% at 55% 104%, rgba(179,13,27,.16), transparent 100%),
+             linear-gradient(160deg, #FFFFFF 0%, #F1F3FA 50%, #E9ECF6 100%);
+  --nav-bg: rgba(255,255,255,.95); color-scheme: light; }
+
+html, body { height: 100%; }
+body { margin: 0; background-color: var(--bg); background-image: var(--bg-grad); background-attachment: fixed; color: var(--fg);
+  font-family: var(--f-body); font-size: 15px; line-height: 1.4; -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
+* { box-sizing: border-box; }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { color: var(--blue); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.t { font-family: var(--f-time); font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+h1, h2, h3 { font-family: var(--f-display); text-transform: uppercase; letter-spacing: .01em; margin: 0; text-wrap: balance; }
+h1 { font-size: 34px; line-height: 1; }
+h2 { font-size: 22px; margin: 22px 0 10px; }
+.eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.muted { color: var(--muted); } .small { font-size: 13px; }
+.lg-dark { display: var(--logo-dark); } .lg-light { display: var(--logo-light); }
+
+/* shell */
+.top { position: sticky; top: 0; z-index: 5; background: var(--nav-bg); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-bottom: 1px solid var(--card-line); }
+.brandbar { height: 4px; display: grid; grid-template-columns: repeat(4, 1fr); }
+.brandbar i:nth-child(1) { background: var(--b-green); } .brandbar i:nth-child(2) { background: var(--b-navy); }
+.brandbar i:nth-child(3) { background: var(--b-red); } .brandbar i:nth-child(4) { background: var(--b-orange); }
+.topin { display: flex; align-items: center; gap: 10px; padding: 8px 16px; min-height: 56px; }
+.topin .ttl { flex: 1; min-width: 0; line-height: 1.1; }
+.topin .ttl b { display: block; font-family: var(--f-display); font-size: 22px; font-weight: 800; text-transform: uppercase; letter-spacing: .02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.topin .ttl span { display: block; font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iconbtn { width: 42px; height: 42px; border-radius: 21px; border: 1px solid var(--line); background: var(--panel2); display: grid; place-items: center; flex: none; }
+.iconbtn svg { width: 20px; height: 20px; }
+.iconbtn.spin svg { animation: spin 1s linear infinite; } @keyframes spin { to { transform: rotate(360deg); } }
+.view { padding: 16px 16px calc(var(--barh) + 28px + env(safe-area-inset-bottom, 0px)); max-width: 980px; margin: 0 auto; }
+.nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: flex; justify-content: space-around; background: var(--nav-bg);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-top: 1px solid var(--card-line); padding: 4px 6px calc(4px + env(safe-area-inset-bottom, 0px)); }
+.nav button { flex: 1; max-width: 140px; border: 0; background: none; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 2px;
+  color: var(--muted); font-size: 11px; font-weight: 600; border-radius: 12px; min-height: 54px; }
+.nav button svg { width: 24px; height: 24px; }
+.nav button[aria-current="page"] { color: var(--accent); background: var(--panel2); }
+
+/* building blocks */
+.card { background: var(--card); border: 1px solid var(--card-line); border-radius: 16px; padding: 14px 16px; }
+.card + .card { margin-top: 10px; }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.row { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.grow { flex: 1; min-width: 0; }
+.ell { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.btn { height: 44px; padding: 0 18px; border-radius: 22px; border: 1px solid var(--line); background: var(--panel2); font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.btn.pri { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.sm { height: 34px; padding: 0 12px; font-size: 13px; }
+.pill { display: inline-flex; align-items: center; gap: 4px; height: 22px; padding: 0 8px; border-radius: 11px; font-size: 11px; font-weight: 700; letter-spacing: .03em; white-space: nowrap; background: var(--panel2); color: var(--muted); border: 1px solid var(--line); }
+.pill.ok { background: var(--up-bg); color: var(--green); border-color: transparent; }
+.pill.no { background: var(--down-bg); color: var(--red); border-color: transparent; }
+.pill.acc { background: var(--accent); color: var(--accent-ink); border: 0; }
+.cc { font-family: var(--f-time); font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 5px; background: var(--panel2); color: var(--muted); border: 1px solid var(--line); }
+.cc.es { background: #C8102E; color: #FFD43B; border-color: #C8102E; }
+.av { width: 40px; height: 40px; border-radius: 50%; flex: none; background: var(--panel2); border: 1px solid var(--line); display: grid; place-items: center; overflow: hidden; position: relative;
+  font-family: var(--f-display); font-weight: 700; font-size: 16px; color: var(--muted); }
+.av img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.chips { display: flex; gap: 8px; overflow-x: auto; padding: 2px 0 8px; scrollbar-width: none; margin: 0 -16px; padding-inline: 16px; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { flex: none; height: 38px; padding: 0 14px; border-radius: 19px; border: 1px solid var(--line); background: var(--panel); font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; }
+.chip i { width: 10px; height: 10px; border-radius: 3px; background: var(--evc); }
+.chip[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.chip .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+.toggle { display: inline-flex; background: var(--panel2); border: 1px solid var(--line); border-radius: 12px; padding: 3px; gap: 2px; }
+.toggle button { border: 0; background: none; height: 34px; padding: 0 12px; border-radius: 9px; font-weight: 600; font-size: 13px; color: var(--muted); white-space: nowrap; }
+.toggle button[aria-pressed="true"] { background: var(--panel); color: var(--fg); box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.field { height: 44px; border-radius: 22px; border: 1px solid var(--line); background: var(--panel); padding: 0 16px; width: 100%; font-size: 16px; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0; }
+.empty { padding: 28px 16px; text-align: center; color: var(--muted); }
+.note { color: var(--muted); font-size: 12px; margin-top: 8px; }
+
+/* home */
+.hero { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; margin-bottom: 14px; }
+.hero img { height: 84px; width: auto; max-width: 100%; }
+.me-card { display: flex; gap: 14px; align-items: center; }
+.me-card .av { width: 60px; height: 60px; font-size: 22px; }
+.next { border-left: 5px solid var(--accent); }
+.big-t { font-family: var(--f-display); font-size: 28px; font-weight: 800; line-height: 1.05; }
+.evtiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.evtile { text-align: left; background: var(--card); border: 1px solid var(--card-line); border-radius: 14px; padding: 10px 12px; position: relative; overflow: hidden; }
+.evtile::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 4px; background: var(--evc); }
+.evtile b { display: block; font-family: var(--f-display); font-size: 20px; text-transform: uppercase; }
+.evtile span { font-size: 12px; color: var(--muted); }
+.evtile.mine { border-color: var(--accent); }
+.links { display: grid; gap: 8px; }
+.links a { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--fg); }
+
+/* schedule */
+.act { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.act:last-child { border-bottom: 0; }
+.act .hr { font-family: var(--f-time); font-size: 14px; font-weight: 700; }
+.act .hr small { display: block; color: var(--dim); font-weight: 500; font-size: 12px; }
+.act .nm { font-weight: 700; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.act .room { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--muted); }
+.act .room i { width: 9px; height: 9px; border-radius: 50%; background: var(--rc, var(--dim)); }
+.act.now { background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 16%, transparent), transparent); margin: 0 -16px; padding-inline: 16px; }
+.act.past { opacity: .5; }
+.act.other { opacity: .62; }
+.asg { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.asg .pill { height: 24px; font-size: 12px; }
+.groups { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+/* event / psych sheet */
+.evhead { border-left: 6px solid var(--evc); padding-left: 12px; margin: 6px 0 12px; }
+.rounds { width: 100%; border-collapse: collapse; font-size: 13px; }
+.rounds th { text-align: left; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding: 6px 6px; border-bottom: 1px solid var(--line); }
+.rounds td { padding: 8px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.rounds tr:last-child td { border-bottom: 0; }
+.psych { list-style: none; margin: 0; padding: 0; }
+.psych li { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 9px 4px; border-bottom: 1px solid var(--line); }
+.psych li:last-child { border-bottom: 0; }
+.psych .pos { font-family: var(--f-display); font-size: 22px; font-weight: 800; text-align: center; color: var(--muted); }
+.psych li.me { background: color-mix(in srgb, var(--accent) 18%, transparent); border-radius: 10px; }
+.psych li.me .pos { color: var(--accent); }
+.psych .tm { text-align: right; }
+.psych .tm .t { font-size: 16px; font-weight: 700; display: block; }
+.psych .tm small { color: var(--muted); font-family: var(--f-time); font-size: 12px; }
+.psych .nm { font-weight: 700; }
+.psych .sub { font-size: 12px; color: var(--muted); display: flex; gap: 6px; align-items: center; }
+
+/* people */
+.plist { display: grid; gap: 8px; }
+.prow { display: flex; gap: 12px; align-items: center; text-align: left; width: 100%; background: var(--card); border: 1px solid var(--card-line); border-radius: 14px; padding: 10px 12px; }
+.prow .nm { font-weight: 700; }
+.prow .sub { font-size: 12px; color: var(--muted); display: flex; gap: 6px; align-items: center; }
+
+/* profile */
+.phead { display: flex; gap: 14px; align-items: center; margin-bottom: 12px; }
+.phead .av { width: 76px; height: 76px; font-size: 28px; border-width: 3px; }
+.phead h1 { font-size: 30px; }
+.pbtab { width: 100%; border-collapse: collapse; }
+.pbtab th { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding: 6px 4px; text-align: right; border-bottom: 1px solid var(--line); }
+.pbtab th:first-child, .pbtab td:first-child { text-align: left; }
+.pbtab td { padding: 9px 4px; border-bottom: 1px solid var(--line); text-align: right; vertical-align: top; }
+.pbtab tr:last-child td { border-bottom: 0; }
+.pbtab td .t { font-size: 15px; font-weight: 700; }
+.pbtab td small { display: block; color: var(--muted); font-size: 11px; }
+.pbtab tr[data-ev] { cursor: pointer; }
+.target { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 4px 14px; align-items: center; }
+.target + .target { border-top: 1px solid var(--line); margin-top: 10px; padding-top: 10px; }
+.target .ev { font-family: var(--f-display); font-size: 20px; font-weight: 800; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+.target .ev i { width: 10px; height: 10px; border-radius: 3px; background: var(--evc); }
+.target .k { text-align: right; }
+.target .k small { display: block; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.target .k .t { font-size: 19px; font-weight: 700; color: var(--accent); }
+.target .k .t.none { color: var(--dim); }
+.target .was { grid-column: 1 / -1; font-size: 12px; color: var(--green); }
+.sheets { display: flex; gap: 6px; flex-wrap: wrap; grid-column: 1 / -1; }
+.sheetbtn { height: 34px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); padding: 0 10px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+.sheetbtn .t { font-size: 13px; }
+.sheetbtn.done { border-color: var(--green); }
+.sheetbtn.pb { border-color: var(--accent); color: var(--accent); }
+
+/* ===== WCA-style scorecard: paper look in both themes ===== */
+.paper { background: #FFFFFF; color: #111; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,.35), 0 0 0 1px rgba(0,0,0,.08); padding: 14px 14px 12px;
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif; max-width: 520px; margin: 0 auto; }
+.paper .comp { text-align: center; font-weight: 700; font-size: 15px; }
+.paper .evr { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-top: 6px; }
+.paper .evr b { font-size: 21px; }
+.paper .evr span { font-size: 14px; }
+.paper .idbox { display: grid; grid-template-columns: 64px minmax(0, 1fr); border: 2px solid #111; margin-top: 8px; }
+.paper .idbox > div { padding: 4px 8px; }
+.paper .idbox > div:first-child { border-right: 2px solid #111; text-align: center; }
+.paper .idbox small { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: #555; }
+.paper .idbox b { font-size: 18px; }
+.paper .idbox .nm { font-size: 16px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.paper table { width: 100%; border-collapse: collapse; margin-top: 10px; table-layout: fixed; }
+.paper th { font-size: 11px; font-weight: 700; text-transform: uppercase; color: #333; padding: 4px; border: 1px solid #111; background: #F1F1F1; }
+.paper td { border: 1px solid #111; height: 52px; text-align: center; padding: 0 4px; }
+.paper td.n { font-weight: 700; font-size: 18px; width: 38px; }
+.paper td.res { font-family: var(--f-time); font-size: 24px; font-weight: 700; cursor: pointer; position: relative; }
+.paper td.res .pen { font-size: 13px; color: #B30D1B; margin-left: 6px; font-weight: 700; }
+.paper td.res .raw { display: block; font-size: 11px; color: #777; font-weight: 500; margin-top: -2px; }
+.paper td.res.empty::after { content: "Toca para anotar"; font-family: Arial, sans-serif; font-size: 12px; font-weight: 400; color: #B5B5B5; }
+.paper td.res.blocked { background: repeating-linear-gradient(-45deg, #F4F4F4 0 6px, #E8E8E8 6px 12px); cursor: not-allowed; }
+.paper td.res.blocked::after { content: "No pasa el corte"; font-family: Arial, sans-serif; font-size: 12px; color: #888; font-weight: 400; }
+.paper td.res.best { background: #EAF7EF; }
+.paper td.res.worst { color: #777; }
+.paper td.sig { width: 54px; cursor: pointer; font-size: 22px; color: #1B5FBF; font-family: "Segoe Script", "Bradley Hand", cursive; }
+.paper th.n { width: 38px; } .paper th.sig { width: 54px; }
+.paper tr.cut td { border: 0; height: auto; padding: 6px 0 5px; }
+.paper tr.cut div { border-top: 2px dashed #111; font-size: 12px; font-weight: 700; padding-top: 4px; text-align: center; }
+.paper tr.extra td { height: 46px; }
+.paper .foot { display: flex; justify-content: space-between; gap: 10px; font-size: 12px; margin-top: 8px; color: #333; flex-wrap: wrap; }
+.paper .cur td.res { outline: 3px solid #F39200; outline-offset: -3px; }
+.calc { margin-top: 12px; }
+.calc .res2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.calc .res2 > div { background: var(--panel2); border-radius: 12px; padding: 8px 12px; }
+.calc .res2 b { display: block; font-family: var(--f-time); font-size: 22px; }
+.calc .res2 small { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.calc ul { margin: 10px 0 0; padding-left: 18px; display: grid; gap: 4px; }
+.calc li::marker { color: var(--accent); }
+.calc .pbflag { color: var(--accent); font-weight: 800; }
+
+/* keypad sheet */
+.scrim { position: fixed; inset: 0; background: rgba(5,8,14,.55); z-index: 40; }
+.sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 41; background: var(--panel); border-radius: 20px 20px 0 0; box-shadow: var(--shadow);
+  padding: 14px 16px calc(14px + env(safe-area-inset-bottom, 0px)); max-width: 560px; margin: 0 auto; max-height: 92vh; overflow-y: auto; }
+@media (prefers-reduced-motion: no-preference) { .sheet { animation: up .16s ease-out; } @keyframes up { from { transform: translateY(30px); opacity: .6; } } }
+.sheet .grab { width: 40px; height: 4px; border-radius: 2px; background: var(--line); margin: 0 auto 10px; }
+.disp { display: flex; align-items: baseline; justify-content: center; gap: 10px; background: var(--bg); border: 1px solid var(--line); border-radius: 14px; padding: 12px; min-height: 76px; }
+.disp .t { font-size: 40px; font-weight: 700; }
+.disp .pen { font-family: var(--f-display); font-size: 22px; font-weight: 800; color: var(--red); }
+.keys { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+.keys button { height: 56px; border-radius: 14px; border: 1px solid var(--line); background: var(--panel2); font-size: 24px; font-weight: 600; font-family: var(--f-time); }
+.keys button.fn { font-family: var(--f-body); font-size: 15px; font-weight: 700; }
+.keys button.on { background: var(--red); color: #fff; border-color: var(--red); }
+.keys button.ok { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-family: var(--f-body); font-size: 17px; font-weight: 800; }
+.mbf { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+.mbf label { font-size: 12px; color: var(--muted); display: grid; gap: 4px; }
+.mbf input { height: 48px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); text-align: center; font-family: var(--f-time); font-size: 20px; width: 100%; }
+
+.picker .prow { background: var(--panel2); }
+.toast { position: fixed; left: 50%; bottom: calc(var(--barh) + 18px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 60; background: var(--fg); color: var(--bg);
+  padding: 10px 16px; border-radius: 20px; font-weight: 600; font-size: 14px; box-shadow: var(--shadow); max-width: calc(100vw - 32px); }
+
+@media (min-width: 760px) {
+  .grid2.wide { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .evtiles { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  h1 { font-size: 42px; }
+  .hero { flex-direction: row; align-items: center; gap: 24px; }
+  .hero img { height: 110px; }
+}
+</style>
+
+<div class="top">
+  <div class="brandbar" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+  <div class="topin">
+    <button class="iconbtn" id="backBtn" hidden aria-label="Atrás"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="ttl"><b id="ttl">Cto. España 2026</b><span id="sub"></span></div>
+    <button class="iconbtn" id="syncBtn" aria-label="Actualizar datos desde la WCA" title="Actualizar datos desde la WCA"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 11a8 8 0 0 0-14.6-4.5M4 4v4h4M4 13a8 8 0 0 0 14.6 4.5M20 20v-4h-4"/></svg></button>
+    <button class="iconbtn" id="themeBtn" aria-label="Cambiar tema claro u oscuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+</div>
+<main class="view" id="view"></main>
+<nav class="nav" aria-label="Secciones">
+  <button data-nav="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Inicio</button>
+  <button data-nav="horario"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Horario</button>
+  <button data-nav="eventos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6M12 2v3"/></svg>Eventos</button>
+  <button data-nav="gente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6.5 7-6.5s7 2.5 7 6.5"/><path d="M16 4a4 4 0 0 1 0 8M22 21c0-3.2-2-5.6-5-6.3"/></svg>Competidores</button>
+  <button data-nav="yo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Mis tiempos</button>
+</nav>
+<div class="scrim" id="scrim" hidden></div>
+<div class="sheet" id="sheet" hidden role="dialog" aria-modal="true"></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const BUNDLE = /*__DATA__*/;
+const COMP_ID = "SpanishChampionship2026";
+const WCIF_URL = `https://www.worldcubeassociation.org/api/v0/competitions/${COMP_ID}/wcif/public`;
+const LIVE_URL = `https://live.worldcubeassociation.org/link/competitions/${COMP_ID}`;
+const WCA_URL = `https://www.worldcubeassociation.org/competitions/${COMP_ID}`;
+
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const norm = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+const store = { get(k, d) { try { const v = localStorage.getItem("cmp:" + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+                set(k, v) { try { localStorage.setItem("cmp:" + k, JSON.stringify(v)); return true; } catch (e) { return false; } } };
+
+/* ---------------- WCA helpers ---------------- */
+const EV_NAME = { "333": "3x3x3", "222": "2x2x2", "444": "4x4x4", "555": "5x5x5", "666": "6x6x6", "777": "7x7x7", "333bf": "3x3 BLD", "333oh": "3x3 OH",
+  clock: "Clock", minx: "Megaminx", pyram: "Pyraminx", skewb: "Skewb", sq1: "Square-1", "444bf": "4x4 BLD", "555bf": "5x5 BLD", "333mbf": "Multi-BLD", "333fm": "FMC" };
+const EV_LONG = { "333": "3x3x3 Cube", "222": "2x2x2 Cube", "444": "4x4x4 Cube", "555": "5x5x5 Cube", "666": "6x6x6 Cube", "777": "7x7x7 Cube", "333bf": "3x3x3 Blindfolded",
+  "333oh": "3x3x3 One-Handed", clock: "Clock", minx: "Megaminx", pyram: "Pyraminx", skewb: "Skewb", sq1: "Square-1", "444bf": "4x4x4 Blindfolded",
+  "555bf": "5x5x5 Blindfolded", "333mbf": "3x3x3 Multi-Blind", "333fm": "3x3x3 Fewest Moves" };
+const BY_SINGLE = new Set(["333bf", "444bf", "555bf", "333mbf"]);
+const DEFAULT_FMT = { "666": "m", "777": "m", "333bf": "3", "444bf": "3", "555bf": "3", "333mbf": "1", "333fm": "m" };
+const FMT = { a: ["Media de 5", 5, "a"], m: ["Media de 3", 3, "m"], "1": ["Mejor de 1", 1, "b"], "2": ["Mejor de 2", 2, "b"], "3": ["Mejor de 3", 3, "b"], "5": ["Mejor de 5", 5, "b"] };
+const BRAND = ["var(--b-green)", "var(--b-navy)", "var(--b-red)", "var(--b-orange)"];
+const evName = id => EV_NAME[id] || id;
+let REGION; try { REGION = new Intl.DisplayNames(["es"], { type: "region" }); } catch (e) {}
+const country = iso => { try { return REGION?.of(iso) || iso; } catch (e) { return iso; } };
+
+const cs = c => { // centésimas -> texto
+  if (c >= 6000) { const m = Math.floor(c / 6000), r = c - m * 6000; return `${m}:${String(Math.floor(r / 100)).padStart(2, "0")}.${String(r % 100).padStart(2, "0")}`; }
+  return (c / 100).toFixed(2);
+};
+function fmt(v, ev, kind = "s") {
+  if (v == null || v === 0) return "";
+  if (v === -1) return "DNF"; if (v === -2) return "DNS";
+  if (ev === "333mbf") { const dd = Math.floor(v / 1e7), t = Math.floor(v / 100) % 1e5, mm = v % 100, solved = 99 - dd + mm;
+    return `${solved}/${solved + mm} ${t === 99999 ? "?" : Math.floor(t / 60) + ":" + String(t % 60).padStart(2, "0")}`; }
+  if (ev === "333fm") return kind === "a" ? (v / 100).toFixed(2) : String(v);
+  return cs(v);
+}
+const better = (a, b) => a > 0 && (!(b > 0) || a < b); // a mejora a b (menor es mejor; también en Multi-BLD)
+const initials = n => n.replace(/\(.*?\)/g, "").trim().split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0]).join("").toUpperCase();
+const av = p => `<span class="av">${esc(initials(p.name))}${p.avatar ? `<img src="${esc(p.avatar)}" alt="" loading="lazy" onerror="this.remove()">` : ""}</span>`;
+const cc = iso => `<span class="cc ${iso === "ES" ? "es" : ""}">${esc(iso)}</span>`;
+
+/* ---------------- data model (from bundled snapshot or a fresh WCIF) ---------------- */
+// Same output as tools/export_comp.py. Keep both in sync.
+function slim(w) {
+  const act = a => ({ id: a.id, name: a.name, activityCode: a.activityCode, startTime: a.startTime, endTime: a.endTime, childActivities: (a.childActivities || []).map(act) });
+  const sch = w.schedule || {};
+  return {
+    v: 1, id: w.id, name: BUNDLE.name, source: "wcif", updated: new Date().toISOString(),
+    persons: w.persons.filter(p => p.registration && p.registration.status === "accepted" && p.registration.isCompeting !== false).map(p => ({
+      r: p.registrantId, n: p.name, w: p.wcaId || null, c: p.countryIso2, g: p.gender, a: p.avatar?.thumbUrl || null, e: p.registration.eventIds,
+      pb: (p.personalBests || []).map(b => [b.eventId, b.type[0], b.best, b.worldRanking ?? null, b.nationalRanking ?? null]),
+      asg: (p.assignments || []).map(a => [a.activityId, a.assignmentCode, a.stationNumber ?? null]) })),
+    events: w.events.map(e => ({ id: e.id, rounds: (e.rounds || []).map(r => ({ id: r.id, format: r.format, timeLimit: r.timeLimit, cutoff: r.cutoff, advancementCondition: r.advancementCondition })) })),
+    schedule: sch.venues?.length ? { startDate: sch.startDate, numberOfDays: sch.numberOfDays, venues: sch.venues.map(v => ({ name: v.name, timezone: v.timezone,
+      rooms: (v.rooms || []).map(r => ({ id: r.id, name: r.name, color: r.color, activities: (r.activities || []).map(act) })) })) } : null,
+  };
+}
+let D; // snapshot in use
+let M; // indexed model
+function build(d) {
+  const persons = d.persons.map(x => {
+    const pb = {};
+    for (const [ev, t, best, wr, nr] of x.pb) (pb[ev] ||= {})[t] = { v: best, wr, nr };
+    return { key: x.w || "r" + x.r, rid: x.r, name: x.n, wca: x.w, iso: x.c, gender: x.g, avatar: x.a, events: x.e, pb, asg: x.asg || [], _q: norm(x.n + " " + (x.w || "") + " " + x.r + " " + country(x.c)) };
+  });
+  const byKey = Object.fromEntries(persons.map(p => [p.key, p]));
+  const byRid = Object.fromEntries(persons.map(p => [p.rid, p]));
+  const events = d.events.filter(e => EV_NAME[e.id]).map((e, i) => ({ id: e.id, name: evName(e.id), color: BRAND[i % 4], rounds: e.rounds, single: BY_SINGLE.has(e.id) }));
+  const evById = Object.fromEntries(events.map(e => [e.id, e]));
+  // psych sheet: por media (o single en BLD); quien solo tiene single va detrás; sin marca, al final
+  const psych = {};
+  for (const e of events) {
+    const k = p => { const s = p.pb[e.id]?.s?.v, a = p.pb[e.id]?.a?.v; if (e.single) return s ? [0, s, 0] : [2, 0, 0]; return a ? [0, a, s || 0] : s ? [1, s, 0] : [2, 0, 0]; };
+    const L = persons.filter(p => p.events.includes(e.id)).map(p => ({ p, k: k(p) }))
+      .sort((x, y) => x.k[0] - y.k[0] || x.k[1] - y.k[1] || x.k[2] - y.k[2] || x.p.name.localeCompare(y.p.name, "es"));
+    let es = 0; L.forEach((x, i) => { x.seed = x.k[0] < 2 ? i + 1 : null; if (x.p.iso === "ES" && x.seed) x.seedES = ++es; });
+    psych[e.id] = L;
+  }
+  // horario: actividades planas (con sala y zona horaria) y grupos
+  const acts = [], actById = {};
+  for (const v of d.schedule?.venues || []) for (const r of v.rooms) for (const a of r.activities) {
+    const A = { id: a.id, name: a.name, code: a.activityCode, start: new Date(a.startTime), end: new Date(a.endTime), room: r.name, color: r.color, tz: v.timezone, venue: v.name, groups: [] };
+    acts.push(A); actById[a.id] = A;
+    for (const c of a.childActivities || []) { const G = { id: c.id, name: c.name, code: c.activityCode, start: new Date(c.startTime), end: new Date(c.endTime), parent: A }; A.groups.push(G); actById[c.id] = G; }
+  }
+  acts.sort((a, b) => a.start - b.start || a.room.localeCompare(b.room));
+  const tz = d.schedule?.venues?.[0]?.timezone || "Europe/Madrid";
+  return { persons, byKey, byRid, events, evById, psych, acts, actById, tz, venue: d.schedule?.venues?.[0]?.name || "", hasSchedule: acts.length > 0 };
+}
+function loadData() {
+  const cached = store.get("wcif", null);
+  D = cached && cached.v === 1 && (cached.updated || "") > (BUNDLE.updated || "") ? cached : BUNDLE;
+  M = build(D);
+}
+loadData();
+
+/* ---------------- rounds & formats ---------------- */
+function roundsOf(evId) {
+  const e = M.evById[evId];
+  if (e.rounds?.length) return e.rounds.map((r, i) => ({ ...r, n: i + 1, total: e.rounds.length, known: true }));
+  // Sin WCIF todavía: formato habitual y tantas rondas como el competidor vaya abriendo.
+  const n = Math.max(1, store.get("extraRounds", {})[evId] || 1);
+  return Array.from({ length: n }, (_, i) => ({ id: `${evId}-r${i + 1}`, format: DEFAULT_FMT[evId] || "a", timeLimit: null, cutoff: null, advancementCondition: null, n: i + 1, total: null, known: false }));
+}
+const roundName = r => r.total && r.n === r.total ? "Final" : r.total >= 4 && r.n === r.total - 1 ? "Semifinal" : `Ronda ${r.n}`;
+const roundById = id => { const ev = id.split("-r")[0]; return M.evById[ev] && roundsOf(ev).find(r => r.id === id); };
+const parseCode = c => { const m = /^([^-]+)-r(\d+)(?:-g(\d+))?/.exec(c || ""); return m ? { ev: m[1], r: +m[2], g: m[3] ? +m[3] : null } : null; };
+function limitTxt(r, ev) {
+  const tl = r.timeLimit; if (!tl) return ev === "333mbf" ? "10:00 por cubo (máx. 60:00)" : r.known ? "—" : "Pendiente";
+  const cum = tl.cumulativeRoundIds?.length;
+  return cs(tl.centiseconds) + (cum ? (cum > 1 ? " acumulado entre " + tl.cumulativeRoundIds.map(id => evName(id.split("-r")[0])).join(" + ") : " acumulado") : "");
+}
+const cutoffTxt = (r, ev) => r.cutoff ? `${r.cutoff.numberOfAttempts} ${r.cutoff.numberOfAttempts > 1 ? "intentos" : "intento"} para bajar de ${fmt(r.cutoff.attemptResult, ev)}` : r.known ? "Sin corte" : "Pendiente";
+function advTxt(r) {
+  const a = r.advancementCondition; if (!a) return r.known ? (r.n === r.total ? "Final" : "—") : "Pendiente";
+  if (a.type === "ranking") return `Pasan los ${a.level} primeros`;
+  if (a.type === "percent") return `Pasa el ${a.level} % mejor`;
+  if (a.type === "attemptResult") return `Pasa quien baje de ${fmt(a.level, r.id.split("-r")[0])}`;
+  return "—";
+}
+
+/* ---------------- my results (scoresheets) ---------------- */
+// RES[personKey][roundId] = [{t: centis | mbf, p: 0 | 2 | "DNF" | "DNS", j, c}, ...]  (p=+2 se guarda aparte del tiempo marcado)
+const RES = store.get("res", {});
+let ME = store.get("me", null); if (ME && !M.byKey[ME]) ME = null;
+const saveRes = () => store.set("res", RES);
+const attempts = (key, rid) => RES[key]?.[rid] || [];
+function aVal(a, ev, tl) { // valor WCA de un intento anotado
+  if (!a) return 0;
+  if (a.p === "DNF") return -1; if (a.p === "DNS") return -2;
+  if (ev === "333mbf") return a.t;
+  let v = a.t + (a.p === 2 ? 200 : 0);
+  if (v >= 60000) v = Math.round(v / 100) * 100; // más de 10 min: al segundo (9f1)
+  if (tl && !tl.cumulativeRoundIds?.length && v >= tl.centiseconds) return -1;
+  return v;
+}
+const isDnf = v => v < 0;
+function bestOf(vals) { const ok = vals.filter(v => v > 0); return ok.length ? Math.min(...ok) : vals.some(v => v < 0) ? -1 : 0; }
+function avgOf(vals, kind, ev) { // vals completos; devuelve media WCA (redondeo a la centésima)
+  if (kind === "m") { if (vals.some(isDnf)) return -1; const s = vals.reduce((x, y) => x + y, 0) / vals.length; return ev === "333fm" ? Math.round(s * 100) : rnd(s); }
+  const s = vals.map(v => v < 0 ? Infinity : v).sort((x, y) => x - y), mid = s.slice(1, -1);
+  if (mid.includes(Infinity)) return -1;
+  return rnd(mid.reduce((x, y) => x + y, 0) / mid.length);
+}
+const rnd = x => x >= 60000 ? Math.round(x / 100) * 100 : Math.round(x);
+function summary(key, r) { // estado de una hoja
+  const ev = r.id.split("-r")[0], [, n, kind] = FMT[r.format] || FMT.a, A = attempts(key, r.id);
+  const vals = Array.from({ length: n }, (_, i) => aVal(A[i], ev, r.timeLimit));
+  const filled = vals.filter(v => v !== 0).length;
+  const cutN = r.cutoff?.numberOfAttempts || 0;
+  const madeCut = !cutN ? true : vals.slice(0, cutN).some(v => v > 0 && v < r.cutoff.attemptResult);
+  const cutDone = !cutN || vals.slice(0, cutN).every(v => v !== 0);
+  const blocked = cutN && cutDone && !madeCut;
+  const total = blocked ? cutN : n;
+  const best = bestOf(vals);
+  const complete = filled >= total;
+  // En BLD al mejor de 3 la WCA también registra la media de 3 si están los tres intentos
+  const avg = !complete || blocked ? null : kind !== "b" ? avgOf(vals, kind, ev) : n === 3 && ev !== "333mbf" ? avgOf(vals, "m", ev) : null;
+  return { ev, n, kind, vals, filled, cutN, madeCut, blocked, total, best, avg, complete, A };
+}
+function pbsOf(key, ev) { // PB oficial y lo mejor anotado en el campeonato
+  const p = M.byKey[key], off = p?.pb[ev] || {};
+  let cs1 = 0, ca = 0, cs1r = null, car = null;
+  for (const r of roundsOf(ev)) {
+    const s = summary(key, r);
+    if (better(s.best, cs1)) { cs1 = s.best; cs1r = r; }
+    if (s.avg && better(s.avg, ca)) { ca = s.avg; car = r; }
+  }
+  const offS = off.s?.v || 0, offA = off.a?.v || 0;
+  return { offS, offA, compS: cs1, compA: ca, compSr: cs1r, compAr: car,
+           s: better(cs1, offS) ? cs1 : offS, a: better(ca, offA) ? ca : offA, newS: better(cs1, offS), newA: better(ca, offA) };
+}
+function needFor(target, s, r) { // tiempo máximo en el último intento para que la media mejore 'target'
+  if (!(target > 0) || s.kind === "b" || s.blocked || s.filled !== s.total - 1 || s.vals[s.total - 1] !== 0) return null;
+  const idx = s.vals.indexOf(0); if (idx !== s.total - 1) return null;
+  const withX = x => { const v = s.vals.slice(); v[idx] = x; return avgOf(v, s.kind, s.ev); };
+  if (better(withX(-1), target)) return { always: true };
+  if (!better(withX(1), target)) return { never: true };
+  let lo = 1, hi = 360000; // mayor x que todavía mejora
+  while (lo < hi) { const mid = Math.ceil((lo + hi) / 2); if (better(withX(mid), target)) lo = mid; else hi = mid - 1; }
+  return { max: lo };
+}
+function seedWith(ev, v, kind) { // puesto que tendría esa marca en el psych sheet de este evento
+  const e = M.evById[ev]; if (!(v > 0)) return null;
+  const L = M.psych[ev].filter(x => x.p.key !== ME);
+  const k = x => e.single ? x.p.pb[ev]?.s?.v : x.p.pb[ev]?.a?.v;
+  if (!e.single && kind === "s") return null;
+  return L.filter(x => k(x) > 0 && k(x) < v).length + 1;
+}
+
+/* ---------------- routing ---------------- */
+const S = { ev: store.get("ev", null), evNat: "all", evq: "", q: "", day: null, mine: store.get("mine", true) };
+function go(h) { if (location.hash !== "#" + h) location.hash = h; else render(); }
+window.addEventListener("hashchange", render);
+$$("[data-nav]").forEach(b => b.addEventListener("click", () => go(b.dataset.nav)));
+$("#backBtn").addEventListener("click", () => history.length > 1 ? history.back() : go("inicio"));
+function setTop(title, sub, back) {
+  $("#ttl").textContent = title; $("#sub").textContent = sub || ""; $("#backBtn").hidden = !back;
+}
+function render() {
+  closeSheet(false);
+  const h = decodeURIComponent(location.hash.slice(1)) || "inicio";
+  const [sec, ...rest] = h.split("/"); const arg = rest.join("/");
+  const navSec = { p: "gente", hoja: "yo", ev: "eventos" }[sec] || sec;
+  $$("[data-nav]").forEach(b => b.setAttribute("aria-current", b.dataset.nav === navSec ? "page" : "false"));
+  const v = $("#view");
+  ({ inicio: viewHome, horario: viewSchedule, eventos: viewEvent, ev: viewEvent, gente: viewPeople, p: viewPerson, yo: viewMe, hoja: viewSheet }[sec] || viewHome)(v, arg);
+  window.scrollTo(0, 0);
+}
+const updatedTxt = () => { const d = new Date(D.updated); return isNaN(d) ? D.updated : d.toLocaleDateString("es-ES", { day: "numeric", month: "short" }) + (D.updated.length > 10 ? " " + d.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" }) : ""); };
+
+/* ---------------- time helpers for the schedule ---------------- */
+const tfmt = (d, o) => d.toLocaleString("es-ES", { timeZone: M.tz, ...o });
+const hhmm = d => tfmt(d, { hour: "2-digit", minute: "2-digit" });
+const dayKey = d => tfmt(d, { year: "numeric", month: "2-digit", day: "2-digit" });
+const dayName = d => { const s = tfmt(d, { weekday: "long", day: "numeric", month: "long" }); return s[0].toUpperCase() + s.slice(1); };
+function actTitle(a) {
+  const c = parseCode(a.code);
+  if (c && M.evById[c.ev]) { const r = roundsOf(c.ev).find(x => x.n === c.r); return `${evName(c.ev)} · ${r ? roundName(r) : "Ronda " + c.r}${c.g ? " · Grupo " + c.g : ""}`; }
+  return a.name;
+}
+const ROLE = { competitor: "Compites", "staff-judge": "Juez", "staff-scrambler": "Mezclador", "staff-runner": "Runner", "staff-dataentry": "Data entry", "staff-announcer": "Anuncios", "staff-delegate": "Delegado", "staff-organizer": "Organización" };
+const roleName = c => ROLE[c] || (c || "").replace(/^staff-/, "Staff: ");
+function myAsg(p) { // [{act (grupo o actividad), role, station}]
+  return (p?.asg || []).map(([id, code, st]) => ({ act: M.actById[id], role: code, station: st })).filter(x => x.act).sort((a, b) => a.act.start - b.act.start);
+}
+function nextFor(p) {
+  const now = Date.now();
+  const L = myAsg(p).filter(x => x.act.end > now);
+  if (L.length) return L[0];
+  if (!p) return null;
+  const a = M.acts.find(a => a.end > now && (c => c && p.events.includes(c.ev))(parseCode(a.code)));
+  return a ? { act: a, role: "competitor", station: null, guess: true } : null;
+}
+
+/* ---------------- home ---------------- */
+function viewHome(v) {
+  setTop("Cto. España 2026", `Competidores · ${M.persons.length} inscritos`);
+  const me = ME && M.byKey[ME];
+  const nx = me && M.hasSchedule ? nextFor(me) : null;
+  const now = Date.now();
+  const live = M.acts.filter(a => a.start <= now && a.end > now && !/^other-(lunch|break)/.test(a.code));
+  v.innerHTML = `
+    <div class="hero">
+      <img class="lg-dark" src="__IMG_logo-h-dark__" alt="Campeonato de España · Espainiako Txapelketa 2026"><img class="lg-light" src="__IMG_logo-h-light__" alt="Campeonato de España · Espainiako Txapelketa 2026">
+      <div><div class="eyebrow">5 – 7 diciembre 2026${M.venue ? " · " + esc(M.venue) : ""}</div><h1>Guía del competidor</h1></div>
+    </div>
+    ${me ? `<button class="card me-card" id="meCard" style="width:100%;text-align:left">${av(me)}<div class="grow"><div class="eyebrow">Tu perfil</div>
+        <div class="big-t ell">${esc(me.name)}</div><div class="small muted">${cc(me.iso)} ${me.wca ? esc(me.wca) : "Debutante"} · nº ${me.rid} · ${me.events.length} eventos</div></div></button>`
+      : `<div class="card"><div class="eyebrow">Empieza aquí</div><div class="big-t" style="margin:4px 0 6px">¿Compites? Elige tu nombre</div>
+        <div class="small muted" style="margin-bottom:10px">Verás tus eventos, tus grupos, tus marcas a batir y podrás anotar tus tiempos en tu hoja.</div>
+        <button class="btn pri" id="pickMe">Buscar mi nombre</button></div>`}
+    ${nx ? `<div class="card next" style="margin-top:10px"><div class="eyebrow">${nx.act.start <= now ? "Ahora" : "Lo siguiente para ti"}${nx.guess ? " · tu evento" : ""}</div>
+        <div class="big-t" style="margin-top:2px">${esc(actTitle(nx.act))}</div>
+        <div class="small muted">${dayName(nx.act.start)} · ${hhmm(nx.act.start)}–${hhmm(nx.act.end)}${nx.act.parent ? " · " + esc(nx.act.parent.room) : nx.act.room ? " · " + esc(nx.act.room) : ""}</div>
+        <div class="asg">${nx.guess ? "" : `<span class="pill ${nx.role === "competitor" ? "acc" : ""}">${esc(roleName(nx.role))}${nx.station ? " · puesto " + nx.station : ""}</span>`}</div></div>` : ""}
+    ${live.length ? `<h2>En curso</h2><div class="card">${live.map(a => actRow(a, me)).join("")}</div>` : ""}
+    ${!M.hasSchedule ? `<div class="card" style="margin-top:10px"><div class="eyebrow">Horario y grupos</div><div class="small" style="margin-top:4px">Aún no hay horario en la app. Con internet, pulsa <b>Actualizar</b> (↻ arriba) y se descarga de la WCA: horario, rondas, cortes, límites y tus grupos.</div>
+        <button class="btn sm" style="margin-top:10px" data-sync>↻ Actualizar ahora</button></div>` : ""}
+    <h2>Eventos</h2>
+    <div class="evtiles">${M.events.map(e => `<button class="evtile ${me?.events.includes(e.id) ? "mine" : ""}" data-ev="${e.id}" style="--evc:${e.color}"><b>${esc(e.name)}</b>
+      <span>${M.psych[e.id].length} inscritos · ${FMT[roundsOf(e.id)[0].format]?.[0] || ""}${e.rounds.length ? " · " + e.rounds.length + (e.rounds.length > 1 ? " rondas" : " ronda") : ""}</span></button>`).join("")}</div>
+    <h2>Enlaces</h2>
+    <div class="card links">
+      <a href="${LIVE_URL}" target="_blank" rel="noopener"><span class="pill acc">LIVE</span><span class="grow">Resultados oficiales en directo (WCA Live)</span>↗</a>
+      <a href="${WCA_URL}" target="_blank" rel="noopener"><span class="pill">WCA</span><span class="grow">Página oficial de la competición</span>↗</a>
+      <a href="https://www.worldcubeassociation.org/regulations/translations/spanish/" target="_blank" rel="noopener"><span class="pill">REG</span><span class="grow">Reglamento WCA en español</span>↗</a>
+    </div>
+    <p class="note">Datos de la WCA a ${esc(updatedTxt())}. Pulsa ↻ con internet para traer lo último (inscritos, marcas, horario y grupos). Tus tiempos se guardan solo en este móvil.</p>`;
+  $("#meCard")?.addEventListener("click", () => go("yo"));
+  $("#pickMe")?.addEventListener("click", openPicker);
+  $$(".evtile", v).forEach(b => b.addEventListener("click", () => { S.ev = b.dataset.ev; store.set("ev", S.ev); go("ev/" + b.dataset.ev); }));
+}
+
+/* ---------------- schedule ---------------- */
+function actRow(a, me) {
+  const now = Date.now(), c = parseCode(a.code);
+  const mineEv = me && c && me.events.includes(c.ev);
+  const mine = me ? myAsg(me).filter(x => x.act === a || x.act.parent === a) : [];
+  const groups = a.groups.filter(g => parseCode(g.code)?.g);
+  return `<div class="act ${a.start <= now && a.end > now ? "now" : a.end <= now ? "past" : ""} ${me && S.mine && c && !mineEv && !mine.length ? "other" : ""}">
+    <div class="hr">${hhmm(a.start)}<small>${hhmm(a.end)}</small></div>
+    <div><div class="nm">${esc(actTitle(a))}${mineEv ? ` <span class="pill acc">Tu evento</span>` : ""}</div>
+      <div class="room" style="--rc:${esc(a.color || "")}"><i></i>${esc(a.room)}${groups.length ? ` · ${groups.length} grupos` : ""}</div>
+      ${mine.length ? `<div class="asg">${mine.map(x => `<span class="pill ${x.role === "competitor" ? "acc" : "ok"}">${esc(roleName(x.role))}${parseCode(x.act.code)?.g ? " · G" + parseCode(x.act.code).g : ""} ${x.act.parent ? hhmm(x.act.start) : ""}${x.station ? " · puesto " + x.station : ""}</span>`).join("")}</div>` : ""}
+    </div></div>`;
+}
+function viewSchedule(v) {
+  setTop("Horario", M.hasSchedule ? `Hora local · ${M.tz.replace("_", " ")}` : "Pendiente de descargar");
+  const me = ME && M.byKey[ME];
+  if (!M.hasSchedule) {
+    v.innerHTML = `<div class="card empty"><div class="big-t">Sin horario todavía</div><p>El horario, los grupos y las rondas se descargan de la WCA. Conéctate a internet y pulsa actualizar.</p><button class="btn pri" data-sync>↻ Actualizar ahora</button></div>`;
+    return;
+  }
+  const days = [...new Set(M.acts.map(a => dayKey(a.start)))];
+  const today = dayKey(new Date());
+  if (!S.day || !days.includes(S.day)) S.day = days.includes(today) ? today : days[0];
+  const L = M.acts.filter(a => dayKey(a.start) === S.day);
+  const mineList = me ? myAsg(me).filter(x => dayKey(x.act.start) === S.day) : [];
+  v.innerHTML = `
+    <div class="chips">${days.map(d => { const a = M.acts.find(x => dayKey(x.start) === d); return `<button class="chip" data-day="${d}" aria-pressed="${d === S.day}">${esc(tfmt(a.start, { weekday: "short", day: "numeric" }))}</button>`; }).join("")}</div>
+    ${me ? `<div class="controls"><div class="toggle"><button data-mine="1" aria-pressed="${S.mine}">Destacar lo mío</button><button data-mine="0" aria-pressed="${!S.mine}">Ver todo igual</button></div></div>` : ""}
+    <h2 style="margin-top:6px">${esc(dayName(L[0].start))}</h2>
+    ${me && mineList.length ? `<div class="card" style="margin-bottom:10px"><div class="eyebrow">Tus grupos y tareas de hoy</div>
+      ${mineList.map(x => `<div class="row" style="margin-top:8px"><span class="t" style="width:52px">${hhmm(x.act.start)}</span><div class="grow"><b>${esc(actTitle(x.act))}</b><div class="small muted">${esc(x.act.parent?.room || x.act.room || "")}</div></div><span class="pill ${x.role === "competitor" ? "acc" : "ok"}">${esc(roleName(x.role))}${x.station ? " · " + x.station : ""}</span></div>`).join("")}</div>` : ""}
+    <div class="card">${L.map(a => actRow(a, me)).join("")}</div>
+    <p class="note">Horario oficial de la WCA en hora de ${esc(M.tz)}. Los grupos (G) salen si la organización los ha publicado en la WCA.</p>`;
+  $$("[data-day]", v).forEach(b => b.addEventListener("click", () => { S.day = b.dataset.day; viewSchedule(v); }));
+  $$("[data-mine]", v).forEach(b => b.addEventListener("click", () => { S.mine = b.dataset.mine === "1"; store.set("mine", S.mine); viewSchedule(v); }));
+}
+
+/* ---------------- events / psych sheet ---------------- */
+function viewEvent(v, arg) {
+  if (arg && M.evById[arg]) { S.ev = arg; store.set("ev", arg); }
+  if (!S.ev || !M.evById[S.ev]) S.ev = M.events[0].id;
+  const e = M.evById[S.ev], me = ME && M.byKey[ME], R = roundsOf(e.id);
+  setTop(e.name, `Psych sheet · ordenado por ${e.single ? "single" : "media"}`);
+  v.innerHTML = `
+    <div class="chips" id="evchips">${M.events.map(x => `<button class="chip" style="--evc:${x.color}" data-ev="${x.id}" aria-pressed="${x.id === e.id}"><i></i>${esc(x.name)}${me?.events.includes(x.id) ? `<span class="dot" title="Tu evento"></span>` : ""}</button>`).join("")}</div>
+    <div class="evhead" style="--evc:${e.color}"><div class="eyebrow">${esc(EV_LONG[e.id] || e.name)}</div><h1>${esc(e.name)}</h1>
+      <div class="small muted">${M.psych[e.id].length} inscritos${R[0].known ? "" : " · rondas pendientes de publicar"}</div></div>
+    <div class="card" style="overflow-x:auto"><table class="rounds"><thead><tr><th>Ronda</th><th>Formato</th><th>Límite</th><th>Corte</th><th>Pasan</th></tr></thead><tbody>
+      ${R.map(r => `<tr><td><b>${roundName(r)}</b></td><td>${FMT[r.format]?.[0] || r.format}</td><td class="t">${esc(limitTxt(r, e.id))}</td><td>${esc(cutoffTxt(r, e.id))}</td><td>${esc(advTxt(r))}</td></tr>`).join("")}
+    </tbody></table></div>
+    ${me?.events.includes(e.id) ? `<button class="btn pri" style="width:100%;margin-top:10px" data-sheet="${R[0].id}">Anotar mis tiempos de ${esc(e.name)}</button>` : ""}
+    <div class="controls">
+      <div class="toggle"><button data-nat="all" aria-pressed="${S.evNat === "all"}">Todos</button><button data-nat="es" aria-pressed="${S.evNat === "es"}">Ranking España</button></div>
+      ${me?.events.includes(e.id) ? `<button class="btn sm" id="toMe">Ir a mi puesto</button>` : ""}
+      <input class="field" id="evq" type="search" placeholder="Buscar en el psych sheet…" value="${esc(S.evq)}">
+    </div>
+    <div class="card" style="padding:4px 10px"><ul class="psych" id="psych"></ul></div>
+    <p class="note">Puesto según las marcas oficiales de la WCA (${e.single ? "mejor single" : "mejor media; quien no tiene media, por single"}). Sin marca previa: al final, sin puesto.</p>`;
+  const draw = () => {
+    const q = norm(S.evq);
+    let L = M.psych[e.id];
+    if (S.evNat === "es") L = L.filter(x => x.p.iso === "ES");
+    if (q) L = L.filter(x => x.p._q.includes(q));
+    $("#psych").innerHTML = L.length ? L.map(x => {
+      const pb = x.p.pb[e.id] || {}, main = e.single ? pb.s : pb.a, other = e.single ? pb.a : pb.s;
+      const pos = S.evNat === "es" ? x.seedES : x.seed;
+      return `<li data-p="${esc(x.p.key)}" class="${x.p.key === ME ? "me" : ""}"><span class="pos">${pos || "–"}</span>
+        <div class="row" style="gap:10px">${av(x.p)}<div class="grow"><div class="nm ell">${esc(x.p.name)}</div><div class="sub">${cc(x.p.iso)} ${x.p.wca ? esc(x.p.wca) : "Debutante"}</div></div></div>
+        <div class="tm"><span class="t">${main ? esc(fmt(main.v, e.id, e.single ? "s" : "a")) : x.k[0] === 1 ? esc(fmt(pb.s.v, e.id)) : "—"}</span>${other && main ? `<small>${e.single ? "media" : "single"} ${esc(fmt(other.v, e.id, e.single ? "a" : "s"))}</small>` : x.k[0] === 1 ? `<small>solo single</small>` : ""}</div></li>`;
+    }).join("") : `<li class="empty" style="display:block">Nadie con ese nombre en este evento.</li>`;
+    $$("#psych li[data-p]").forEach(li => li.addEventListener("click", () => go("p/" + li.dataset.p)));
+  };
+  draw();
+  $$("[data-ev]", v).forEach(b => b.addEventListener("click", () => { S.evq = ""; go("ev/" + b.dataset.ev); }));
+  $$("[data-nat]", v).forEach(b => b.addEventListener("click", () => { S.evNat = b.dataset.nat; $$("[data-nat]", v).forEach(x => x.setAttribute("aria-pressed", x === b)); draw(); }));
+  $("#evq").addEventListener("input", ev => { S.evq = ev.target.value; draw(); });
+  $("#toMe")?.addEventListener("click", () => { S.evq = ""; $("#evq").value = ""; draw(); $("#psych li.me")?.scrollIntoView({ block: "center", behavior: "smooth" }); });
+  $(`#evchips [aria-pressed="true"]`)?.scrollIntoView({ inline: "center", block: "nearest" });
+}
+
+/* ---------------- people ---------------- */
+function personRow(p, extra = "") {
+  return `<button class="prow" data-p="${esc(p.key)}">${av(p)}<div class="grow"><div class="nm ell">${esc(p.name)}${p.key === ME ? ` <span class="pill acc">Tú</span>` : ""}</div>
+    <div class="sub">${cc(p.iso)} ${esc(country(p.iso))} · ${p.wca ? esc(p.wca) : "Debutante"} · nº ${p.rid}</div></div>${extra}</button>`;
+}
+function searchPeople(q, n = 400) {
+  q = norm(q.trim());
+  const L = q ? M.persons.filter(p => p._q.includes(q)) : M.persons.slice();
+  return L.sort((a, b) => (q && norm(a.name).startsWith(q) ? 0 : 1) - (q && norm(b.name).startsWith(q) ? 0 : 1) || a.name.localeCompare(b.name, "es")).slice(0, n);
+}
+function viewPeople(v) {
+  setTop("Competidores", `${M.persons.length} inscritos · ${new Set(M.persons.map(p => p.iso)).size} países`);
+  v.innerHTML = `<input class="field" id="pq" type="search" placeholder="Nombre, WCA ID, nº o país…" value="${esc(S.q)}" aria-label="Buscar competidor">
+    <div class="note" id="pcount"></div><div class="plist" id="plist" style="margin-top:8px"></div>`;
+  const draw = () => {
+    const L = searchPeople(S.q, 400);
+    $("#pcount").textContent = S.q ? `${L.length} resultados` : "Orden alfabético · toca para ver sus marcas";
+    $("#plist").innerHTML = L.length ? L.map(p => personRow(p)).join("") : `<div class="empty">Nadie con ese nombre.</div>`;
+    $$("#plist [data-p]").forEach(b => b.addEventListener("click", () => go("p/" + b.dataset.p)));
+  };
+  $("#pq").addEventListener("input", e => { S.q = e.target.value; draw(); });
+  draw();
+}
+function pbTable(p, linkSheets) {
+  const evs = p.events.filter(id => M.evById[id]);
+  return `<table class="pbtab"><thead><tr><th>Evento</th><th>Puesto</th><th>Single</th><th>Media</th></tr></thead><tbody>
+    ${evs.map(id => { const e = M.evById[id], pb = p.pb[id] || {}, x = M.psych[id].find(y => y.p === p);
+      const cell = (b, k) => b ? `<span class="t">${esc(fmt(b.v, id, k))}</span><small>NR ${b.nr ?? "—"} · WR ${b.wr ?? "—"}</small>` : `<span class="muted">—</span>`;
+      return `<tr data-ev="${id}"><td><b>${esc(e.name)}</b>${!pb.s ? `<small>Primera vez</small>` : ""}</td><td><span class="t">${x?.seed ? x.seed + "º" : "—"}</span>${x?.seedES ? `<small>${x.seedES}º ESP</small>` : ""}</td>
+        <td>${cell(pb.s, "s")}</td><td>${cell(pb.a, "a")}</td></tr>`; }).join("")}
+  </tbody></table>`;
+}
+function viewPerson(v, key) {
+  const p = M.byKey[key]; if (!p) return go("gente");
+  if (key === ME) return go("yo");
+  setTop(p.name, p.wca || "Debutante", true);
+  const asg = myAsg(p);
+  v.innerHTML = `
+    <div class="phead">${av(p)}<div class="grow"><div class="eyebrow">${p.wca ? esc(p.wca) : "Debutante"} · nº ${p.rid}</div><h1>${esc(p.name)}</h1>
+      <div class="small muted">${cc(p.iso)} ${esc(country(p.iso))}</div></div></div>
+    <div class="row" style="gap:8px;flex-wrap:wrap">${p.wca ? `<a class="btn sm" href="https://www.worldcubeassociation.org/persons/${esc(p.wca)}" target="_blank" rel="noopener">Perfil WCA ↗</a>` : ""}
+      <button class="btn sm" id="isMe">Soy yo</button></div>
+    <h2>Marcas y puesto en el psych sheet</h2><div class="card" style="overflow-x:auto">${pbTable(p)}</div>
+    ${asg.length ? `<h2>Grupos y tareas</h2><div class="card">${asg.map(x => `<div class="row" style="padding:6px 0"><span class="t" style="width:92px">${esc(tfmt(x.act.start, { weekday: "short" }))} ${hhmm(x.act.start)}</span><div class="grow"><b>${esc(actTitle(x.act))}</b></div><span class="pill ${x.role === "competitor" ? "acc" : "ok"}">${esc(roleName(x.role))}</span></div>`).join("")}</div>` : ""}
+    <p class="note">Toca un evento para ver su psych sheet. NR / WR: puesto en el ranking nacional y mundial de la WCA.</p>`;
+  $$("tr[data-ev]", v).forEach(tr => tr.addEventListener("click", () => go("ev/" + tr.dataset.ev)));
+  $("#isMe").addEventListener("click", () => setMe(p.key));
+}
+function setMe(key) { ME = key; store.set("me", key); toast(`Perfil: ${M.byKey[key].name}`); go("yo"); }
+
+/* ---------------- my profile: times to beat + scoresheets ---------------- */
+function viewMe(v) {
+  const me = ME && M.byKey[ME];
+  if (!me) {
+    setTop("Mis tiempos", "Elige tu nombre");
+    v.innerHTML = `<div class="card"><div class="big-t">¿Quién eres?</div><p class="small muted">Elige tu nombre para ver tus marcas a batir, tus grupos y anotar tus tiempos en tus hojas. Se guarda solo en este móvil.</p>
+      <input class="field" id="mq" type="search" placeholder="Escribe tu nombre o WCA ID…" autocomplete="off"></div><div class="plist" id="mlist" style="margin-top:10px"></div>`;
+    const draw = () => { const q = $("#mq").value; $("#mlist").innerHTML = q.trim() ? searchPeople(q, 30).map(p => personRow(p)).join("") : "";
+      $$("#mlist [data-p]").forEach(b => b.addEventListener("click", () => setMe(b.dataset.p))); };
+    $("#mq").addEventListener("input", draw); return;
+  }
+  setTop("Mis tiempos", me.name);
+  const evs = me.events.filter(id => M.evById[id]);
+  const newPBs = evs.flatMap(id => { const b = pbsOf(ME, id); return [b.newS && [id, "single", b.compS, b.offS, "s"], b.newA && [id, "media", b.compA, b.offA, "a"]].filter(Boolean); });
+  v.innerHTML = `
+    <div class="phead">${av(me)}<div class="grow"><div class="eyebrow">${me.wca ? esc(me.wca) : "Debutante"} · nº de competidor ${me.rid}</div><h1>${esc(me.name)}</h1>
+      <div class="small muted">${cc(me.iso)} ${esc(country(me.iso))} · ${evs.length} eventos</div></div></div>
+    <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn sm" id="chg">Cambiar de persona</button>
+      ${me.wca ? `<a class="btn sm" href="https://www.worldcubeassociation.org/persons/${esc(me.wca)}" target="_blank" rel="noopener">Perfil WCA ↗</a>` : ""}
+      <button class="btn sm" id="share">Compartir mis tiempos</button></div>
+    ${newPBs.length ? `<div class="card" style="margin-top:12px;border-color:var(--accent)"><div class="eyebrow" style="color:var(--accent)">¡PB en este campeonato!</div>
+      ${newPBs.map(([id, k, nw, old, kk]) => `<div class="row" style="margin-top:6px"><b class="grow">${esc(evName(id))} · ${k}</b><span class="t" style="color:var(--accent);font-weight:700">${esc(fmt(nw, id, kk))}</span><span class="small muted">antes ${old ? esc(fmt(old, id, kk)) : "—"}</span></div>`).join("")}</div>` : ""}
+    <h2>Tiempos a mejorar</h2>
+    <div class="card">${evs.map(id => targetBlock(me, id)).join("") || `<div class="empty">No estás inscrito en ningún evento.</div>`}</div>
+    <p class="note">Marca a batir = tu mejor resultado oficial o, si ya lo has superado aquí, tu nuevo mejor tiempo anotado. Toca una ronda para abrir su hoja de tiempos.</p>
+    ${myAsg(me).length ? `<h2>Mis grupos y tareas</h2><div class="card">${myAsg(me).map(x => `<div class="row" style="padding:6px 0"><span class="t" style="width:92px">${esc(tfmt(x.act.start, { weekday: "short" }))} ${hhmm(x.act.start)}</span><div class="grow"><b>${esc(actTitle(x.act))}</b></div><span class="pill ${x.role === "competitor" ? "acc" : "ok"}">${esc(roleName(x.role))}${x.station ? " · " + x.station : ""}</span></div>`).join("")}</div>` : ""}
+    <h2>Marcas oficiales</h2><div class="card" style="overflow-x:auto">${pbTable(me)}</div>`;
+  $("#chg").addEventListener("click", openPicker);
+  $("#share").addEventListener("click", shareMine);
+  $$("[data-sheet]", v).forEach(b => b.addEventListener("click", () => go("hoja/" + b.dataset.sheet)));
+  $$("[data-addround]", v).forEach(b => b.addEventListener("click", () => { const ev = b.dataset.addround, X = store.get("extraRounds", {}); X[ev] = Math.min(4, (X[ev] || 1) + 1); store.set("extraRounds", X); go("hoja/" + ev + "-r" + X[ev]); }));
+  $$("tr[data-ev]", v).forEach(tr => tr.addEventListener("click", () => go("ev/" + tr.dataset.ev)));
+}
+function targetBlock(me, id) {
+  const e = M.evById[id], b = pbsOf(ME, id), R = roundsOf(id);
+  const x = M.psych[id].find(y => y.p === me);
+  const k = (lab, v, kind, nw) => `<div class="k"><small>${lab}</small><span class="t ${v ? "" : "none"}">${v ? esc(fmt(v, id, kind)) : "—"}</span></div>`;
+  return `<div class="target" style="--evc:${e.color}">
+    <div><div class="ev"><i></i>${esc(e.name)}</div><div class="small muted">${x?.seed ? `${x.seed}º del psych sheet${x.seedES ? ` · ${x.seedES}º ESP` : ""}` : "Sin marca previa"}</div></div>
+    ${k("Single a batir", b.s, "s", b.newS)}${e.single && id !== "333mbf" ? k("Media a batir", b.a, "a") : e.single ? "" : k("Media a batir", b.a, "a", b.newA)}
+    ${b.newS || b.newA ? `<div class="was">${b.newS ? `▲ Nuevo PB single aquí (oficial: ${b.offS ? esc(fmt(b.offS, id)) : "—"})` : ""}${b.newS && b.newA ? " · " : ""}${b.newA ? `▲ Nuevo PB de media aquí (oficial: ${b.offA ? esc(fmt(b.offA, id, "a")) : "—"})` : ""}</div>` : ""}
+    <div class="sheets">${R.map(r => { const s = summary(ME, r), pb = (s.best > 0 && better(s.best, b.offS)) || (s.avg > 0 && better(s.avg, b.offA));
+      return `<button class="sheetbtn ${pb ? "pb" : s.complete && s.filled ? "done" : ""}" data-sheet="${r.id}">${roundName(r)}${s.filled ? ` · <span class="t">${esc(s.avg != null ? fmt(s.avg, id, "a") : fmt(s.best, id))}</span>` : ""}${pb ? " ★" : ""}</button>`; }).join("")}
+      ${!R[0].known && R.length < 4 ? `<button class="sheetbtn" data-addround="${id}">+ Ronda</button>` : ""}</div>
+  </div>`;
+}
+
+/* ---------------- scorecard (hoja de tiempos) ---------------- */
+let CUR = null; // {rid, idx}
+function viewSheet(v, rid) {
+  const me = ME && M.byKey[ME]; if (!me) return go("yo");
+  const r = roundById(rid); if (!r) return go("yo");
+  const ev = r.id.split("-r")[0], e = M.evById[ev], s = summary(ME, r), b = pbsOf(ME, ev);
+  setTop(`${e.name} · ${roundName(r)}`, "Hoja de tiempos", true);
+  const grp = myAsg(me).find(x => x.role === "competitor" && parseCode(x.act.code)?.ev === ev && parseCode(x.act.code)?.r === r.n);
+  const gNum = grp ? parseCode(grp.act.code).g : null;
+  const SIG = (RES[ME] ||= {})[r.id + ":sig"] || {};
+  const bestI = s.best > 0 ? s.vals.indexOf(s.best) : -1;
+  let worstI = -1; if (s.kind === "a" && s.complete && !s.blocked) { const w = s.vals.map(x => x < 0 ? Infinity : x); worstI = w.indexOf(Math.max(...w)); }
+  const nextIdx = s.vals.findIndex((x, i) => x === 0 && i < s.total);
+  const row = i => { const a = s.A[i], val = s.vals[i], blocked = s.blocked && i >= s.cutN;
+    const cls = ["res", !a && !blocked ? "empty" : "", blocked ? "blocked" : "", i === bestI ? "best" : "", i === worstI ? "worst" : ""].join(" ");
+    const txt = !a || blocked ? "" : a.p === "DNF" ? (a.t ? `DNF<span class="raw">(${esc(fmt(a.t, ev))})</span>` : "DNF") : a.p === "DNS" ? "DNS"
+      : val === -1 ? `DNF<span class="raw">límite: ${esc(fmt(a.t + (a.p === 2 ? 200 : 0), ev))}</span>` : esc(fmt(val, ev)) + (a.p === 2 ? `<span class="pen">+2</span><span class="raw">${esc(fmt(a.t, ev))} + 2</span>` : "");
+    const shown = s.kind === "a" && s.complete && !s.blocked && (i === bestI || i === worstI) ? `(${txt})` : txt;
+    return `<tr class="${i === nextIdx ? "cur" : ""}"><td class="n">${i + 1}</td><td class="${cls}" data-i="${i}">${shown}</td>
+      <td class="sig" data-sig="j${i}">${SIG["j" + i] ? "✓" : ""}</td><td class="sig" data-sig="c${i}">${SIG["c" + i] ? "✓" : ""}</td></tr>`; };
+  const extra = s.A[5];
+  v.innerHTML = `
+    <div class="paper" role="group" aria-label="Hoja de tiempos">
+      <div class="comp">${esc(D.name)}</div>
+      <div class="evr"><b>${esc(EV_LONG[ev] || e.name)}</b><span>${roundName(r)}${gNum ? ` · Grupo ${gNum}` : ""}</span></div>
+      <div class="idbox"><div><small>ID</small><b>${me.rid}</b></div><div><small>Nombre · ${me.wca ? esc(me.wca) : "Nuevo competidor"}</small><div class="nm">${esc(me.name)}</div></div></div>
+      <table><thead><tr><th class="n">#</th><th>Resultado</th><th class="sig">Juez</th><th class="sig">Comp.</th></tr></thead><tbody>
+        ${Array.from({ length: s.n }, (_, i) => (s.cutN && i === s.cutN ? `<tr class="cut"><td colspan="4"><div>Corte: ${esc(cutoffTxt(r, ev))}</div></td></tr>` : "") + row(i)).join("")}
+        <tr class="cut"><td colspan="4"><div>Intento extra (solo si te lo da el delegado)</div></td></tr>
+        <tr class="extra"><td class="n">E</td><td class="res ${extra ? "" : "empty"}" data-i="5">${extra ? esc(extra.p === "DNF" ? "DNF" : extra.p === "DNS" ? "DNS" : fmt(extra.t + (extra.p === 2 ? 200 : 0), ev)) : ""}</td><td class="sig" data-sig="j5">${SIG.j5 ? "✓" : ""}</td><td class="sig" data-sig="c5">${SIG.c5 ? "✓" : ""}</td></tr>
+      </tbody></table>
+      <div class="foot"><span>Límite de tiempo: <b>${esc(limitTxt(r, ev))}</b></span><span>${esc(FMT[r.format]?.[0] || "")}</span></div>
+    </div>
+    ${calcBlock(r, s, b, e)}
+    <div class="controls" style="justify-content:space-between">
+      ${prevNext(r)}
+      <button class="btn sm" id="clearSheet">Borrar hoja</button>
+    </div>
+    <p class="note">Toca una casilla de resultado para anotarlo. «Juez» y «Comp.» son solo para que marques que la hoja oficial está firmada. El intento extra sustituye a otro intento: anótalo en su casilla si te lo concede el delegado. Los resultados oficiales son los de WCA Live.</p>`;
+  $$("td.res[data-i]", v).forEach(td => td.addEventListener("click", () => { if (td.classList.contains("blocked")) return; openKeypad(r, +td.dataset.i); }));
+  $$("td.sig", v).forEach(td => td.addEventListener("click", () => { const k = td.dataset.sig; SIG[k] = !SIG[k]; RES[ME][r.id + ":sig"] = SIG; saveRes(); td.textContent = SIG[k] ? "✓" : ""; }));
+  $("#clearSheet").addEventListener("click", () => { if (!confirm("¿Borrar todos los tiempos de esta hoja?")) return; delete RES[ME][r.id]; delete RES[ME][r.id + ":sig"]; saveRes(); viewSheet(v, rid); });
+  $$("[data-sheet]", v).forEach(b2 => b2.addEventListener("click", () => history.replaceState(null, "", "#hoja/" + b2.dataset.sheet) || render()));
+}
+function prevNext(r) {
+  const R = roundsOf(r.id.split("-r")[0]), i = R.findIndex(x => x.id === r.id);
+  return `<div class="row" style="gap:8px">${R[i - 1] ? `<button class="btn sm" data-sheet="${R[i - 1].id}">← ${roundName(R[i - 1])}</button>` : ""}${R[i + 1] ? `<button class="btn sm" data-sheet="${R[i + 1].id}">${roundName(R[i + 1])} →</button>` : ""}</div>`;
+}
+function calcBlock(r, s, b, e) {
+  const ev = e.id, items = [], kindA = s.kind !== "b", hasMean = kindA || (s.n === 3 && ev !== "333mbf");
+  // Objetivos fijados ANTES de esta ronda (marca oficial o mejor de rondas previas)
+  const prevS = Math.min(...[b.offS, ...roundsOf(ev).filter(x => x.n < r.n).map(x => summary(ME, x).best)].filter(x => x > 0), Infinity);
+  const prevA = Math.min(...[b.offA, ...roundsOf(ev).filter(x => x.n < r.n).map(x => summary(ME, x).avg)].filter(x => x > 0), Infinity);
+  const tS = prevS < Infinity ? prevS : 0, tA = prevA < Infinity ? prevA : 0;
+  if (s.best > 0 && better(s.best, tS)) items.push(`<span class="pbflag">¡Nuevo PB single!</span> ${esc(fmt(s.best, ev))}${tS ? ` (antes ${esc(fmt(tS, ev))}, ${esc(diff(tS, s.best, ev))})` : ""}`);
+  if (s.avg > 0 && better(s.avg, tA)) items.push(`<span class="pbflag">¡Nuevo PB de ${s.kind === "a" ? "media" : "media de 3"}!</span> ${esc(fmt(s.avg, ev, "a"))}${tA ? ` (antes ${esc(fmt(tA, ev, "a"))}, ${esc(diff(tA, s.avg, ev))})` : ""}`);
+  if (s.cutN && !s.blocked && !s.madeCut) {
+    const left = s.cutN - s.vals.slice(0, s.cutN).filter(v => v !== 0).length;
+    if (left > 0) items.push(`Para pasar el corte necesitas bajar de <b class="t">${esc(fmt(r.cutoff.attemptResult, ev))}</b> en ${left > 1 ? `uno de los próximos ${left} intentos` : "el siguiente intento"}.`);
+  }
+  if (s.cutN && s.madeCut && s.vals.slice(0, s.cutN).some(v => v > 0)) items.push(`Corte superado: haces los ${s.n} intentos.`);
+  if (s.blocked) items.push(`No has pasado el corte: tu resultado es el mejor single (${esc(fmt(s.best, ev))}).`);
+  if (kindA && !s.complete && !s.blocked) {
+    const need = needFor(tA, s, r);
+    if (need?.always) items.push(`PB de media asegurado pase lo que pase en el último intento.`);
+    else if (need?.never) items.push(`Ya no da para PB de media en esta ronda (PB: ${esc(fmt(tA, ev, "a"))}).`);
+    else if (need?.max) items.push(`Para PB de media necesitas <b class="t">${esc(fmt(need.max, ev))}</b> o menos en el último intento.`);
+    if (s.kind === "a" && s.filled === 4) {
+      const v4 = s.vals.slice(0, 5); const idx = v4.indexOf(0);
+      const bpa = (() => { const t = v4.slice(); t[idx] = 1; return avgOf(t, "a", ev); })(), wpa = (() => { const t = v4.slice(); t[idx] = -1; return avgOf(t, "a", ev); })();
+      items.unshift(`BPA (mejor media posible) <b class="t">${esc(fmt(bpa, ev, "a"))}</b> · WPA (peor) <b class="t">${esc(fmt(wpa, ev, "a"))}</b>`);
+    }
+  }
+  const adv = r.advancementCondition, nextR = roundsOf(ev).find(x => x.n === r.n + 1);
+  if (adv?.type === "ranking" && r.n === 1) { // referencia orientativa: el psych sheet
+    const L = M.psych[ev].filter(x => x.seed), ref = L[adv.level - 1];
+    if (ref) { const pb = ref.p.pb[ev], v = e.single ? pb.s?.v : (pb.a?.v || pb.s?.v); items.push(`Pasan ${adv.level} a ${nextR ? roundName(nextR).toLowerCase() : "la siguiente ronda"}. Referencia: el ${adv.level}º del psych sheet tiene ${esc(fmt(v, ev, e.single ? "s" : "a"))} de PB.`); }
+  } else if (adv) items.push(advTxt(r) + (nextR ? ` a ${roundName(nextR).toLowerCase()}` : "") + ".");
+  const res = s.kind === "b" ? s.best : s.avg;
+  const seed = res > 0 ? seedWith(ev, res, s.kind === "b" ? "s" : s.kind === "a" ? "a" : "m") : null;
+  if (seed && (s.kind !== "b" || e.single)) items.push(`Con este resultado serías el ${seed}º del psych sheet.`);
+  return `<div class="card calc"><div class="res2">
+      <div><small>Mejor single</small><b>${s.best ? esc(fmt(s.best, ev)) : "—"}</b></div>
+      <div><small>${hasMean ? (s.kind === "a" ? "Media de 5" : "Media de 3") : "Resultado"}</small><b>${hasMean ? (s.avg != null ? esc(fmt(s.avg, ev, "a")) : s.blocked ? "—" : `<span class="muted">${s.filled}/${s.total}</span>`) : s.best ? esc(fmt(s.best, ev)) : "—"}</b></div>
+      <div><small>Single a batir</small><b>${tS ? esc(fmt(tS, ev)) : "—"}</b></div>
+      <div><small>${hasMean ? "Media a batir" : "Tu puesto mundial"}</small><b>${hasMean ? (tA ? esc(fmt(tA, ev, "a")) : "—") : (M.byKey[ME].pb[ev]?.s?.wr ?? "—")}</b></div>
+    </div>${items.length ? `<ul>${items.map(x => `<li>${x}</li>`).join("")}</ul>` : ""}</div>`;
+}
+const diff = (old, nw, ev) => ev === "333mbf" ? "mejor" : "−" + cs(old - nw).replace(/^0:/, "");
+
+/* ---------------- keypad ---------------- */
+function openKeypad(r, i) {
+  const ev = r.id.split("-r")[0], cur = attempts(ME, r.id)[i];
+  CUR = { r, i, ev, digits: cur && cur.t && ev !== "333mbf" ? String(cur.t) : "", pen: cur?.p || 0 };
+  const sh = $("#sheet");
+  const title = `<div class="row"><b class="grow">${i === 5 ? "Intento extra" : "Intento " + (i + 1)} · ${esc(evName(ev))} ${roundName(r)}</b><button class="iconbtn" data-k="close" aria-label="Cerrar">✕</button></div>`;
+  if (ev === "333mbf") {
+    const [solved, att, secs] = cur?.t ? (() => { const dd = Math.floor(cur.t / 1e7), t = Math.floor(cur.t / 100) % 1e5, mm = cur.t % 100, so = 99 - dd + mm; return [so, so + mm, t]; })() : ["", "", ""];
+    sh.innerHTML = `<div class="grab"></div>${title}<div class="mbf"><label>Resueltos<input id="mS" type="number" inputmode="numeric" min="0" max="99" value="${solved}"></label>
+      <label>Intentados<input id="mA" type="number" inputmode="numeric" min="2" max="99" value="${att}"></label><label>Tiempo (mm:ss)<input id="mT" inputmode="numeric" placeholder="45:12" value="${secs !== "" ? Math.floor(secs / 60) + ":" + String(secs % 60).padStart(2, "0") : ""}"></label></div>
+      <div class="keys" style="grid-template-columns:repeat(3,1fr)"><button class="fn ${CUR.pen === "DNF" ? "on" : ""}" data-k="DNF">DNF</button><button class="fn ${CUR.pen === "DNS" ? "on" : ""}" data-k="DNS">DNS</button><button class="fn" data-k="del">Vaciar</button></div>
+      <div class="keys" style="grid-template-columns:1fr"><button class="ok" data-k="ok">Guardar</button></div>`;
+  } else {
+    sh.innerHTML = `<div class="grab"></div>${title}<div class="disp" id="disp"></div>
+      <div class="keys">
+        ${[7, 8, 9].map(n => `<button data-k="${n}">${n}</button>`).join("")}<button class="fn ${CUR.pen === 2 ? "on" : ""}" data-k="+2">+2</button>
+        ${[4, 5, 6].map(n => `<button data-k="${n}">${n}</button>`).join("")}<button class="fn ${CUR.pen === "DNF" ? "on" : ""}" data-k="DNF">DNF</button>
+        ${[1, 2, 3].map(n => `<button data-k="${n}">${n}</button>`).join("")}<button class="fn ${CUR.pen === "DNS" ? "on" : ""}" data-k="DNS">DNS</button>
+        <button class="fn" data-k="del">Vaciar</button><button data-k="0">0</button><button class="fn" data-k="back" aria-label="Borrar dígito">⌫</button><button class="ok" data-k="ok">OK</button>
+      </div><div class="note" style="text-align:center">Escribe solo los números: 1234 → 12.34 · 10512 → 1:05.12</div>`;
+    drawDisp();
+  }
+  $$("[data-k]", sh).forEach(b => b.addEventListener("click", () => key(b.dataset.k)));
+  sh.hidden = false; $("#scrim").hidden = false;
+}
+function digitsToCs(d) { // "10512" -> 1:05.12
+  if (!d) return 0; const n = d.padStart(7, "0"), h = +n.slice(0, -6), m = +n.slice(-6, -4), s = +n.slice(-4, -2), c = +n.slice(-2);
+  return ((h * 60 + m) * 60 + s) * 100 + c;
+}
+function drawDisp() {
+  const t = digitsToCs(CUR.digits), d = $("#disp"); if (!d) return;
+  d.innerHTML = CUR.pen === "DNS" ? `<span class="pen" style="font-size:40px">DNS</span>` :
+    `<span class="t">${t ? esc(cs(t)) : "0.00"}</span>${CUR.pen === 2 ? `<span class="pen">+2 = ${esc(cs(t + 200))}</span>` : CUR.pen === "DNF" ? `<span class="pen">DNF</span>` : ""}`;
+  $$("[data-k='+2'],[data-k='DNF'],[data-k='DNS']").forEach(b => b.classList.toggle("on", String(CUR.pen) === (b.dataset.k === "+2" ? "2" : b.dataset.k)));
+}
+function key(k) {
+  if (!CUR) return;
+  if (k === "close") return closeSheet();
+  if (CUR.ev === "333mbf") {
+    if (k === "DNF" || k === "DNS") { CUR.pen = CUR.pen === k ? 0 : k; $$("[data-k='DNF'],[data-k='DNS']").forEach(b => b.classList.toggle("on", CUR.pen === b.dataset.k)); return; }
+    if (k === "del") return saveAttempt(null);
+    if (k === "ok") {
+      if (CUR.pen) return saveAttempt({ t: 0, p: CUR.pen });
+      const so = +$("#mS").value, at = +$("#mA").value, tm = $("#mT").value.trim();
+      const mt = /^(\d{1,2})(?::(\d{1,2}))?$/.exec(tm.replace(".", ":"));
+      if (!at || at < 2 || so > at || !mt) return toast("Revisa resueltos, intentados y tiempo (mm:ss)");
+      const secs = mt[2] != null ? +mt[1] * 60 + +mt[2] : +mt[1] * 60, missed = at - so, pts = so - missed;
+      if (pts < 0 || so < 2 || secs > Math.min(3600, at * 600)) return saveAttempt({ t: 0, p: "DNF" });
+      return saveAttempt({ t: (99 - pts) * 1e7 + secs * 100 + missed, p: 0 });
+    }
+    return;
+  }
+  if (/^\d$/.test(k)) { if (CUR.pen === "DNS") CUR.pen = 0; if (CUR.digits.length < 7) CUR.digits = (CUR.digits + k).replace(/^0+/, ""); }
+  else if (k === "back") CUR.digits = CUR.digits.slice(0, -1);
+  else if (k === "+2") CUR.pen = CUR.pen === 2 ? 0 : 2;
+  else if (k === "DNF") CUR.pen = CUR.pen === "DNF" ? 0 : "DNF";
+  else if (k === "DNS") { CUR.pen = CUR.pen === "DNS" ? 0 : "DNS"; if (CUR.pen) CUR.digits = ""; }
+  else if (k === "del") return saveAttempt(null);
+  else if (k === "ok") {
+    const t = digitsToCs(CUR.digits);
+    if (!t && CUR.pen !== "DNF" && CUR.pen !== "DNS") return toast("Escribe el tiempo, o marca DNF / DNS");
+    return saveAttempt({ t, p: CUR.pen });
+  }
+  drawDisp();
+}
+function saveAttempt(a) {
+  const { r, i, ev } = CUR, A = ((RES[ME] ||= {})[r.id] ||= []);
+  const before = pbsOf(ME, ev);
+  while (A.length < i) A.push(null);
+  A[i] = a; while (A.length && !A[A.length - 1]) A.pop();
+  if (!A.length) delete RES[ME][r.id];
+  saveRes(); closeSheet(); viewSheet($("#view"), r.id);
+  const after = pbsOf(ME, ev);
+  if (a && better(after.s, before.s)) toast("¡Nuevo PB single! 🎉");
+  else if (a && better(after.a, before.a)) toast("¡Nuevo PB de media! 🎉");
+}
+function closeSheet(focus = true) { $("#sheet").hidden = true; $("#scrim").hidden = true; CUR = null; }
+$("#scrim").addEventListener("click", () => closeSheet());
+document.addEventListener("keydown", e => {
+  if (!CUR || CUR.ev === "333mbf") return;
+  if (/^\d$/.test(e.key)) key(e.key); else if (e.key === "Backspace") key("back"); else if (e.key === "Enter") key("ok"); else if (e.key === "Escape") closeSheet(); else return;
+  e.preventDefault();
+});
+
+/* ---------------- picker (who am I) ---------------- */
+function openPicker() {
+  const sh = $("#sheet");
+  sh.innerHTML = `<div class="grab"></div><div class="row"><b class="grow">¿Quién eres?</b><button class="iconbtn" id="pkClose" aria-label="Cerrar">✕</button></div>
+    <input class="field" id="pkq" type="search" placeholder="Tu nombre, WCA ID o nº de competidor…" autocomplete="off" style="margin-top:10px">
+    <div class="plist picker" id="pkl" style="margin-top:10px;max-height:56vh;overflow-y:auto"></div>`;
+  const draw = () => { const q = $("#pkq").value; $("#pkl").innerHTML = q.trim() ? searchPeople(q, 40).map(p => personRow(p)).join("") : `<div class="note">Empieza a escribir…</div>`;
+    $$("#pkl [data-p]").forEach(b => b.addEventListener("click", () => { closeSheet(); setMe(b.dataset.p); })); };
+  $("#pkq").addEventListener("input", draw); $("#pkClose").addEventListener("click", () => closeSheet());
+  sh.hidden = false; $("#scrim").hidden = false; draw(); setTimeout(() => $("#pkq")?.focus(), 50);
+}
+
+/* ---------------- share ---------------- */
+function shareMine() {
+  const me = M.byKey[ME], lines = [`${me.name} · ${D.name}`];
+  for (const id of me.events.filter(x => M.evById[x])) for (const r of roundsOf(id)) {
+    const s = summary(ME, r); if (!s.filled) continue;
+    const at = s.vals.slice(0, s.total).map((v, i) => { const a = s.A[i]; return v === 0 ? "—" : fmt(v, id) + (a?.p === 2 ? "(+2)" : ""); }).join(" ");
+    lines.push(`${evName(id)} ${roundName(r)}: ${at}${s.avg != null ? ` → media ${fmt(s.avg, id, "a")}` : s.kind === "b" || s.blocked ? ` → mejor ${fmt(s.best, id)}` : ""}`);
+  }
+  const txt = lines.length > 1 ? lines.join("\n") : `${me.name}: aún no hay tiempos anotados.`;
+  if (window.Native?.share) Native.share(txt);
+  else if (navigator.share) navigator.share({ text: txt }).catch(() => {});
+  else navigator.clipboard?.writeText(txt).then(() => toast("Copiado al portapapeles"), () => toast("No se pudo copiar"));
+}
+
+/* ---------------- sync with the WCA ---------------- */
+const CB = {}; let cbN = 0;
+window.__nativeDone = (id, ok, body) => { const c = CB[id]; delete CB[id]; if (c) ok ? c.res(body) : c.rej(new Error(body)); };
+function httpGet(url) {
+  if (window.Native?.get) return new Promise((res, rej) => { const id = "c" + ++cbN; CB[id] = { res, rej }; Native.get(url, id); });
+  return fetch(url).then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.text(); });
+}
+let syncing = false;
+async function sync(silent) {
+  if (syncing) return; syncing = true; $("#syncBtn").classList.add("spin");
+  try {
+    const w = JSON.parse(await httpGet(WCIF_URL));
+    const d = slim(w);
+    if (!d.persons.length) throw new Error("vacío");
+    store.set("wcif", d); // si no cabe en el almacenamiento, se usa igualmente en esta sesión
+    D = d; M = build(D); if (ME && !M.byKey[ME]) { ME = null; store.set("me", null); }
+    store.set("lastSync", Date.now());
+    render(); toast("Datos actualizados desde la WCA");
+  } catch (e) { if (!silent) toast("No se pudo conectar con la WCA. Prueba con internet."); }
+  finally { syncing = false; $("#syncBtn").classList.remove("spin"); }
+}
+$("#syncBtn").addEventListener("click", () => sync(false));
+document.addEventListener("click", e => { if (e.target.closest?.("[data-sync]")) sync(false); });
+
+/* ---------------- toast, theme, back ---------------- */
+let toastT;
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 2600); }
+const root = document.documentElement;
+const savedTheme = store.get("theme", null); if (savedTheme) root.dataset.theme = savedTheme;
+$("#themeBtn").addEventListener("click", () => {
+  const cur = root.dataset.theme || (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+  root.dataset.theme = cur === "dark" ? "light" : "dark"; store.set("theme", root.dataset.theme);
+});
+// Botón «atrás» de Android: primero cierra la hoja abierta, luego navega hacia atrás; en Inicio sale de la app.
+window.__back = () => {
+  if (!$("#sheet").hidden) { closeSheet(); return true; }
+  const h = location.hash.slice(1) || "inicio";
+  if (h === "inicio") return false;
+  if (history.length > 1) { history.back(); return true; }
+  go("inicio"); return true;
+};
+
+render();
+// Sin horario o datos de más de 3 h: intenta actualizar en segundo plano (si no hay internet, no pasa nada).
+if (!M.hasSchedule || Date.now() - store.get("lastSync", 0) > 3 * 3600e3) setTimeout(() => sync(true), 800);
+</script>

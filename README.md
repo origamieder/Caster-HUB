@@ -47,6 +47,36 @@ Si actualizas los datos, vuelve a ejecutar el instalador para que el PC use la v
 
 ---
 
+## App para competidores (`Cto_Espana_2026_Competidores.apk`)
+
+Versión para repartir entre **todos los competidores**, solo Android. No lleva nada de lo que es para casters (favoritos, títulos, palmarés, datos clave, notas, cara a cara, forma de los últimos 12 meses): solo lo que necesita quien compite. Se instala aparte de Caster Hub (se llama **Cto. España 2026**) y no se mezclan.
+
+| Sección | Qué tiene |
+|---|---|
+| **Inicio** | Tu perfil, lo siguiente que te toca (grupo, hora, sala), lo que está en curso, eventos y enlaces a WCA Live, la página de la WCA y el reglamento. |
+| **Horario** | Horario oficial por días en hora de Madrid. Destaca tus eventos y te lista tus grupos y tareas de staff (juez, mezclador, runner…) con el puesto. |
+| **Eventos** | Psych sheet de cada evento (general o ranking España) y, por ronda: formato, límite de tiempo, corte y cuántos pasan. «Ir a mi puesto». |
+| **Competidores** | Buscador por nombre, WCA ID, nº de competidor o país. Ficha con marcas, NR/WR y puesto en cada psych sheet. |
+| **Mis tiempos** | Cada competidor elige quién es y ve sus **tiempos a mejorar** por evento (single y media), que se actualizan solos si bate su PB durante el campeonato. |
+
+**Hojas de tiempos.** Desde *Mis tiempos* cada ronda abre una hoja con el aspecto de la hoja de la WCA (ID, nombre, intentos 1-5, línea de corte, intento extra, columnas Juez/Comp., límite de tiempo). Se anota con un teclado numérico como el de WCA Live (`1234` → 12.34, `10512` → 1:05.12) con +2, DNF y DNS; Multi-BLD pide resueltos, intentados y tiempo. Mientras compites calcula:
+- mejor single y media (reglas WCA: se quitan mejor y peor en media de 5; con 2 DNF la media es DNF; superar el límite de tiempo = DNF);
+- si has pasado el corte o qué necesitas para pasarlo, y bloquea los intentos que ya no haces;
+- con 4 intentos, **BPA/WPA** y el tiempo máximo del último intento para hacer **PB de media**;
+- aviso de nuevo PB single o de media, y en qué puesto del psych sheet quedarías.
+
+Los tiempos se guardan solo en el móvil y se pueden enviar con **Compartir mis tiempos**. Los oficiales siguen siendo los de WCA Live.
+
+**Datos.** El APK lleva una copia de los inscritos y sus marcas, así que funciona sin internet. Con internet, la app descarga sola el WCIF público de la WCA (al abrirla si no tiene horario o han pasado más de 3 h, o con el botón ↻): inscritos, marcas, rondas, cortes, límites, horario y grupos. Si en el APK no venía el horario, aparece en cuanto el móvil tenga conexión.
+
+**Archivos:** `competidores/app.html` (la app), `tools/export_comp.py` (genera `competidores/data.json` desde `tools/data/wcif.json`, o desde `web/data.json` si no hay WCIF), `competidores/bundle.py` y `competidores/android/` (proyecto Android y `build_apk.sh`). `actualizar.sh` ya lo regenera todo.
+
+**Clave de firma:** `competidores/android/competidores.keystore` (no está en GitHub). Igual que con Caster Hub: guárdala aparte y cópiala ahí antes de recompilar. Si no está, se crea una nueva y quien tenga instalada la versión anterior tendrá que desinstalarla antes de instalar la nueva.
+
+`build_apk.sh` usa el Android SDK si lo encuentra (como Caster Hub). En Linux sin SDK compila con los paquetes de Debian/Ubuntu: `apt install aapt dalvik-exchange zipalign apksigner android-sdk-platform-23`.
+
+---
+
 ## 2. Actualizar los datos antes del campeonato
 
 Las marcas personales cambian con cada competición, así que conviene actualizar unos días antes. El script `actualizar.sh` hace todo de una vez:
@@ -54,7 +84,7 @@ Las marcas personales cambian con cada competición, así que conviene actualiza
 1. Descarga de la WCA los inscritos y sus perfiles.
 2. Regenera el Excel `Campeonato_Espana_2026_Competidores.xlsx`.
 3. Regenera la web: `web/index.html` y `web/caster-hub.html`.
-4. Recompila `CasterHub.apk`.
+4. Recompila `CasterHub.apk` y `Cto_Espana_2026_Competidores.apk`.
 
 Tarda **30-40 minutos**, porque la WCA limita el número de peticiones. Es normal que parezca parado un rato.
 
@@ -117,6 +147,7 @@ python -I web/bundle.py
 ```
 CasterHub/
 ├── CasterHub.apk              App Android lista para instalar
+├── Cto_Espana_2026_Competidores.apk  App para competidores (repartir)
 ├── Instalar en este PC.bat    Instala la web en Windows con accesos directos
 ├── Desinstalar de este PC.bat Quita la instalación anterior
 ├── actualizar.sh              Actualiza datos + Excel + web + APK

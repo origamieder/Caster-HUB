@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Descarga datos frescos de la WCA y regenera el Excel, la web y el APK.
+# Descarga datos frescos de la WCA y regenera el Excel, la web y los dos APK (casters y competidores).
 # Uso (Git Bash):  bash actualizar.sh
 # Tarda ~30-40 min: la API de la WCA limita las peticiones.
 set -euo pipefail
@@ -14,4 +14,7 @@ python -I tools/build.py "$D" "Campeonato_Espana_2026_Competidores.xlsx"
 python -I tools/export.py "$D" "web/data.json"
 python -I web/bundle.py
 bash android/build_apk.sh
-echo "Listo: web/index.html, web/caster-hub.html, CasterHub.apk y el Excel actualizados."
+python -I tools/export_comp.py "$D" "competidores/data.json"   # app de competidores (sin datos de casters)
+python -I competidores/bundle.py
+bash competidores/android/build_apk.sh
+echo "Listo: web/index.html, web/caster-hub.html, CasterHub.apk, Cto_Espana_2026_Competidores.apk y el Excel actualizados."

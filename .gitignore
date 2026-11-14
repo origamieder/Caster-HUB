@@ -3,6 +3,8 @@ tools/data/
 
 # Artefactos intermedios de compilación del APK
 android/build/
+competidores/build/
+competidores/android/build/
 *.idsig
 
 # Python
