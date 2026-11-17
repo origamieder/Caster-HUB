@@ -17,10 +17,11 @@ Copy-Item $html (Join-Path $Destino "index.html") -Force
 $ico = Join-Path $Origen "casterhub.ico"
 if (Test-Path $ico) { Copy-Item $ico (Join-Path $Destino "casterhub.ico") -Force }
 
-$app = Join-Path $Destino "index.html"
-$url = ([Uri]$app).AbsoluteUri
-
-# Ventana propia sin barras: Edge (viene con Windows 10/11) o Chrome en modo aplicación.
+# Lanzador: sirve la app desde http://localhost (solo este PC) y la abre en ventana propia de Edge/Chrome,
+# así Windows muestra el logo del campeonato en la ventana y la barra de tareas (con file:// sale un globo).
+foreach ($f in "lanzador.ps1", "lanzar.vbs") { Copy-Item (Join-Path $PSScriptRoot $f) (Join-Path $Destino $f) -Force }
+$exe = Join-Path $env:WINDIR "System32\wscript.exe"
+$args_ = "`"$(Join-Path $Destino "lanzar.vbs")`""
 $navegador = @(
     "${env:ProgramFiles(x86)}\Microsoft\Edge\Application\msedge.exe",
     "$env:ProgramFiles\Microsoft\Edge\Application\msedge.exe",
@@ -28,14 +29,6 @@ $navegador = @(
     "${env:ProgramFiles(x86)}\Google\Chrome\Application\chrome.exe",
     "$env:LOCALAPPDATA\Google\Chrome\Application\chrome.exe"
 ) | Where-Object { $_ -and (Test-Path $_) } | Select-Object -First 1
-
-$perfil = Join-Path $Destino "perfil-navegador"
-if ($navegador) {
-    $exe = $navegador
-    $args_ = "--app=`"$url`" --user-data-dir=`"$perfil`" --start-maximized --no-first-run"
-} else {
-    $exe = $app; $args_ = ""
-}
 
 $shell = New-Object -ComObject WScript.Shell
 function Crear-Acceso($ruta) {
@@ -57,6 +50,4 @@ Write-Host "  Accesos directos: Escritorio y menu Inicio" -ForegroundColor Green
 if ($navegador) { Write-Host "  Se abrira en ventana propia con: $(Split-Path $navegador -Leaf)" }
 else { Write-Host "  No hay Edge ni Chrome: se abrira en el navegador predeterminado." -ForegroundColor Yellow }
 
-if (-not $NoAbrir) {
-    if ($navegador) { Start-Process -FilePath $navegador -ArgumentList $args_ } else { Start-Process $app }
-}
+if (-not $NoAbrir) { Start-Process -FilePath $exe -ArgumentList $args_ }

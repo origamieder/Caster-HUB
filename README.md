@@ -20,7 +20,9 @@ Doble clic en **`Instalar en este PC.bat`**. En unos segundos:
 
 - copia la app a `%LOCALAPPDATA%\CasterHub`, así que sigue funcionando aunque quites el USB;
 - crea el acceso directo **Caster Hub** en el Escritorio y en el menú Inicio;
-- la abre en una **ventana propia, sin pestañas ni barra de direcciones** (Edge o Chrome en modo aplicación). Si no hay ninguno de los dos, la abre en el navegador predeterminado.
+- la abre en una **ventana propia, sin pestañas ni barra de direcciones** (Edge o Chrome en modo aplicación), con el **logo del campeonato** en la ventana y en la barra de tareas. Si no hay ninguno de los dos navegadores, la abre en el predeterminado.
+
+  Para que salga el logo, el acceso directo sirve la app desde `http://localhost:47826` mediante un mini servidor que **solo atiende a este PC** y se apaga al cerrar la ventana. Si el archivo se abriera directamente, Windows mostraría un globo genérico.
 
 No necesita permisos de administrador ni internet. Para quitarla, usa **`Desinstalar de este PC.bat`**.
 
@@ -166,6 +168,8 @@ CasterHub/
 │   └── casterhub.keystore     ⚠ Clave de firma del APK (no está en GitHub, solo en tu PC)
 └── tools/
     ├── instalar.ps1           Lógica del instalador (lo lanza el .bat)
+    ├── lanzador.ps1           Abre el Hub servido en localhost (logo en la barra de tareas)
+    ├── lanzar.vbs             Arranca el lanzador sin ventana de consola (lo usa el acceso directo)
     ├── fetch.py               Calcula top 20 general / top 20 españoles y descarga perfiles
     ├── fetch_all.py           Descarga el resto de inscritos
     ├── build.py               Genera el Excel

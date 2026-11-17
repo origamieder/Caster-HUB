@@ -7,3 +7,4 @@
 *.keystore  binary
 *.xlsx      binary
 *.ico       binary
+*.vbs  text eol=crlf

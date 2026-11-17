@@ -298,6 +298,19 @@ td.key .t { font-size: calc(18px * var(--fz)); font-weight: 700; color: var(--ac
 .gtable td.nmcell .tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 2px; }
 .gtable td.nmcell .tags:empty { display: none; }
 .gtable .seed { font-size: calc(19px * var(--fz)) !important; width: 1%; }
+/* extra columns appear as the group gets wider (container queries on each group table) */
+.gtable { container-type: inline-size; }
+.gtable .x1, .gtable .x2, .gtable .x3 { display: none; }
+@container (min-width: 760px) { .gtable .x1 { display: table-cell; } }
+@container (min-width: 1060px) { .gtable .x2 { display: table-cell; } }
+@container (min-width: 1360px) {
+  .gtable .x3 { display: table-cell; }
+  .gtable td.nmcell, .gtable thead th.l.nmh { width: 1%; white-space: nowrap; }
+  .gtable td.notes { width: auto; white-space: normal; }
+}
+.gtable td.esh { font-size: calc(13px * var(--fz)); }
+.gtable td.notes div { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: var(--muted); font-size: calc(13px * var(--fz)); max-width: 520px; }
+.gtable .spark { margin: 0 auto; }
 .gtable tbody tr.feat td { background: color-mix(in srgb, var(--accent) 13%, transparent); }
 .gtable tbody tr.adv td:first-child { box-shadow: inset 4px 0 0 var(--green); }
 .viewsel { margin-left: auto; }
@@ -612,10 +625,10 @@ function evCard(e) {
 const COLS = [
   { k: "seed", t: "#", g: "c" }, { k: "seedES", t: "ESP", g: "c" }, { k: "name", t: "Competidor", g: "c", l: 1 },
   { k: "pbS", t: "Single", g: "pb", time: 1 }, { k: "nrS", t: "NR", g: "pb" }, { k: "pbA", t: "Media", g: "pb", time: 1 }, { k: "nrA", t: "NR", g: "pb" }, { k: "wr", t: "WR", g: "pb" },
-  { k: "b12", t: "Mejor 12 m", g: "f", time: 1 }, { k: "m12", t: "Media 12 m", g: "f", time: 1 }, { k: "iy", t: "Δ año", g: "f" }, { k: "spark", t: "Evolución", g: "f", ns: 1 },
+  { k: "b12", t: "Mejor 12 m", g: "f", time: 1 }, { k: "m12", t: "Media 12 m", g: "f", time: 1 }, { k: "iy", t: "Δ año", g: "f" },
   { k: "tit", t: "Títulos", g: "h" }, { k: "pod", t: "Podios", g: "h" }, { k: "bp", t: "Mejor puesto", g: "h" }, { k: "intl", t: "Europa / Mundo", g: "h", ns: 1 },
 ];
-const GROUPS = [["c", "Competidor", 3, "var(--fg)"], ["pb", "Marcas personales", 5, "var(--blue)"], ["f", "Forma actual", 4, "var(--green)"], ["h", "Historial Cto. España y fuera", 4, "var(--accent)"]];
+const GROUPS = [["c", "Competidor", 3, "var(--fg)"], ["pb", "Marcas personales", 5, "var(--blue)"], ["f", "Forma actual", 3, "var(--green)"], ["h", "Historial Cto. España y fuera", 4, "var(--accent)"]];
 function viewEvent(v) {
   const e = EVBYID[S.ev];
   const fav = favOf(e), es2 = e.rows.find(r => r.seedES === 2);
@@ -642,7 +655,7 @@ function viewEvent(v) {
     <div id="cmp"></div>
     <div class="tablewrap"><table id="evtable"></table></div>
     <div class="note">Atajos: ← → cambia de evento (o de competidor con la ficha abierta) · F fija al competidor de la ficha · / busca · ☆ fija a un competidor para tenerlo a mano en «Fijados».</div>
-    <div class="note">Δ año: mejor marca de los últimos 12 meses frente a los 12 anteriores (verde = ha mejorado). Evolución: mejor marca de cada año ${DATA.meta.years[0]}–${DATA.meta.years.at(-1)} (abajo = más rápido; pasa el dedo o el ratón para ver los tiempos). Títulos/podios: Campeonato de España en este evento (entre españoles).</div>`;
+    <div class="note">Δ año: mejor marca de los últimos 12 meses frente a los 12 anteriores (verde = ha mejorado). Pasa el ratón por cualquier dato para ver qué significa. Títulos/podios: Campeonato de España en este evento (entre españoles).</div>`;
   v.querySelectorAll(".chip").forEach(b => b.addEventListener("click", () => { S.sort = null; go("evento-" + b.dataset.ev); }));
   v.querySelectorAll("[data-nat]").forEach(b => b.addEventListener("click", () => { S.nat = b.dataset.v; store.set("nat", S.nat); viewEvent(v); avFix(); }));
   v.querySelectorAll("[data-lim]").forEach(b => b.addEventListener("click", () => { S.lim = +b.dataset.lim; store.set("lim", S.lim); viewEvent(v); avFix(); }));
@@ -717,7 +730,7 @@ function evRow(e, r, key) {
     <td class="l"><div class="who">${starBtn(r.id)}${av(p)}<div><div class="nm">${esc(p.name)}${NOTES[r.id] ? ` <span class="mark n" title="Tiene notas">✎</span>` : ""}</div><div class="meta">${cc(p.iso)}${badges}</div></div></div></td>
     ${td("pbS")}<td class="rk">${r.nrS ?? "—"}</td>${td("pbA")}<td class="rk">${r.nrA ?? "—"}</td><td class="rk">${wr ?? "—"}</td>
     <td><span class="t">${esc(r.b12 || "—")}</span></td><td><span class="t" style="color:var(--muted)">${esc(r.m12 || (e.id === "333mbf" ? r.n12 + " int." : "—"))}</span></td>
-    <td>${delta(r.iy)}</td><td>${spark(r.years)}</td>
+    <td>${delta(r.iy)}</td>
     <td>${r.tit ? `<span class="tit">${r.tit}</span>` : `<span class="zero">0</span>`}</td><td>${r.pod || `<span class="zero">0</span>`}</td>
     <td>${r.bp ? r.bp + "º" : `<span class="zero">—</span>`}</td>
     <td>${r.intl.map(x => `<span class="pill intl" title="${x[0]} ${x[1]}">${x[2]}º ${x[0] === "Mundial" ? "WC" : "EC"} ${String(x[1]).slice(2)}</span>`).join(" ") || `<span class="zero">—</span>`}</td></tr>`;
@@ -798,10 +811,10 @@ function openProfile(id, push = true) {
     </div>
     ${F.length ? `<div class="box"><div class="eyebrow">Datos clave para el directo</div><ul class="facts">${F.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}
     <div class="sect"><h2>En este campeonato</h2>
-      <div class="tablewrap ptable"><table><thead><tr><th class="l">Evento</th><th>Seed</th><th>ESP</th><th>Single</th><th>Media</th><th>Mejor 12 m</th><th>Δ año</th><th>Evolución</th><th>Títulos</th><th>Mejor puesto</th></tr></thead><tbody>
+      <div class="tablewrap ptable"><table><thead><tr><th class="l">Evento</th><th>Seed</th><th>ESP</th><th>Single</th><th>Media</th><th>Mejor 12 m</th><th>Δ año</th><th>Títulos</th><th>Mejor puesto</th></tr></thead><tbody>
       ${evs.map(({ e, r }) => r ? `<tr data-ev="${e.id}"><td class="l"><b>${esc(e.name)}</b></td><td class="seed" style="font-size:calc(20px * var(--fz))">${r.seed}</td><td class="seedes">${r.seedES || ""}</td>
         <td class="${e.metric === "single" ? "key" : ""}"><span class="t">${esc(r.pbS || "—")}</span></td><td class="${e.metric !== "single" ? "key" : ""}"><span class="t">${esc(r.pbA || "—")}</span></td>
-        <td><span class="t">${esc(r.b12 || "—")}</span></td><td>${delta(r.iy)}</td><td>${spark(r.years)}</td><td>${r.tit ? `<span class="tit">${r.tit}</span>` : `<span class="zero">0</span>`}</td><td>${r.bp ? r.bp + "º" : "—"}</td></tr>`
+        <td><span class="t">${esc(r.b12 || "—")}</span></td><td>${delta(r.iy)}</td><td>${r.tit ? `<span class="tit">${r.tit}</span>` : `<span class="zero">0</span>`}</td><td>${r.bp ? r.bp + "º" : "—"}</td></tr>`
         : `<tr><td class="l"><b>${esc(e.name)}</b></td><td colspan="9" class="zero">Primera vez en este evento</td></tr>`).join("")}
       </tbody></table></div><div class="note">Toca un evento para abrir su clasificación.</div></div>
     <div class="sect cols3">
@@ -842,7 +855,7 @@ const dayKey = iso => _df.format(new Date(iso));
 const dayLabel = (k, opt = { weekday: "long", day: "numeric", month: "long" }) => new Intl.DateTimeFormat("es-ES", { timeZone: "UTC", ...opt }).format(new Date(k + "T12:00:00Z"));
 const SDAYS = [...new Set(SCH.map(a => dayKey(a.start)))].sort();
 const LASTR = {}; SCH.forEach(a => { if (a.ev && a.round) LASTR[a.ev] = Math.max(LASTR[a.ev] || 0, a.round); });
-const FMTL = { a: "Ao5", m: "Mo3", 3: "Bo3", 2: "Bo2", 1: "Bo1" };
+const FMTL = { a: "Ao5", m: "Mo3", 5: "Bo5", 3: "Bo3", 2: "Bo2", 1: "Bo1" };
 const STAGES = [...new Set(SCH.flatMap(a => a.groups.map(g => g.stage)).filter(Boolean))].sort();
 const STC = ["var(--b-green)", "var(--b-navy)", "var(--b-red)", "var(--b-orange)"];
 const stageColor = s => s ? STC[STAGES.indexOf(s) % 4] : "var(--b-orange)";
@@ -1075,7 +1088,11 @@ function gTable(a, g) {
   return `<section class="glist gtable" style="--sc:${stageColor(g.stage)}">
     <header><b>${esc(g.stage ? g.stage + " " : "")}Grupo ${g.n ?? ""}</b><span>${hm(g.start)}–${hm(g.end)} · ${g.comp.length} competidores${g.feat.length ? ` · ★ ${g.feat.length} destacados` : ""}</span>
       <button class="iconbtn" data-closeg="${g.id}" aria-label="Cerrar grupo" style="width:34px;height:34px">✕</button></header>
-    <div class="tablewrap" style="border:0;border-radius:0"><table><thead><tr><th>Seed</th><th>ESP</th><th class="l nmh">Competidor</th><th>Single</th><th>Media</th>${hasLive ? "<th>En vivo</th>" : ""}</tr></thead><tbody>
+    <div class="tablewrap" style="border:0;border-radius:0"><table><thead><tr><th>Seed</th><th>ESP</th><th class="l nmh">Competidor</th>
+      <th class="x2" title="Ranking nacional / mundial de su ${ev?.metric === "single" ? "single" : "media"}">NR · WR</th><th>Single</th><th>Media</th>
+      <th class="x1" title="Mejor marca de los últimos 12 meses">Mejor 12 m</th><th class="x1" title="Mejora respecto a los 12 meses anteriores">Δ año</th>
+      <th class="x2 l" title="Títulos, podios y mejor puesto en la final de este evento en el Campeonato de España">Final Cto. España</th><th class="x3">Comps</th><th class="x3">Medallas</th><th class="x3 l">Notas del caster</th>
+      ${hasLive ? "<th>En vivo</th>" : ""}</tr></thead><tbody>
     ${ids.map(id => {
       const p = PERS[id], r = ROW[id]?.[a.ev], f = g.feat.includes(id), lx = lr?.res?.find(x => x.id === id), hit = q.length > 1 && p?._q.includes(q);
       const tags = [cc(p?.iso || ""), f ? `<span class="pill feat">★ Destacado</span>` : "", r?.nrv?.length ? `<span class="pill nr">NR ${r.nrv.join("+")}</span>` : "", r?.tit ? `<span class="pill ch">${r.tit}× campeón</span>` : "",
@@ -1083,7 +1100,13 @@ function gTable(a, g) {
       return `<tr data-id="${id}" class="${f ? "feat" : ""} ${lx?.adv ? "adv" : ""}" ${hit ? 'style="outline:2px solid var(--accent);outline-offset:-2px"' : ""}>
         <td class="seed">${r ? r.seed : "—"}</td><td class="seedes">${r?.seedES || ""}</td>
         <td class="l nmcell"><div class="who">${starBtn(id)}${av(p)}<div><b>${esc(p?.name || id)}</b>${marks(id).replace(/<span class="mark" title="Fijado">★<\/span>/, "")}<div class="tags">${tags}</div></div></div></td>
+        <td class="x2 rk">${r ? `${(ev?.metric === "single" ? r.nrS : r.nrA) ?? "—"} · ${(ev?.metric === "single" ? r.wrS : r.wrA) ?? "—"}` : "—"}</td>
         <td class="${ev?.metric === "single" ? "key" : ""}"><span class="t">${esc(r?.pbS || "—")}</span></td><td class="${ev?.metric !== "single" ? "key" : ""}"><span class="t">${esc(r?.pbA || "—")}</span></td>
+        <td class="x1"><span class="t">${esc(r?.b12 || "—")}</span></td><td class="x1">${r ? delta(r.iy) : ""}</td>
+        
+        <td class="x2 l esh" title="Historial en la final de ${esc(ev?.name || "")} del Campeonato de España${p?.iso === "ES" ? " (puestos contando solo a españoles)" : " (puesto en la clasificación general)"}">${!r ? "—" : [r.tit ? `<b style="color:var(--accent)">${r.tit}× campeón</b>` : "", r.pod && r.pod > r.tit ? `${r.pod} podio${r.pod === 1 ? "" : "s"}` : "", r.bp && !r.tit ? `Mejor puesto: ${r.bp}º${p?.iso === "ES" ? "" : " (general)"}` : ""].filter(Boolean).join(" · ") || `<span class="zero">Nunca en la final</span>`}</td>
+        <td class="x3 rk">${p?.comps ?? "—"}</td><td class="x3">${p?.medals ? `<span class="m1">${p.medals[0]}</span>·<span class="m2">${p.medals[1]}</span>·<span class="m3">${p.medals[2]}</span>` : "—"}</td>
+        <td class="x3 l notes">${NOTES[id] ? `<div>${esc(NOTES[id])}</div>` : `<span class="zero">—</span>`}</td>
         ${hasLive ?`<td><span class="t">${esc(liveTxt(a, lx) || "—")}</span></td>` : ""}</tr>`;
     }).join("")}</tbody></table></div></section>`;
 }
@@ -1188,5 +1211,102 @@ $("#bigBtn").addEventListener("click", () => { const on = !root.dataset.big; if 
 $("#brandSub").textContent = `Campeonato de España 2026 · ${DATA.meta.kpis.competitors} competidores · ${DATA.meta.kpis.events} eventos`;
 async function wake() { try { await navigator.wakeLock?.request("screen"); } catch (e) {} }
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") wake(); }); wake();
+
+/* ---------------- tooltips: every data point explains itself on hover ----------------
+   One place for all explanations: table headers by their label (cells inherit their column's text),
+   pills by their label, tiles and card labels by their caption. Runs after every DOM change. */
+const TIP_COL = {
+  "#": "Puesto en el psych sheet: orden de los inscritos por su mejor marca oficial (media; single en BLD y Multi-BLD)",
+  "seed": "Puesto en el psych sheet: orden de los inscritos por su mejor marca oficial (media; single en BLD y Multi-BLD)",
+  "esp": "Puesto entre los competidores españoles en el psych sheet",
+  "competidor": "Toca para abrir su ficha",
+  "evento": "Toca para abrir el psych sheet del evento",
+  "single": "Mejor single oficial: su récord personal en un intento",
+  "media": "Mejor media oficial: su récord personal de media (Ao5 o Mo3)",
+  "nr": "Puesto en el ranking nacional de su país (1 = récord nacional)",
+  "wr": "Puesto en el ranking mundial",
+  "nr · wr": "Puesto en el ranking nacional y en el mundial de la marca por la que se ordena este evento",
+  "mejor 12 m": "Mejor marca oficial de los últimos 12 meses: su forma actual",
+  "media 12 m": "Promedio de todas sus marcas oficiales de los últimos 12 meses: lo regular que es",
+  "δ año": "Mejora de su mejor marca de los últimos 12 meses frente a la de los 12 anteriores. Verde = ha mejorado, rojo = ha empeorado",
+  "títulos": "Veces que ha sido campeón de España en este evento (contando solo a españoles)",
+  "podios": "Podios en la final de este evento en el Campeonato de España",
+  "mejor puesto": "Mejor puesto en la final de este evento en el Campeonato de España (entre españoles; los extranjeros, puesto general)",
+  "europa / mundo": "Podios en este evento en Campeonatos de Europa (EC) y del Mundo (WC)",
+  "final cto. españa": "Títulos, podios y mejor puesto en la final de este evento en el Campeonato de España",
+  "comps": "Competiciones oficiales WCA que ha disputado",
+  "medallas": "Medallas WCA en cualquier competición: oro · plata · bronce",
+  "notas del caster": "Tus notas sobre este competidor (se guardan solo en este dispositivo)",
+  "en vivo": "Su resultado en esta ronda según WCA Live (marca · puesto · si pasa)",
+  "intentos": "Tiempos de cada intento en esta ronda",
+  "mejor": "Mejor intento de la ronda",
+  "año": "Edición del Campeonato de España",
+  "🥇 oro": "Campeón de España (mejor español en la final)", "🥈 plata": "Subcampeón de España", "🥉 bronce": "Tercer mejor español en la final",
+};
+const TIP_PILL = [
+  [/^NR\b/, "Tiene el récord nacional vigente de su país (S = single, M = media)"],
+  [/× campeón/, "Veces que ha sido campeón de España en este evento"],
+  [/^Vigente$/, "Campeón de España 2025 de este evento: defiende el título"],
+  [/^Defiende título$/, "El campeón de España 2025 de este evento está inscrito"], [/^No (defiende|compite)$/, "El campeón de España 2025 de este evento no está inscrito"],
+  [/Destacado/, "Marcado como destacado por la organización en este grupo"],
+  [/^Debutante$/, "Primera competición oficial: todavía no tiene resultados WCA"],
+  [/^ESP #/, "Puesto entre los competidores españoles en el psych sheet"],
+  [/^\d+º (WC|EC)/, "Podio en un Campeonato del Mundo (WC) o de Europa (EC); el número final es el año"],
+  [/^(WR|ER|CR|AsR|NAR|SAR|AfR|OcR)$/, "Récord batido en esta ronda: WR mundial, ER/CR continental"],
+  [/^Pasa$/, "Se clasifica para la siguiente ronda"], [/^Pasaría$/, "Ahora mismo estaría clasificado; puede cambiar"],
+  [/^por (Media|Single)$/, "El psych sheet de este evento se ordena por esta marca"],
+  [/inscritos$/, "Competidores inscritos en este evento"],
+  [/con NR vigente$/, "Competidores del top 20 que tienen ahora el récord nacional de su país"],
+  [/^★ \d+( destacados)?$/, "Competidores marcados como destacados por la organización"],
+  [/^(Ao5|Mo3|Bo\d)$/, "Formato de la ronda: Ao5 = media de 5 (sin el mejor ni el peor), Mo3 = media de 3, Bo = mejor de N intentos"],
+  [/^pasan \d+|^pasa el|pasan por marca/, "Cuántos competidores pasan a la siguiente ronda"],
+  [/grupos pendientes/, "Los grupos de esta ronda se asignan con los resultados de la anterior"],
+  [/En directo|En curso/, "Se está disputando ahora; los datos vienen de WCA Live"],
+  [/^Terminada/, "Ronda terminada según WCA Live"], [/clasificados$/, "Competidores clasificados para esta ronda según WCA Live"],
+  [/^\d+ grupos?$/, "Número de grupos en que se divide la ronda"], [/^\d+ competidores$/, "Competidores asignados a esta ronda"],
+  [/^\d+\/\d+ resultados$/, "Resultados ya introducidos en WCA Live sobre el total de la ronda"],
+  [/^Podio internacional$/, "Ha subido al podio en un Campeonato de Europa o del Mundo"],
+];
+const TIP_STAT = [[/oros$/, "Medallas de oro WCA en cualquier competición"], [/medallas$/, "Medallas WCA en total (oro, plata y bronce)"],
+  [/comps$/, "Competiciones oficiales WCA que ha disputado"], [/títulos ESP$/, "Veces campeón de España, sumando todos los eventos"]];
+const TIP_LABEL = {
+  "competiciones": "Competiciones oficiales WCA que ha disputado", "solves oficiales": "Intentos oficiales registrados en la WCA",
+  "récords batidos": "Récords nacionales (NR), continentales (ER) y mundiales (WR) que ha batido en su carrera",
+  "títulos de campeón de españa": "Veces campeón de España, sumando todos los eventos",
+  "mejor español": "El español mejor clasificado en el psych sheet de este evento", "campeón 2025": "Mejor español en la final del Campeonato de España 2025",
+  "mejor general": "El mejor clasificado en el psych sheet, de cualquier país",
+  "competidores": "Inscritos que compiten (sin contar staff ni voluntariado)", "países": "Países distintos de los inscritos",
+  "debutantes": "Inscritos que compiten por primera vez y aún no tienen WCA ID", "eventos": "Eventos oficiales que se disputan en el campeonato",
+  "campeones 2025": "Campeones de España 2025 que vuelven a competir en su evento este año",
+};
+const tnorm = s => s.replace(/[▲▼]/g, "").replace(/\s+/g, " ").trim().toLowerCase();
+function applyTips(el) {
+  el.querySelectorAll("th:not([title])").forEach(th => { const k = tnorm(th.textContent); if (TIP_COL[k]) th.title = TIP_COL[k] + (th.dataset.k ? " · toca para ordenar" : ""); });
+  el.querySelectorAll("td:not([title])").forEach(td => {
+    const table = td.closest("table"), head = table?.tHead; if (!head) return;
+    const th = head.rows[head.rows.length - 1]?.cells[td.cellIndex];
+    if (th?.title) td.title = th.title.replace(" · toca para ordenar", "");
+  });
+  el.querySelectorAll(".pill:not([title]), .cc:not([title])").forEach(p => {
+    if (p.classList.contains("cc")) { p.title = "País (código ISO)"; return; }
+    const t = p.textContent.replace(/\s+/g, " ").trim(), hit = TIP_PILL.find(([re]) => re.test(t)); if (hit) p.title = hit[1];
+  });
+  el.querySelectorAll(".delta:not([title])").forEach(d => d.title = TIP_COL["δ año"]);
+  el.querySelectorAll(".tile:not([title]), .kpi:not([title])").forEach(t => {
+    const lab = tnorm(t.querySelector("span")?.textContent || ""), k = Object.keys(TIP_LABEL).find(x => lab.startsWith(x));
+    if (k) t.title = TIP_LABEL[k]; else if (/medallas/.test(lab)) t.title = TIP_COL["medallas"];
+  });
+  el.querySelectorAll(".evcard .row:not([title]), .evcard .fav:not([title])").forEach(r => {
+    if (r.classList.contains("fav")) { r.title = "Favorito: mejor clasificado en el psych sheet y su marca"; return; }
+    const k = tnorm(r.firstElementChild?.textContent || ""); if (TIP_LABEL[k]) r.title = TIP_LABEL[k];
+  });
+  el.querySelectorAll(".gcard:not([title])").forEach(g => g.title = "Toca para ver (u ocultar) los competidores de este grupo");
+  el.querySelectorAll(".grow .gs:not([title])").forEach(g => g.title = TIP_COL["seed"]);
+  el.querySelectorAll(".grow .gpb:not([title])").forEach(g => g.title = "Su récord personal en este evento (la marca por la que se ordena)");
+  el.querySelectorAll(".grow .lres:not([title])").forEach(g => g.title = TIP_COL["en vivo"]);
+  el.querySelectorAll(".star:not([title])").forEach(s => s.title = "Fijar competidor para tenerlo a mano en «Fijados»");
+  el.querySelectorAll(".pcard .stats span:not([title])").forEach(s => { const t = s.textContent.trim(), hit = TIP_STAT.find(([re]) => re.test(t)); if (hit) s.title = hit[1]; });
+}
+let _tipT; new MutationObserver(() => { clearTimeout(_tipT); _tipT = setTimeout(() => applyTips(document.body), 60); }).observe(document.body, { childList: true, subtree: true });
 render();
 </script>
