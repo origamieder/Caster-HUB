@@ -294,6 +294,18 @@ td.key .t { font-size: calc(18px * var(--fz)); font-weight: 700; color: var(--ac
 .glists { display: grid; grid-template-columns: repeat(var(--gcols, 1), minmax(0, 1fr)); gap: 12px; }
 .grows { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); }
 .grows .grow { border-right: 1px solid var(--line); }
+/* group views: lista (one competitor per row, full names), tabla (one group per row, wide table), compacta (rows in columns) */
+.glists.v-lista .grows { grid-template-columns: 1fr; }
+.glists.v-lista .grow { padding: 10px 14px; grid-template-columns: 52px auto minmax(0, 1fr) auto; }
+.glists.v-lista .grow .gn b { white-space: normal; overflow: visible; font-size: calc(16px * var(--fz)); }
+.glists.v-lista .grow .gpb { font-size: calc(17px * var(--fz)); }
+.glists.v-tabla { grid-template-columns: 1fr !important; }
+.gtable table { min-width: 860px; }
+.gtable tbody tr.feat td { background: color-mix(in srgb, var(--accent) 13%, transparent); }
+.gtable tbody tr.adv td:first-child { box-shadow: inset 4px 0 0 var(--green); }
+.gtable td.nmcell { white-space: normal; }
+.gtable td.nmcell b { font-size: calc(16px * var(--fz)); }
+.viewsel { margin-left: auto; }
 .live-on { background: var(--green) !important; color: #fff !important; border-color: var(--green) !important; }
 .livebar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: calc(13px * var(--fz)); color: var(--muted); }
 .livebar .err { color: var(--red); }
@@ -412,6 +424,7 @@ td.key .t { font-size: calc(18px * var(--fz)); font-weight: 700; color: var(--ac
   <div class="main">
     <div class="brandbar" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
     <header class="topbar">
+      <button class="chip" id="backBtn" hidden onclick="history.back()" aria-label="Volver a la vista anterior" style="font-size:calc(16px * var(--fz));height:44px;padding:0 18px 0 14px;flex:none">‹&nbsp;Volver</button>
       <div class="brand"><b>Caster <em>Hub</em></b><span id="brandSub"></span></div>
       <div class="gsearch">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -536,21 +549,33 @@ function facts(p) {
 /* ---------------- state & routing ---------------- */
 const S = { ev: store.get("ev", DATA.events[0].id), nat: store.get("nat", "all"), lim: store.get("lim", 20), sort: null, evq: "",
             q: "", pNat: "all", pIso: "", pEv: "", pFlags: new Set(), pSort: "seed", palEv: "", palHere: false, cmpMode: false, cmp: [], navList: [], cur: null };
-function go(hash) { if (location.hash !== "#" + hash) location.hash = hash; else render(); }
-window.addEventListener("hashchange", render);
+function go(hash) { if (location.hash !== "#" + hash) location.hash = hash; else render(true); }
+window.addEventListener("hashchange", () => render());
 document.querySelectorAll("[data-nav]").forEach(b => b.addEventListener("click", () => go(b.dataset.nav === "evento" ? "evento-" + S.ev : b.dataset.nav)));
 
-function render() {
+/* In-app back: every section change is a history entry (hash), so the "‹ Volver" button is history.back();
+   NAVST mirrors that stack to know when to show it and to restore the scroll position of the view we return to. */
+let lastH = null; const NAVST = [], SCROLL = {};
+function render(force) {
   const h = location.hash.slice(1) || "inicio";
   let sec = h.split("-")[0];
-  if (sec === "c") { const id = h.slice(2); if (PERS[id]) openProfile(id, false); sec = store.get("lastSec", "inicio"); }
-  else closeProfile(false);
+  if (sec === "c") { const id = h.slice(2); if (PERS[id]) openProfile(id, false); if (lastH) return; sec = store.get("lastSec", "inicio"); }
+  else { closeProfile(false); if (h === lastH && !force) return; }
+  const v = $("#view");
+  let back = false;
+  if (sec !== "c" && lastH && h !== lastH) {
+    SCROLL[lastH] = v.scrollTop;
+    if (NAVST[NAVST.length - 1] === h) { NAVST.pop(); back = true; } else NAVST.push(lastH);
+  }
+  if (!h.startsWith("c-")) lastH = h;
   if (sec === "evento") { const id = h.slice(7); if (EVBYID[id]) { S.ev = id; store.set("ev", id); } }
   document.querySelectorAll("[data-nav]").forEach(b => b.setAttribute("aria-current", b.dataset.nav === sec ? "page" : "false"));
   if (sec !== "c") store.set("lastSec", sec);
-  const v = $("#view"); v.scrollTop = 0; v.onclick = null;
+  v.scrollTop = 0; v.onclick = null;
   ({ inicio: viewHome, evento: viewEvent, horario: viewSchedule, competidores: viewPeople, palmares: viewPal }[sec] || viewHome)(v);
   avFix();
+  if (back && SCROLL[h]) v.scrollTop = SCROLL[h];
+  $("#backBtn").hidden = !NAVST.length;
 }
 
 /* ---------------- home ---------------- */
@@ -835,7 +860,7 @@ const actFeat = a => a.groups.reduce((n, g) => n + g.feat.length, 0);
 const seedOf = (id, ev) => ROW[id]?.[ev]?.seed ?? 99999;
 const groupsOf = id => SCH.flatMap(a => a.groups.filter(g => g.comp.includes(id)).map(g => ({ a, g })));
 S.schDay = SDAYS.includes(dayKey(new Date().toISOString())) ? dayKey(new Date().toISOString()) : store.get("schDay", SDAYS[0]);
-S.schRoom = "all"; S.schOpen = new Set(); S.schSel = new Set(); S.schQ = ""; S.resAll = new Set();
+S.schRoom = "all"; S.schOpen = new Set(); S.schSel = new Set(); S.schQ = ""; S.resAll = new Set(); S.gview = store.get("gview", "lista");
 
 /* ---- WCA Live: results, advancing and records as they are entered; WCIF: new group assignments ---- */
 const COMP_WCA = "SpanishChampionship2026";
@@ -1015,8 +1040,9 @@ function actBody(a) {
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="chip" data-allg="${a.id}">${sel.length === a.groups.length ? "Cerrar todos los grupos" : "Abrir todos los grupos"}</button>
       ${a.groups.some(g => g.feat.length) ? `<button class="chip" data-featg="${a.id}">Abrir grupos con destacados</button>` : ""}
-      <button class="chip" data-ps="${a.ev}">Psych sheet de ${esc(ev?.name || a.ev)} ›</button></div>
-    ${sel.length ? `<div class="glists" style="--gcols:${Math.min(sel.length, Math.max(1, Math.floor((($("#view")?.clientWidth || 1200) - 70) / 360)))}">${sel.map(g => gList(a, g)).join("")}</div>` : ""}
+      <button class="chip" data-ps="${a.ev}">Psych sheet de ${esc(ev?.name || a.ev)} ›</button>
+      <div class="toggle viewsel" role="group" aria-label="Vista de los grupos">${[["lista", "Lista"], ["tabla", "Tabla"], ["compacta", "Compacta"]].map(([k, t]) => `<button data-gview="${k}" aria-pressed="${S.gview === k}">${t}</button>`).join("")}</div></div>
+    ${sel.length ? `<div class="glists v-${S.gview}" style="--gcols:${S.gview === "tabla" ? 1 : Math.min(sel.length, Math.max(1, Math.floor((($("#view")?.clientWidth || 1200) - 70) / (S.gview === "lista" ? 430 : 360))))}">${sel.map(g => S.gview === "tabla" ? gTable(a, g) : gList(a, g)).join("")}</div>` : ""}
     ${liveTable(a)}
   </div>`;
 }
@@ -1048,6 +1074,26 @@ function gList(a, g) {
     }).join("")}</div></section>`;
 }
 
+function gTable(a, g) {
+  const ev = EVBYID[a.ev], lr = liveR(a), hasLive = lr?.res?.some(x => g.comp.includes(x.id) && (x.b || x.a)), q = norm(S.schQ.trim());
+  const ids = g.comp.slice().sort((x, y) => (g.feat.includes(y) - g.feat.includes(x)) || seedOf(x, a.ev) - seedOf(y, a.ev) || name(x).localeCompare(name(y), "es"));
+  return `<section class="glist gtable" style="--sc:${stageColor(g.stage)}">
+    <header><b>${esc(g.stage ? g.stage + " " : "")}Grupo ${g.n ?? ""}</b><span>${hm(g.start)}–${hm(g.end)} · ${g.comp.length} competidores${g.feat.length ? ` · ★ ${g.feat.length} destacados` : ""}</span>
+      <button class="iconbtn" data-closeg="${g.id}" aria-label="Cerrar grupo" style="width:34px;height:34px">✕</button></header>
+    <div class="tablewrap" style="border:0;border-radius:0"><table><thead><tr><th>Seed</th><th>ESP</th><th class="l">Competidor</th><th>País</th><th>PB single</th><th>PB media</th><th class="l">Datos</th>${hasLive ? "<th>En vivo</th>" : ""}</tr></thead><tbody>
+    ${ids.map(id => {
+      const p = PERS[id], r = ROW[id]?.[a.ev], f = g.feat.includes(id), lx = lr?.res?.find(x => x.id === id), hit = q.length > 1 && p?._q.includes(q);
+      const tags = [f ? `<span class="pill feat">★ Destacado</span>` : "", r?.nrv?.length ? `<span class="pill nr">NR ${r.nrv.join("+")}</span>` : "", r?.tit ? `<span class="pill ch">${r.tit}× campeón</span>` : "",
+        ev?.champ2025?.es === id ? `<span class="pill ok">Vigente</span>` : "", p?.newcomer ? `<span class="pill new">Debutante</span>` : "", recPill(lx?.sT), recPill(lx?.aT)].join(" ");
+      return `<tr data-id="${id}" class="${f ? "feat" : ""} ${lx?.adv ? "adv" : ""}" ${hit ? 'style="outline:2px solid var(--accent);outline-offset:-2px"' : ""}>
+        <td class="seed" style="font-size:calc(22px * var(--fz))">${r ? r.seed : "—"}</td><td class="seedes">${r?.seedES || ""}</td>
+        <td class="l nmcell"><div class="who">${starBtn(id)}${av(p)}<div><b>${esc(p?.name || id)}</b>${marks(id).replace(/<span class="mark" title="Fijado">★<\/span>/, "")}</div></div></td>
+        <td>${cc(p?.iso || "")}</td>
+        <td class="${ev?.metric === "single" ? "key" : ""}"><span class="t">${esc(r?.pbS || "—")}</span></td><td class="${ev?.metric !== "single" ? "key" : ""}"><span class="t">${esc(r?.pbA || "—")}</span></td>
+        <td class="l" style="white-space:normal">${tags}</td>${hasLive ? `<td><span class="t">${esc(liveTxt(a, lx) || "—")}</span></td>` : ""}</tr>`;
+    }).join("")}</tbody></table></div></section>`;
+}
+
 function drawFind() {
   const box = $("#schfind"), q = norm(S.schQ.trim());
   if (q.length < 2) { box.innerHTML = ""; return; }
@@ -1067,7 +1113,9 @@ function jumpTo(actId, grpId) {
 }
 
 function schClick(e) {
-  const t = e.target.closest("[data-act],[data-grp],[data-closeg],[data-allg],[data-featg],[data-ps],[data-jump],[data-resall],.grow,.results tr[data-id]");
+  const g = e.target.closest("[data-gview]");
+  if (g) { S.gview = g.dataset.gview; store.set("gview", S.gview); drawTimeline(); return; }
+  const t = e.target.closest("[data-act],[data-grp],[data-closeg],[data-allg],[data-featg],[data-ps],[data-jump],[data-resall],.grow,.results tr[data-id],.gtable tr[data-id]");
   if (!t || e.target.closest("[data-pin]")) return;
   if (t.dataset.act) { const id = +t.dataset.act; S.schOpen.has(id) ? S.schOpen.delete(id) : S.schOpen.add(id); drawTimeline(); }
   else if (t.dataset.grp) { const id = +t.dataset.grp; S.schSel.has(id) ? S.schSel.delete(id) : S.schSel.add(id); drawTimeline(); }
@@ -1080,7 +1128,7 @@ function schClick(e) {
   else if (t.dataset.ps) go("evento-" + t.dataset.ps);
   else if (t.dataset.jump) jumpTo(t.dataset.jump, t.dataset.jg);
   else if (t.dataset.resall) { const id = +t.dataset.resall; S.resAll.has(id) ? S.resAll.delete(id) : S.resAll.add(id); drawTimeline(); }
-  else if (t.dataset.id) { const box = t.closest(".glist,.results"); S.navList = box ? [...box.querySelectorAll("[data-id]")].map(x => x.dataset.id) : [t.dataset.id]; openProfile(t.dataset.id); }
+  else if (t.dataset.id) { const box = t.closest(".glist,.results"); S.navList = box ? [...box.querySelectorAll("[data-id]:not([data-pin])")].map(x => x.dataset.id) : [t.dataset.id]; openProfile(t.dataset.id); }
 }
 setInterval(() => { if ((location.hash.slice(1) || "").startsWith("horario") && !document.activeElement?.matches("input,textarea")) drawTimeline(); }, 60000);
 
