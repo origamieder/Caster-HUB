@@ -245,6 +245,63 @@ td.key .t { font-size: calc(18px * var(--fz)); font-weight: 700; color: var(--ac
 .paltable td.here { color: var(--accent); font-weight: 700; }
 .yearcell { font-family: var(--f-display); font-size: calc(22px * var(--fz)); font-weight: 800; }
 
+/* schedule: day tabs → timeline of activities → stage columns of group cards → competitor lists */
+.schhead { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; justify-content: space-between; }
+.nowpill { display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 12px; border-radius: 16px; background: var(--up-bg); color: var(--green); font-weight: 700; font-size: calc(13px * var(--fz)); }
+.nowpill i { width: 9px; height: 9px; border-radius: 50%; background: var(--green); }
+@media (prefers-reduced-motion: no-preference) { .nowpill i { animation: pulse 1.4s ease-in-out infinite; } @keyframes pulse { 50% { opacity: .3; } } }
+.tl { display: flex; flex-direction: column; gap: 8px; }
+.act { background: var(--card); border: 1px solid var(--card-line); border-radius: 14px; overflow: hidden; }
+.act.now { border-color: var(--green); box-shadow: 0 0 0 1px var(--green); }
+.act.past { opacity: .62; }
+.acthead { display: grid; grid-template-columns: 118px 6px minmax(0, 1fr) auto; align-items: center; gap: 14px; width: 100%; padding: 12px 16px 12px 14px; border: 0; background: none; text-align: left; cursor: pointer; color: inherit; }
+.act.other .acthead { cursor: default; padding-block: 8px; }
+.acthead .tm { font-family: var(--f-time); font-weight: 700; font-size: calc(17px * var(--fz)); font-variant-numeric: tabular-nums; }
+.acthead .tm small { display: block; font-weight: 500; font-size: calc(12px * var(--fz)); color: var(--muted); }
+.acthead .bar { align-self: stretch; border-radius: 3px; background: var(--evc, var(--line)); }
+.acthead h3 { font-size: calc(24px * var(--fz)); line-height: 1.05; }
+.act.other h3 { font-size: calc(18px * var(--fz)); color: var(--muted); }
+.acthead .meta { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-top: 5px; color: var(--muted); font-size: calc(13px * var(--fz)); }
+.acthead .chev { color: var(--muted); font-size: calc(20px * var(--fz)); transition: transform .15s; }
+.act[open] .acthead .chev { transform: rotate(90deg); }
+.room { display: inline-flex; align-items: center; gap: 6px; }
+.room i { width: 9px; height: 9px; border-radius: 50%; background: var(--rc); }
+.pill.feat { background: var(--accent); color: var(--accent-ink); border: 0; }
+.actbody { border-top: 1px solid var(--card-line); padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 14px; }
+.stages { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+.stage h4 { margin: 0 0 8px; font-family: var(--f-display); text-transform: uppercase; font-size: calc(18px * var(--fz)); letter-spacing: .03em; display: flex; align-items: center; gap: 8px; }
+.stage h4 i { width: 12px; height: 12px; border-radius: 3px; background: var(--sc); }
+.stage h4 .pill { margin-left: auto; }
+.gcards { display: flex; flex-direction: column; gap: 8px; }
+.gcard { text-align: left; border: 1px solid var(--card-line); background: var(--panel2); border-radius: 12px; padding: 10px 12px; cursor: pointer; color: inherit; display: flex; flex-direction: column; gap: 6px; border-left: 4px solid var(--sc); }
+.gcard:hover { border-color: var(--sc); }
+.gcard[aria-pressed="true"] { background: color-mix(in srgb, var(--sc) 18%, var(--panel2)); border-color: var(--sc); }
+.gcard .gt { display: flex; align-items: baseline; gap: 8px; }
+.gcard .gt b { font-family: var(--f-display); font-size: calc(20px * var(--fz)); text-transform: uppercase; }
+.gcard .gt span { color: var(--muted); font-family: var(--f-time); font-size: calc(13px * var(--fz)); }
+.gcard .gt em { margin-left: auto; font-style: normal; color: var(--muted); font-size: calc(13px * var(--fz)); }
+.gcard .gtop { font-size: calc(13px * var(--fz)); color: var(--fg); line-height: 1.35; }
+.gcard .gtop b { color: var(--accent); }
+.glists { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; }
+.glist { border: 1px solid var(--card-line); border-radius: 12px; overflow: hidden; background: var(--panel); border-top: 4px solid var(--sc); }
+.glist header { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: var(--panel2); }
+.glist header b { font-family: var(--f-display); font-size: calc(20px * var(--fz)); text-transform: uppercase; }
+.glist header span { color: var(--muted); font-size: calc(13px * var(--fz)); }
+.glist header button { margin-left: auto; }
+.grow { display: grid; grid-template-columns: 44px auto minmax(0, 1fr) auto; align-items: center; gap: 8px; padding: 7px 10px; border-top: 1px solid var(--line); cursor: pointer; }
+.grow:hover { background: var(--panel2); }
+.grow.feat { background: color-mix(in srgb, var(--accent) 13%, transparent); }
+.grow.hit { outline: 2px solid var(--accent); outline-offset: -2px; }
+.grow .gs { font-family: var(--f-display); font-weight: 800; font-size: calc(19px * var(--fz)); text-align: center; color: var(--muted); }
+.grow.feat .gs { color: var(--accent); }
+.grow .gn { min-width: 0; }
+.grow .gn b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.grow .gn div { display: flex; gap: 5px; flex-wrap: wrap; align-items: center; margin-top: 2px; }
+.grow .gpb { font-family: var(--f-time); font-weight: 700; font-size: calc(15px * var(--fz)); text-align: right; }
+.grow .gpb small { display: block; font-weight: 500; color: var(--muted); font-size: calc(11px * var(--fz)); }
+.pending { color: var(--muted); font-size: calc(14px * var(--fz)); }
+@media (max-width: 700px) { .acthead { grid-template-columns: 74px 5px minmax(0, 1fr) auto; gap: 10px; } .glists { grid-template-columns: 1fr; } }
+
 /* caster tools: pins, notes, key facts, head-to-head, big text */
 .star { border: 0; background: none; cursor: pointer; padding: 2px 4px; color: var(--dim); font-size: calc(22px * var(--fz)); line-height: 1; border-radius: 8px; flex: none; }
 .star[aria-pressed="true"], .star:hover { color: var(--accent); }
@@ -321,6 +378,7 @@ td.key .t { font-size: calc(18px * var(--fz)); font-weight: 700; color: var(--ac
     <div class="logo"><img src="__IMG_logo-iso__" alt="Campeonato de España 2026"></div>
     <button class="navbtn" data-nav="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Resumen</button>
     <button class="navbtn" data-nav="evento"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6M12 2v3"/></svg>Eventos</button>
+    <button class="navbtn" data-nav="horario"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4.5" width="18" height="16.5" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4M7.5 13.5h3M7.5 17h3M13.5 13.5h3"/></svg>Horario</button>
     <button class="navbtn" data-nav="competidores"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6.5 7-6.5s7 2.5 7 6.5"/><path d="M16 4a4 4 0 0 1 0 8M22 21c0-3.2-2-5.6-5-6.3"/></svg>Competidores</button>
     <button class="navbtn" data-nav="palmares"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>Palmarés</button>
     <div class="spacer"></div>
@@ -464,8 +522,8 @@ function render() {
   if (sec === "evento") { const id = h.slice(7); if (EVBYID[id]) { S.ev = id; store.set("ev", id); } }
   document.querySelectorAll("[data-nav]").forEach(b => b.setAttribute("aria-current", b.dataset.nav === sec ? "page" : "false"));
   if (sec !== "c") store.set("lastSec", sec);
-  const v = $("#view"); v.scrollTop = 0;
-  ({ inicio: viewHome, evento: viewEvent, competidores: viewPeople, palmares: viewPal }[sec] || viewHome)(v);
+  const v = $("#view"); v.scrollTop = 0; v.onclick = null;
+  ({ inicio: viewHome, evento: viewEvent, horario: viewSchedule, competidores: viewPeople, palmares: viewPal }[sec] || viewHome)(v);
   avFix();
 }
 
@@ -727,6 +785,158 @@ function closeProfile(back = true) {
   if (back && location.hash.startsWith("#c-")) history.back();
 }
 $("#scrim").addEventListener("click", () => closeProfile());
+
+/* ---------------- horario: timeline → groups → competitors ---------------- */
+const SCH = DATA.schedule || [];
+const TZ = DATA.tz || "Europe/Madrid";
+const _tf = new Intl.DateTimeFormat("es-ES", { timeZone: TZ, hour: "2-digit", minute: "2-digit", hour12: false });
+const _df = new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit" });
+const hm = iso => _tf.format(new Date(iso));
+const dayKey = iso => _df.format(new Date(iso));
+const dayLabel = (k, opt = { weekday: "long", day: "numeric", month: "long" }) => new Intl.DateTimeFormat("es-ES", { timeZone: "UTC", ...opt }).format(new Date(k + "T12:00:00Z"));
+const SDAYS = [...new Set(SCH.map(a => dayKey(a.start)))].sort();
+const LASTR = {}; SCH.forEach(a => { if (a.ev && a.round) LASTR[a.ev] = Math.max(LASTR[a.ev] || 0, a.round); });
+const FMTL = { a: "Ao5", m: "Mo3", 3: "Bo3", 2: "Bo2", 1: "Bo1" };
+const STAGES = [...new Set(SCH.flatMap(a => a.groups.map(g => g.stage)).filter(Boolean))].sort();
+const STC = ["var(--b-green)", "var(--b-navy)", "var(--b-red)", "var(--b-orange)"];
+const stageColor = s => s ? STC[STAGES.indexOf(s) % 4] : "var(--b-orange)";
+const OTHER = { "Doors open": "Apertura de puertas" };
+const actTitle = a => a.ev ? (EVBYID[a.ev]?.name || a.ev) : (a.code === "other-multi" ? "Entrega de cubos Multi-BLD" : (OTHER[a.name] || a.name));
+const roundTxt = a => !a.ev ? "" : (a.round > 1 && a.round === LASTR[a.ev] ? "Final" : `Ronda ${a.round}`) + (/-a(\d)$/.test(a.code) ? ` · intento ${a.code.slice(-1)}` : "");
+const advTxt = c => !c ? "" : c.type === "ranking" ? `pasan ${c.level}` : c.type === "percent" ? `pasa el ${c.level}%` : "pasan por marca";
+const actComp = a => a.groups.reduce((n, g) => n + g.comp.length, 0);
+const actFeat = a => a.groups.reduce((n, g) => n + g.feat.length, 0);
+const seedOf = (id, ev) => ROW[id]?.[ev]?.seed ?? 99999;
+const groupsOf = id => SCH.flatMap(a => a.groups.filter(g => g.comp.includes(id)).map(g => ({ a, g })));
+S.schDay = SDAYS.includes(dayKey(new Date().toISOString())) ? dayKey(new Date().toISOString()) : store.get("schDay", SDAYS[0]);
+S.schRoom = "all"; S.schOpen = new Set(); S.schSel = new Set(); S.schQ = "";
+
+function viewSchedule(v) {
+  if (!SCH.length) { v.innerHTML = `<h1>Horario</h1><p class="empty">Todavía no hay horario publicado en la WCA. Actualiza los datos con actualizar.sh cuando salga.</p>`; return; }
+  if (!SDAYS.includes(S.schDay)) S.schDay = SDAYS[0];
+  const rooms = [...new Set(SCH.map(a => a.room))];
+  const nowAct = SCH.find(a => Date.parse(a.start) <= Date.now() && Date.now() < Date.parse(a.end) && a.ev);
+  v.innerHTML = `
+    <div class="schhead"><div><div class="eyebrow">Horario oficial · hora local (${esc(TZ.split("/")[1] || TZ)}) · grupos publicados por la organización</div><h1>Horario y grupos</h1></div>
+      ${nowAct ? `<button class="nowpill" id="goNow" style="border:0;cursor:pointer"><i></i>Ahora: ${esc(actTitle(nowAct))} ${esc(roundTxt(nowAct))}</button>` : ""}</div>
+    <div class="controls">
+      <div class="toggle" role="group" aria-label="Día">${SDAYS.map(k => `<button data-day="${k}" aria-pressed="${S.schDay === k}">${esc(dayLabel(k, { weekday: "short", day: "numeric", month: "short" }))}</button>`).join("")}</div>
+      ${rooms.length > 1 ? `<div class="toggle" role="group" aria-label="Sala">${[["all", "Todas las salas"], ...rooms.map(r => [r, r])].map(([k, t]) => `<button data-room="${esc(k)}" aria-pressed="${S.schRoom === k}">${esc(t)}</button>`).join("")}</div>` : ""}
+      <input class="field" id="schq" type="search" placeholder="¿En qué grupo compite…?" value="${esc(S.schQ)}" style="width:260px" aria-label="Buscar competidor en los grupos">
+    </div>
+    <div id="schfind"></div>
+    <div class="tl" id="tl"></div>
+    <div class="note">Toca una prueba para ver sus grupos y toca un grupo para ver sus competidores (puedes abrir varios a la vez para comparar escenarios). <b style="color:var(--accent)">★ Destacado</b> = competidor marcado como destacado por la organización en ese grupo. # = seed en el psych sheet.</div>`;
+  drawTimeline(); drawFind();
+  v.querySelectorAll("[data-day]").forEach(b => b.addEventListener("click", () => { S.schDay = b.dataset.day; store.set("schDay", S.schDay); viewSchedule(v); avFix(); }));
+  v.querySelectorAll("[data-room]").forEach(b => b.addEventListener("click", () => { S.schRoom = b.dataset.room; viewSchedule(v); avFix(); }));
+  $("#schq").addEventListener("input", e => { S.schQ = e.target.value; drawFind(); });
+  $("#goNow")?.addEventListener("click", () => jumpTo(nowAct.id));
+  v.onclick = schClick;
+  const live = $("#tl .act.now"); if (live && !S.schScrolled) { S.schScrolled = true; live.scrollIntoView({ block: "center" }); }
+}
+
+function drawTimeline() {
+  const now = Date.now();
+  const L = SCH.filter(a => dayKey(a.start) === S.schDay && (S.schRoom === "all" || a.room === S.schRoom));
+  $("#tl").innerHTML = L.map(a => {
+    const st = Date.parse(a.start), en = Date.parse(a.end), cls = now >= st && now < en ? "now" : now >= en ? "past" : "";
+    if (!a.ev) return `<div class="act other ${cls}"><div class="acthead"><div class="tm">${hm(a.start)}<small>${hm(a.end)}</small></div><span class="bar"></span><div><h3>${esc(actTitle(a))}</h3></div><span class="room" style="--rc:${esc(a.color || "var(--line)")}"><i></i>${esc(a.room)}</span></div></div>`;
+    const open = S.schOpen.has(a.id), nc = actComp(a), nf = actFeat(a), ng = a.groups.length;
+    return `<div class="act ${cls}" id="act-${a.id}" style="--evc:${EVC[a.ev] || "var(--line)"}" ${open ? "open" : ""}>
+      <button class="acthead" data-act="${a.id}" aria-expanded="${open}">
+        <div class="tm">${hm(a.start)}<small>${hm(a.end)}</small></div><span class="bar"></span>
+        <div style="min-width:0"><h3>${esc(actTitle(a))} <span style="color:var(--muted);font-size:.72em">${esc(roundTxt(a))}</span></h3>
+          <div class="meta"><span class="room" style="--rc:${esc(a.color || "var(--line)")}"><i></i>${esc(a.room)}</span>
+            ${a.format ? `<span class="pill">${FMTL[a.format] || a.format}</span>` : ""}
+            <span class="pill">${ng} grupo${ng === 1 ? "" : "s"}</span>${nc ? `<span class="pill">${nc} competidores</span>` : `<span class="pill">grupos pendientes</span>`}
+            ${a.adv ? `<span class="pill">${esc(advTxt(a.adv))}</span>` : ""}${nf ? `<span class="pill feat">★ ${nf} destacados</span>` : ""}
+            ${cls === "now" ? `<span class="pill ok">En curso</span>` : ""}</div></div>
+        <span class="chev" aria-hidden="true">›</span></button>
+      ${open ? actBody(a) : ""}</div>`;
+  }).join("") || `<div class="empty">No hay actividades en esta sala este día.</div>`;
+  avFix();
+}
+
+function actBody(a) {
+  const ev = EVBYID[a.ev];
+  if (!actComp(a)) return `<div class="actbody"><div class="pending">Los grupos de esta ronda se asignan con los resultados de la ronda anterior${a.adv ? "" : ""}. ${a.groups.length} grupo${a.groups.length === 1 ? "" : "s"} previsto${a.groups.length === 1 ? "" : "s"}${[...new Set(a.groups.map(g => g.stage).filter(Boolean))].length ? " en " + [...new Set(a.groups.map(g => g.stage).filter(Boolean))].join(", ") : ""}.</div>
+    <div><button class="chip" data-ps="${a.ev}">Ver psych sheet de ${esc(ev?.name || a.ev)} ›</button></div></div>`;
+  const byStage = {};
+  a.groups.forEach(g => (byStage[g.stage || "Grupos"] ||= []).push(g));
+  const sel = a.groups.filter(g => S.schSel.has(g.id));
+  return `<div class="actbody">
+    <div class="stages">${Object.entries(byStage).map(([s, gs]) => {
+      const sf = gs.reduce((n, g) => n + g.feat.length, 0);
+      return `<div class="stage" style="--sc:${stageColor(s === "Grupos" ? null : s)}"><h4><i></i>${esc(s)}${sf ? `<span class="pill feat">★ ${sf}</span>` : ""}</h4><div class="gcards">${gs.map(g => gCard(a, g)).join("")}</div></div>`; }).join("")}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="chip" data-allg="${a.id}">${sel.length === a.groups.length ? "Cerrar todos los grupos" : "Abrir todos los grupos"}</button>
+      ${a.groups.some(g => g.feat.length) ? `<button class="chip" data-featg="${a.id}">Abrir grupos con destacados</button>` : ""}
+      <button class="chip" data-ps="${a.ev}">Psych sheet de ${esc(ev?.name || a.ev)} ›</button></div>
+    ${sel.length ? `<div class="glists">${sel.map(g => gList(a, g)).join("")}</div>` : ""}
+  </div>`;
+}
+
+function gCard(a, g) {
+  const top = g.feat.length ? g.feat.map(id => `<b>★</b> ${esc(name(id))}`).join(" · ")
+    : g.comp.slice().sort((x, y) => seedOf(x, a.ev) - seedOf(y, a.ev)).slice(0, 3).filter(id => seedOf(id, a.ev) < 99999).map(id => `${esc(name(id))} <span style="color:var(--muted)">#${seedOf(id, a.ev)}</span>`).join(" · ");
+  return `<button class="gcard" data-grp="${g.id}" data-a="${a.id}" aria-pressed="${S.schSel.has(g.id)}" style="--sc:${stageColor(g.stage)}">
+    <div class="gt"><b>Grupo ${g.n ?? ""}</b><span>${hm(g.start)}–${hm(g.end)}</span><em>${g.comp.length} comp.</em></div>
+    ${top ? `<div class="gtop">${g.feat.length ? "" : `<span style="color:var(--muted)">Mejores seeds: </span>`}${top}</div>` : ""}</button>`;
+}
+
+function gList(a, g) {
+  const ev = EVBYID[a.ev], q = norm(S.schQ.trim());
+  const ids = g.comp.slice().sort((x, y) => (g.feat.includes(y) - g.feat.includes(x)) || seedOf(x, a.ev) - seedOf(y, a.ev) || name(x).localeCompare(name(y), "es"));
+  return `<section class="glist" style="--sc:${stageColor(g.stage)}">
+    <header><b>${esc(g.stage ? g.stage + " " : "")}G${g.n ?? ""}</b><span>${hm(g.start)}–${hm(g.end)} · ${g.comp.length} competidores${g.feat.length ? ` · ★ ${g.feat.length}` : ""}</span>
+      <button class="iconbtn" data-closeg="${g.id}" aria-label="Cerrar grupo" style="width:34px;height:34px">✕</button></header>
+    ${ids.map(id => {
+      const p = PERS[id], r = ROW[id]?.[a.ev], f = g.feat.includes(id), hit = q.length > 1 && p?._q.includes(q);
+      const badges = [f ? `<span class="pill feat">★ Destacado</span>` : "", cc(p?.iso || ""), r?.seedES ? `<span class="pill" title="Seed entre españoles">ESP #${r.seedES}</span>` : "",
+        r?.nrv?.length ? `<span class="pill nr">NR ${r.nrv.join("+")}</span>` : "", r?.tit ? `<span class="pill ch">${r.tit}× campeón</span>` : "",
+        ev?.champ2025?.es === id ? `<span class="pill ok">Vigente</span>` : "", p?.newcomer ? `<span class="pill new">Debutante</span>` : ""].join("");
+      return `<div class="grow ${f ? "feat" : ""} ${hit ? "hit" : ""}" data-id="${id}" role="button" tabindex="0">
+        <span class="gs">${r ? "#" + r.seed : "—"}</span>${starBtn(id)}
+        <div class="gn"><b>${esc(p?.name || id)}${marks(id).replace(/<span class="mark" title="Fijado">★<\/span>/, "")}</b><div>${badges}</div></div>
+        <span class="gpb">${r ? esc(pbOf(ev, r) || "—") : "—"}<small>${r ? (ev.metric === "single" ? "PB single" : "PB media") : "sin marca"}</small></span></div>`;
+    }).join("")}</section>`;
+}
+
+function drawFind() {
+  const box = $("#schfind"), q = norm(S.schQ.trim());
+  if (q.length < 2) { box.innerHTML = ""; return; }
+  const ppl = DATA.persons.filter(p => p._q.includes(q)).slice(0, 4);
+  box.innerHTML = `<div class="box" style="margin-bottom:12px">${ppl.length ? ppl.map(p => {
+    const gs = groupsOf(p.id);
+    return `<div style="margin:4px 0 10px"><b>${esc(p.name)}</b> ${cc(p.iso)} <span class="note" style="margin:0">${gs.length} grupo${gs.length === 1 ? "" : "s"}</span>
+      <div class="podlist" style="margin-top:6px">${gs.map(({ a, g }) => `<button class="pod" data-jump="${a.id}" data-jg="${g.id}" style="cursor:pointer;color:inherit">${esc(dayLabel(dayKey(a.start), { weekday: "short" }))} ${hm(g.start)} · ${esc(actTitle(a))} ${esc(roundTxt(a))} · ${esc(g.stage ? g.stage + " " : "G")}${g.n ?? ""}${g.feat.includes(p.id) ? " ★" : ""}</button>`).join("") || `<span class="zero">Sin grupos asignados (staff o no compite)</span>`}</div></div>`;
+  }).join("") : `<span class="zero">Nadie coincide con «${esc(S.schQ)}».</span>`}</div>`;
+}
+
+function jumpTo(actId, grpId) {
+  const a = SCH.find(x => x.id === +actId); if (!a) return;
+  S.schDay = dayKey(a.start); S.schRoom = "all"; S.schOpen.add(a.id); if (grpId) S.schSel.add(+grpId);
+  viewSchedule($("#view")); avFix();
+  $("#act-" + a.id)?.scrollIntoView({ block: "start", behavior: "smooth" });
+}
+
+function schClick(e) {
+  const t = e.target.closest("[data-act],[data-grp],[data-closeg],[data-allg],[data-featg],[data-ps],[data-jump],.grow");
+  if (!t || e.target.closest("[data-pin]")) return;
+  if (t.dataset.act) { const id = +t.dataset.act; S.schOpen.has(id) ? S.schOpen.delete(id) : S.schOpen.add(id); drawTimeline(); }
+  else if (t.dataset.grp) { const id = +t.dataset.grp; S.schSel.has(id) ? S.schSel.delete(id) : S.schSel.add(id); drawTimeline(); }
+  else if (t.dataset.closeg) { S.schSel.delete(+t.dataset.closeg); drawTimeline(); }
+  else if (t.dataset.allg || t.dataset.featg) {
+    const a = SCH.find(x => x.id === +(t.dataset.allg || t.dataset.featg)), gs = t.dataset.featg ? a.groups.filter(g => g.feat.length) : a.groups;
+    const all = !t.dataset.featg && gs.every(g => S.schSel.has(g.id));
+    gs.forEach(g => all ? S.schSel.delete(g.id) : S.schSel.add(g.id)); drawTimeline();
+  }
+  else if (t.dataset.ps) go("evento-" + t.dataset.ps);
+  else if (t.dataset.jump) jumpTo(t.dataset.jump, t.dataset.jg);
+  else if (t.classList.contains("grow")) { S.navList = [...t.closest(".glist").querySelectorAll(".grow")].map(x => x.dataset.id); openProfile(t.dataset.id); }
+}
+setInterval(() => { if ((location.hash.slice(1) || "").startsWith("horario") && !document.activeElement?.matches("input,textarea")) drawTimeline(); }, 60000);
 
 /* ---------------- palmarés ---------------- */
 function viewPal(v) {

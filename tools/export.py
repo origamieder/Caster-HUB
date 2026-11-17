@@ -255,12 +255,58 @@ for cid in sorted([c for c in champ_info if ctype(c) == "España"], key=lambda c
         if (cid, ev) in champ_winners:
             PAL.append(dict(y=int(champ_info[cid]["start_date"][:4]), ev=EV_NAME.get(ev, ev), pod=[dict(name=names.get(x, x), here=x in reg_ids, id=x) for x in champ_winners[(cid, ev)]]))
 
+# ---- schedule + groups (from the public WCIF; competitor assignments only) ----
+rid2id = {p["rid"]: p["id"] for p in PERS}
+group_members = {}
+for p in accepted:
+    for a in p.get("assignments", []):
+        if a.get("assignmentCode") == "competitor" and p["registrantId"] in rid2id:
+            group_members.setdefault(a["activityId"], []).append(rid2id[p["registrantId"]])
+round_info = {r["id"]: r for e in wcif["events"] for r in e.get("rounds", [])}
+uid2id = {p["wcaUserId"]: rid2id[p["registrantId"]] for p in accepted if p.get("wcaUserId") and p["registrantId"] in rid2id}
+def ext_data(obj, ext_id):
+    return next((x.get("data") for x in obj.get("extensions") or [] if x.get("id") == ext_id), None)
+def adv(r):
+    c = (r or {}).get("advancementCondition") or {}
+    return None if not c else {"type": c.get("type"), "level": c.get("level")}
+SCHED = []
+for venue in (wcif.get("schedule") or {}).get("venues", []):
+    for room in venue.get("rooms", []):
+        for a in room.get("activities", []):
+            code = a["activityCode"]
+            ev = code.split("-")[0]
+            rnd_id = "-".join(code.split("-")[:2]) if not code.startswith("other") else None
+            ri = round_info.get(rnd_id) or {}
+            groups = []
+            kids = a.get("childActivities", [])
+            # natshelper stages (Araba / Bizkaia / Gipuzkoa...) run groups in parallel; the stage-less
+            # "Pabellón N" children are empty containers when stages exist, so they are dropped.
+            has_stages = any(ext_data(g, "org.cubingusa.natshelper.v1.Group") for g in kids)
+            for g in kids:
+                stage = ext_data(g, "org.cubingusa.natshelper.v1.Group")
+                if has_stages and not stage and not group_members.get(g["id"]):
+                    continue
+                gc = g["activityCode"]
+                gnum = next((int(x[1:]) for x in gc.split("-") if x.startswith("g") and x[1:].isdigit()), None)
+                label = g["name"][len(a["name"]):].strip() if g["name"].startswith(a["name"]) else g["name"]
+                stage_name = label.rsplit(" ", 1)[0] if label and label.rsplit(" ", 1)[-1].isdigit() and " " in label else None
+                feat = (ext_data(g, "groupifier.ActivityConfig") or {}).get("featuredCompetitorWcaUserIds") or []
+                groups.append(dict(id=g["id"], n=gnum, stage=stage_name if stage else None, stageId=(stage or {}).get("stageId"),
+                                   start=g["startTime"], end=g["endTime"], comp=group_members.get(g["id"], []),
+                                   feat=[uid2id[u] for u in feat if u in uid2id]))
+            SCHED.append(dict(id=a["id"], code=code, ev=None if code.startswith("other") else ev, name=a["name"],
+                              room=room["name"], color=room.get("color"), start=a["startTime"], end=a["endTime"],
+                              round=int(code.split("-")[1][1:]) if rnd_id and code.split("-")[1].startswith("r") else None,
+                              format=ri.get("format"), adv=adv(ri), groups=groups))
+SCHED.sort(key=lambda x: (x["start"], x["room"]))
+
 defend = sum(1 for e in EV_OUT if e["champ2025"]["defends"])
 OUTD = dict(
     meta=dict(name="Campeonato de España 2026", start="2026-12-05", end="2026-12-07", updated=TODAY.isoformat(), years=years,
               kpis=dict(competitors=len(accepted), countries=len({p["countryIso2"] for p in accepted}),
                         newcomers=sum(1 for p in accepted if not p.get("wcaId")), events=len(events), defend=defend)),
-    events=EV_OUT, persons=PERS, palmares=PAL,
+    events=EV_OUT, persons=PERS, palmares=PAL, schedule=SCHED,
+    tz=((wcif.get("schedule") or {}).get("venues") or [{}])[0].get("timezone", "Europe/Madrid"),
 )
 json.dump(OUTD, open(OUT, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
 print("saved", OUT, os.path.getsize(OUT) // 1024, "KB", len(PERS), "persons", sum(1 for x in PERS if 'comps' in x), "with data")
