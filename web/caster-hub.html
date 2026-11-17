@@ -282,7 +282,25 @@ td.key .t { font-size: calc(18px * var(--fz)); font-weight: 700; color: var(--ac
 .gcard .gt em { margin-left: auto; font-style: normal; color: var(--muted); font-size: calc(13px * var(--fz)); }
 .gcard .gtop { font-size: calc(13px * var(--fz)); color: var(--fg); line-height: 1.35; }
 .gcard .gtop b { color: var(--accent); }
-.glists { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; }
+/* open groups share the full width: 1 open = whole row, n open = n equal columns (wraps when too narrow) */
+.glists { display: grid; grid-template-columns: repeat(var(--gcols, 1), minmax(0, 1fr)); gap: 12px; }
+.grows { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); }
+.grows .grow { border-right: 1px solid var(--line); }
+.live-on { background: var(--green) !important; color: #fff !important; border-color: var(--green) !important; }
+.livebar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: calc(13px * var(--fz)); color: var(--muted); }
+.livebar .err { color: var(--red); }
+.grow .lres { font-family: var(--f-time); font-size: calc(12px * var(--fz)); color: var(--fg); }
+.grow.adv { box-shadow: inset 4px 0 0 var(--green); }
+.pill.rec { background: var(--red); color: #fff; border: 0; }
+.pill.rec.cr { background: var(--accent); color: var(--accent-ink); }
+.pill.rec.wr { background: #7C3AED; color: #fff; }
+.results { border: 1px solid var(--card-line); border-radius: 12px; overflow: hidden; background: var(--panel); }
+.results h4 { margin: 0; padding: 10px 12px; background: var(--panel2); font-family: var(--f-display); text-transform: uppercase; font-size: calc(18px * var(--fz)); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.results table { min-width: 0; }
+.results tbody tr.adv td { background: color-mix(in srgb, var(--green) 12%, transparent); }
+.results tbody tr.advq td { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.results td.att { font-family: var(--f-time); color: var(--muted); font-size: calc(13px * var(--fz)); white-space: nowrap; }
+.results td .t { font-weight: 700; }
 .glist { border: 1px solid var(--card-line); border-radius: 12px; overflow: hidden; background: var(--panel); border-top: 4px solid var(--sc); }
 .glist header { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: var(--panel2); }
 .glist header b { font-family: var(--f-display); font-size: calc(20px * var(--fz)); text-transform: uppercase; }
@@ -300,7 +318,7 @@ td.key .t { font-size: calc(18px * var(--fz)); font-weight: 700; color: var(--ac
 .grow .gpb { font-family: var(--f-time); font-weight: 700; font-size: calc(15px * var(--fz)); text-align: right; }
 .grow .gpb small { display: block; font-weight: 500; color: var(--muted); font-size: calc(11px * var(--fz)); }
 .pending { color: var(--muted); font-size: calc(14px * var(--fz)); }
-@media (max-width: 700px) { .acthead { grid-template-columns: 74px 5px minmax(0, 1fr) auto; gap: 10px; } .glists { grid-template-columns: 1fr; } }
+@media (max-width: 700px) { .acthead { grid-template-columns: 74px 5px minmax(0, 1fr) auto; gap: 10px; } .grows { grid-template-columns: 1fr; } }
 
 /* caster tools: pins, notes, key facts, head-to-head, big text */
 .star { border: 0; background: none; cursor: pointer; padding: 2px 4px; color: var(--dim); font-size: calc(22px * var(--fz)); line-height: 1; border-radius: 8px; flex: none; }
@@ -809,7 +827,84 @@ const actFeat = a => a.groups.reduce((n, g) => n + g.feat.length, 0);
 const seedOf = (id, ev) => ROW[id]?.[ev]?.seed ?? 99999;
 const groupsOf = id => SCH.flatMap(a => a.groups.filter(g => g.comp.includes(id)).map(g => ({ a, g })));
 S.schDay = SDAYS.includes(dayKey(new Date().toISOString())) ? dayKey(new Date().toISOString()) : store.get("schDay", SDAYS[0]);
-S.schRoom = "all"; S.schOpen = new Set(); S.schSel = new Set(); S.schQ = "";
+S.schRoom = "all"; S.schOpen = new Set(); S.schSel = new Set(); S.schQ = ""; S.resAll = new Set();
+
+/* ---- WCA Live: results, advancing and records as they are entered; WCIF: new group assignments ---- */
+const COMP_WCA = "SpanishChampionship2026";
+const RID = Object.fromEntries(DATA.persons.map(p => [p.rid, p.id]));
+const LIVE = { on: store.get("liveOn", false), comp: store.get("liveComp", null), rounds: store.get("liveRounds", {}), at: store.get("liveAt", null), err: "", busy: false, wcifAt: 0 };
+function applyAsg(s) { if (!s) return; SCH.forEach(a => a.groups.forEach(g => { if (s.asg?.[g.id]) g.comp = s.asg[g.id]; if (s.feat?.[g.id]) g.feat = s.feat[g.id]; })); }
+applyAsg(store.get("liveAsg", null));
+const liveR = a => a.ev && a.round ? LIVE.rounds[`${a.ev}-r${a.round}`] : null;
+function fmtRes(ev, v, avg) {
+  if (v === -1) return "DNF"; if (v === -2) return "DNS"; if (!v) return "";
+  if (ev === "333mbf") { const dd = Math.floor(v / 1e7), tt = Math.floor(v / 100) % 1e5, mm = v % 100, solved = 99 - dd + mm;
+    return `${solved}/${solved + mm} ${tt === 99999 ? "?" : Math.floor(tt / 60) + ":" + String(tt % 60).padStart(2, "0")}`; }
+  if (ev === "333fm") return avg ? (v / 100).toFixed(2) : String(v);
+  const s = v / 100; return s >= 60 ? `${Math.floor(s / 60)}:${(s % 60).toFixed(2).padStart(5, "0")}` : s.toFixed(2);
+}
+async function gql(query) {
+  const r = await fetch("https://live.worldcubeassociation.org/api", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ query }) });
+  const j = await r.json(); if (j.errors) throw new Error(j.errors[0].message); return j.data;
+}
+async function refreshAsg() {
+  const w = await (await fetch(`https://www.worldcubeassociation.org/api/v0/competitions/${COMP_WCA}/wcif/public`)).json();
+  const uid = {}, asg = {}, feat = {};
+  w.persons.forEach(p => { const id = RID[p.registrantId]; if (!id) return; if (p.wcaUserId) uid[p.wcaUserId] = id;
+    (p.assignments || []).forEach(x => { if (x.assignmentCode === "competitor") (asg[x.activityId] ||= []).push(id); }); });
+  (w.schedule?.venues || []).forEach(v => v.rooms.forEach(r => r.activities.forEach(a => (a.childActivities || []).forEach(g => {
+    const f = (g.extensions || []).find(e => e.id === "groupifier.ActivityConfig")?.data?.featuredCompetitorWcaUserIds;
+    if (f?.length) feat[g.id] = f.map(u => uid[u]).filter(Boolean); }))));
+  const s = { asg, feat }; applyAsg(s); store.set("liveAsg", s);
+}
+async function liveRefresh(force) {
+  if (LIVE.busy) return; LIVE.busy = true; LIVE.err = ""; drawLiveBar();
+  try {
+    if (!LIVE.comp) {
+      const d = await gql(`{ competitions(filter: "Spanish Championship 2026", limit: 5) { id wcaId } }`);
+      LIVE.comp = d.competitions.find(c => c.wcaId === COMP_WCA)?.id;
+      if (!LIVE.comp) throw new Error("La competición todavía no está en WCA Live."); store.set("liveComp", LIVE.comp);
+    }
+    const d = await gql(`{ competition(id: "${LIVE.comp}") { competitionEvents { event { id } rounds { id number open finished active numResults numEnteredResults } } } }`);
+    const todo = [];
+    for (const ce of d.competition.competitionEvents) for (const r of ce.rounds) {
+      const key = `${ce.event.id}-r${r.number}`, old = LIVE.rounds[key];
+      const meta = { id: r.id, open: r.open, finished: r.finished, active: r.active, n: r.numResults, ne: r.numEnteredResults };
+      if (!(r.open || r.finished) || !r.numResults) { LIVE.rounds[key] = { ...meta, res: [] }; continue; }
+      if (force || !old || old.ne !== meta.ne || old.n !== meta.n || old.finished !== meta.finished || !old.res?.length) todo.push([key, meta]);
+      else LIVE.rounds[key] = { ...old, ...meta };
+    }
+    for (let i = 0; i < todo.length; i += 3) await Promise.all(todo.slice(i, i + 3).map(async ([key, meta]) => {
+      const rd = await gql(`{ round(id: "${meta.id}") { results { ranking advancing advancingQuestionable best average singleRecordTag averageRecordTag attempts { result } person { registrantId } } } }`);
+      LIVE.rounds[key] = { ...meta, res: rd.round.results.map(x => ({ id: RID[x.person.registrantId], rk: x.ranking, adv: x.advancing, q: x.advancingQuestionable,
+        b: x.best, a: x.average, sT: x.singleRecordTag, aT: x.averageRecordTag, t: x.attempts.map(y => y.result) })).filter(x => x.id) };
+    }));
+    if (force || Date.now() - LIVE.wcifAt > 5 * 60e3) { await refreshAsg(); LIVE.wcifAt = Date.now(); }
+    LIVE.at = new Date().toISOString(); store.set("liveRounds", LIVE.rounds); store.set("liveAt", LIVE.at);
+  } catch (e) {
+    LIVE.err = /fetch|network|load failed|blocked|refused/i.test(String(e)) ? "No se puede conectar con WCA Live: sin internet, o esta versión no permite conexiones externas (usa el APK o el HTML local)." : String(e.message || e);
+  }
+  LIVE.busy = false;
+  if ((location.hash.slice(1) || "").startsWith("horario")) { drawLiveBar(); drawTimeline(); }
+}
+function drawLiveBar() {
+  const box = $("#livebar"); if (!box) return;
+  box.innerHTML = `<button class="chip ${LIVE.on ? "live-on" : ""}" id="liveBtn" aria-pressed="${LIVE.on}">${LIVE.on ? "● En directo (cada minuto)" : "○ Activar WCA Live"}</button>
+    <button class="chip" id="liveNow" ${LIVE.busy ? "disabled" : ""}>${LIVE.busy ? "Actualizando…" : "Actualizar ahora"}</button>
+    <span>${LIVE.at ? `Última actualización ${hm(LIVE.at)} · resultados de WCA Live y grupos de la WCA` : "Resultados, clasificados y récords de WCA Live a medida que se suben"}</span>
+    ${LIVE.err ? `<span class="err">${esc(LIVE.err)}</span>` : ""}`;
+  $("#liveBtn").onclick = () => { LIVE.on = !LIVE.on; store.set("liveOn", LIVE.on); if (LIVE.on) liveRefresh(); else drawLiveBar(); };
+  $("#liveNow").onclick = () => liveRefresh(true);
+}
+setInterval(() => { if (LIVE.on && document.visibilityState === "visible") liveRefresh(); }, 60000);
+if (LIVE.on) setTimeout(() => liveRefresh(), 1500);
+let _rsz; window.addEventListener("resize", () => { clearTimeout(_rsz); _rsz = setTimeout(() => { if ((location.hash.slice(1) || "").startsWith("horario") && S.schSel.size) drawTimeline(); }, 200); });
+const recPill = tag => tag ? `<span class="pill rec ${tag === "WR" ? "wr" : tag === "NR" ? "" : "cr"}">${esc(tag)}</span>` : "";
+function liveTxt(a, x) {
+  if (!x || (!x.b && !x.a)) return "";
+  const ev = EVBYID[a.ev], main = ev?.metric === "single" || !x.a ? fmtRes(a.ev, x.b) : fmtRes(a.ev, x.a, true);
+  return `${main}${x.rk ? ` · ${x.rk}º` : ""}${x.adv ? " · pasa" : x.q ? " · pasaría" : ""}`;
+}
 
 function viewSchedule(v) {
   if (!SCH.length) { v.innerHTML = `<h1>Horario</h1><p class="empty">Todavía no hay horario publicado en la WCA. Actualiza los datos con actualizar.sh cuando salga.</p>`; return; }
@@ -824,10 +919,11 @@ function viewSchedule(v) {
       ${rooms.length > 1 ? `<div class="toggle" role="group" aria-label="Sala">${[["all", "Todas las salas"], ...rooms.map(r => [r, r])].map(([k, t]) => `<button data-room="${esc(k)}" aria-pressed="${S.schRoom === k}">${esc(t)}</button>`).join("")}</div>` : ""}
       <input class="field" id="schq" type="search" placeholder="¿En qué grupo compite…?" value="${esc(S.schQ)}" style="width:260px" aria-label="Buscar competidor en los grupos">
     </div>
+    <div class="livebar" id="livebar" style="margin:-4px 0 12px"></div>
     <div id="schfind"></div>
     <div class="tl" id="tl"></div>
     <div class="note">Toca una prueba para ver sus grupos y toca un grupo para ver sus competidores (puedes abrir varios a la vez para comparar escenarios). <b style="color:var(--accent)">★ Destacado</b> = competidor marcado como destacado por la organización en ese grupo. # = seed en el psych sheet.</div>`;
-  drawTimeline(); drawFind();
+  drawLiveBar(); drawTimeline(); drawFind();
   v.querySelectorAll("[data-day]").forEach(b => b.addEventListener("click", () => { S.schDay = b.dataset.day; store.set("schDay", S.schDay); viewSchedule(v); avFix(); }));
   v.querySelectorAll("[data-room]").forEach(b => b.addEventListener("click", () => { S.schRoom = b.dataset.room; viewSchedule(v); avFix(); }));
   $("#schq").addEventListener("input", e => { S.schQ = e.target.value; drawFind(); });
@@ -842,7 +938,9 @@ function drawTimeline() {
   $("#tl").innerHTML = L.map(a => {
     const st = Date.parse(a.start), en = Date.parse(a.end), cls = now >= st && now < en ? "now" : now >= en ? "past" : "";
     if (!a.ev) return `<div class="act other ${cls}"><div class="acthead"><div class="tm">${hm(a.start)}<small>${hm(a.end)}</small></div><span class="bar"></span><div><h3>${esc(actTitle(a))}</h3></div><span class="room" style="--rc:${esc(a.color || "var(--line)")}"><i></i>${esc(a.room)}</span></div></div>`;
-    const open = S.schOpen.has(a.id), nc = actComp(a), nf = actFeat(a), ng = a.groups.length;
+    const open = S.schOpen.has(a.id), nc = actComp(a), nf = actFeat(a), ng = a.groups.length, lr = liveR(a);
+    const lp = !lr ? "" : lr.finished ? `<span class="pill ok">Terminada · ${lr.res.filter(x => x.adv).length || lr.n} ${lr.res.some(x => x.adv) ? "pasan" : "resultados"}</span>`
+      : lr.ne > 0 ? `<span class="pill live-on">● En directo · ${lr.ne}/${lr.n}</span>` : lr.open && lr.n ? `<span class="pill ok">${lr.n} clasificados</span>` : "";
     return `<div class="act ${cls}" id="act-${a.id}" style="--evc:${EVC[a.ev] || "var(--line)"}" ${open ? "open" : ""}>
       <button class="acthead" data-act="${a.id}" aria-expanded="${open}">
         <div class="tm">${hm(a.start)}<small>${hm(a.end)}</small></div><span class="bar"></span>
@@ -851,17 +949,54 @@ function drawTimeline() {
             ${a.format ? `<span class="pill">${FMTL[a.format] || a.format}</span>` : ""}
             <span class="pill">${ng} grupo${ng === 1 ? "" : "s"}</span>${nc ? `<span class="pill">${nc} competidores</span>` : `<span class="pill">grupos pendientes</span>`}
             ${a.adv ? `<span class="pill">${esc(advTxt(a.adv))}</span>` : ""}${nf ? `<span class="pill feat">★ ${nf} destacados</span>` : ""}
-            ${cls === "now" ? `<span class="pill ok">En curso</span>` : ""}</div></div>
+            ${cls === "now" ? `<span class="pill ok">En curso</span>` : ""}${lp}</div></div>
         <span class="chev" aria-hidden="true">›</span></button>
       ${open ? actBody(a) : ""}</div>`;
   }).join("") || `<div class="empty">No hay actividades en esta sala este día.</div>`;
   avFix();
 }
 
+function liveTable(a) {
+  const lr = liveR(a); if (!lr || !lr.ne) return "";
+  const ev = EVBYID[a.ev], all = S.resAll.has(a.id);
+  const rows = lr.res.filter(x => x.rk || x.b || x.a).sort((x, y) => (x.rk ?? 9e9) - (y.rk ?? 9e9));
+  const shown = all ? rows : rows.slice(0, 16);
+  return `<div class="results"><h4>${lr.finished ? "Resultados" : "● En directo"} · WCA Live <span class="pill">${lr.ne}/${lr.n} resultados</span>${lr.res.some(x => x.adv) ? `<span class="pill ok">${lr.res.filter(x => x.adv).length} pasan</span>` : ""}</h4>
+    <div class="tablewrap" style="border:0;border-radius:0"><table><thead><tr><th>#</th><th class="l">Competidor</th><th>Intentos</th><th>Mejor</th>${ev?.metric === "single" ? "" : "<th>Media</th>"}<th>Seed</th><th></th></tr></thead><tbody>
+    ${shown.map(x => { const p = PERS[x.id];
+      return `<tr data-id="${x.id}" class="${x.adv ? "adv" : x.q ? "advq" : ""}"><td class="seed" style="font-size:calc(20px * var(--fz))">${x.rk ?? ""}</td>
+        <td class="l"><div class="who">${av(p)}<div><div class="nm">${esc(p?.name || x.id)}</div><div class="meta">${cc(p?.iso || "")}${recPill(x.sT)}${recPill(x.aT)}</div></div></div></td>
+        <td class="att">${x.t.map(v => fmtRes(a.ev, v)).join("  ")}</td><td><span class="t">${esc(fmtRes(a.ev, x.b))}</span>${x.sT ? " " + recPill(x.sT) : ""}</td>
+        ${ev?.metric === "single" ? "" : `<td class="key"><span class="t">${esc(fmtRes(a.ev, x.a, true))}</span>${x.aT ? " " + recPill(x.aT) : ""}</td>`}
+        <td class="rk">#${seedOf(x.id, a.ev) < 99999 ? seedOf(x.id, a.ev) : "—"}</td><td>${x.adv ? `<span class="pill ok">Pasa</span>` : x.q ? `<span class="pill">Pasaría</span>` : ""}</td></tr>`; }).join("")}
+    </tbody></table></div>
+    ${rows.length > 16 ? `<div style="padding:8px 12px"><button class="chip" data-resall="${a.id}">${all ? "Ver solo los 16 primeros" : `Ver los ${rows.length}`}</button></div>` : ""}</div>`;
+}
+
+function qualifiedBox(a) {
+  // Who is in this round before groups are published: the round's own WCA Live list once it opens,
+  // otherwise the competitors flagged as advancing in the previous round.
+  const lr = liveR(a), prev = a.round > 1 ? LIVE.rounds[`${a.ev}-r${a.round - 1}`] : null;
+  let ids = [], src = "";
+  if (lr?.res?.length) { ids = lr.res.map(x => x.id); src = "en WCA Live"; }
+  else if (prev?.res?.some(x => x.adv)) { ids = prev.res.filter(x => x.adv).map(x => x.id); src = "según la ronda anterior en WCA Live"; }
+  if (!ids.length) return "";
+  const prk = Object.fromEntries((prev?.res || []).map(x => [x.id, x]));
+  ids.sort((x, y) => (prk[x]?.rk ?? 9e9) - (prk[y]?.rk ?? 9e9) || seedOf(x, a.ev) - seedOf(y, a.ev));
+  return `<div class="results"><h4>Clasificados para esta ronda <span class="pill ok">${ids.length}</span><span class="pill">${src}</span></h4>
+    <div class="grows">${ids.map(id => { const p = PERS[id], x = prk[id];
+      return `<div class="grow" data-id="${id}" role="button" tabindex="0"><span class="gs">${x?.rk ? x.rk + "º" : "#" + (seedOf(id, a.ev) < 99999 ? seedOf(id, a.ev) : "—")}</span>${starBtn(id)}
+        <div class="gn"><b>${esc(p?.name || id)}</b><div>${cc(p?.iso || "")}${ROW[id]?.[a.ev]?.nrv?.length ? `<span class="pill nr">NR</span>` : ""}</div></div>
+        <span class="gpb">${x ? esc(liveTxt({ ev: a.ev }, { ...x, rk: null, adv: false, q: false })) : ""}<small>${x ? "ronda anterior" : ""}</small></span></div>`; }).join("")}</div></div>`;
+}
+
 function actBody(a) {
   const ev = EVBYID[a.ev];
-  if (!actComp(a)) return `<div class="actbody"><div class="pending">Los grupos de esta ronda se asignan con los resultados de la ronda anterior${a.adv ? "" : ""}. ${a.groups.length} grupo${a.groups.length === 1 ? "" : "s"} previsto${a.groups.length === 1 ? "" : "s"}${[...new Set(a.groups.map(g => g.stage).filter(Boolean))].length ? " en " + [...new Set(a.groups.map(g => g.stage).filter(Boolean))].join(", ") : ""}.</div>
+  if (!actComp(a)) {
+    const q = qualifiedBox(a), lt = liveTable(a);
+    return `<div class="actbody">${lt}${q || `<div class="pending">Los grupos de esta ronda se asignan con los resultados de la ronda anterior. ${a.groups.length} grupo${a.groups.length === 1 ? "" : "s"} previsto${a.groups.length === 1 ? "" : "s"}${[...new Set(a.groups.map(g => g.stage).filter(Boolean))].length ? " en " + [...new Set(a.groups.map(g => g.stage).filter(Boolean))].join(", ") : ""}. ${LIVE.on ? "En cuanto WCA Live tenga los clasificados aparecerán aquí." : "Activa WCA Live para ver los clasificados en cuanto se publiquen."}</div>`}
     <div><button class="chip" data-ps="${a.ev}">Ver psych sheet de ${esc(ev?.name || a.ev)} ›</button></div></div>`;
+  }
   const byStage = {};
   a.groups.forEach(g => (byStage[g.stage || "Grupos"] ||= []).push(g));
   const sel = a.groups.filter(g => S.schSel.has(g.id));
@@ -873,7 +1008,8 @@ function actBody(a) {
       <button class="chip" data-allg="${a.id}">${sel.length === a.groups.length ? "Cerrar todos los grupos" : "Abrir todos los grupos"}</button>
       ${a.groups.some(g => g.feat.length) ? `<button class="chip" data-featg="${a.id}">Abrir grupos con destacados</button>` : ""}
       <button class="chip" data-ps="${a.ev}">Psych sheet de ${esc(ev?.name || a.ev)} ›</button></div>
-    ${sel.length ? `<div class="glists">${sel.map(g => gList(a, g)).join("")}</div>` : ""}
+    ${sel.length ? `<div class="glists" style="--gcols:${Math.min(sel.length, Math.max(1, Math.floor((($("#view")?.clientWidth || 1200) - 70) / 360)))}">${sel.map(g => gList(a, g)).join("")}</div>` : ""}
+    ${liveTable(a)}
   </div>`;
 }
 
@@ -891,16 +1027,17 @@ function gList(a, g) {
   return `<section class="glist" style="--sc:${stageColor(g.stage)}">
     <header><b>${esc(g.stage ? g.stage + " " : "")}G${g.n ?? ""}</b><span>${hm(g.start)}–${hm(g.end)} · ${g.comp.length} competidores${g.feat.length ? ` · ★ ${g.feat.length}` : ""}</span>
       <button class="iconbtn" data-closeg="${g.id}" aria-label="Cerrar grupo" style="width:34px;height:34px">✕</button></header>
-    ${ids.map(id => {
+    <div class="grows">${ids.map(id => {
       const p = PERS[id], r = ROW[id]?.[a.ev], f = g.feat.includes(id), hit = q.length > 1 && p?._q.includes(q);
+      const lx = liveR(a)?.res?.find(x => x.id === id), lt = liveTxt(a, lx);
       const badges = [f ? `<span class="pill feat">★ Destacado</span>` : "", cc(p?.iso || ""), r?.seedES ? `<span class="pill" title="Seed entre españoles">ESP #${r.seedES}</span>` : "",
         r?.nrv?.length ? `<span class="pill nr">NR ${r.nrv.join("+")}</span>` : "", r?.tit ? `<span class="pill ch">${r.tit}× campeón</span>` : "",
         ev?.champ2025?.es === id ? `<span class="pill ok">Vigente</span>` : "", p?.newcomer ? `<span class="pill new">Debutante</span>` : ""].join("");
-      return `<div class="grow ${f ? "feat" : ""} ${hit ? "hit" : ""}" data-id="${id}" role="button" tabindex="0">
+      return `<div class="grow ${f ? "feat" : ""} ${hit ? "hit" : ""} ${lx?.adv ? "adv" : ""}" data-id="${id}" role="button" tabindex="0">
         <span class="gs">${r ? "#" + r.seed : "—"}</span>${starBtn(id)}
-        <div class="gn"><b>${esc(p?.name || id)}${marks(id).replace(/<span class="mark" title="Fijado">★<\/span>/, "")}</b><div>${badges}</div></div>
+        <div class="gn"><b>${esc(p?.name || id)}${marks(id).replace(/<span class="mark" title="Fijado">★<\/span>/, "")}</b><div>${badges}${recPill(lx?.sT)}${recPill(lx?.aT)}</div>${lt ? `<div class="lres">En vivo: ${esc(lt)}</div>` : ""}</div>
         <span class="gpb">${r ? esc(pbOf(ev, r) || "—") : "—"}<small>${r ? (ev.metric === "single" ? "PB single" : "PB media") : "sin marca"}</small></span></div>`;
-    }).join("")}</section>`;
+    }).join("")}</div></section>`;
 }
 
 function drawFind() {
@@ -922,7 +1059,7 @@ function jumpTo(actId, grpId) {
 }
 
 function schClick(e) {
-  const t = e.target.closest("[data-act],[data-grp],[data-closeg],[data-allg],[data-featg],[data-ps],[data-jump],.grow");
+  const t = e.target.closest("[data-act],[data-grp],[data-closeg],[data-allg],[data-featg],[data-ps],[data-jump],[data-resall],.grow,.results tr[data-id]");
   if (!t || e.target.closest("[data-pin]")) return;
   if (t.dataset.act) { const id = +t.dataset.act; S.schOpen.has(id) ? S.schOpen.delete(id) : S.schOpen.add(id); drawTimeline(); }
   else if (t.dataset.grp) { const id = +t.dataset.grp; S.schSel.has(id) ? S.schSel.delete(id) : S.schSel.add(id); drawTimeline(); }
@@ -934,7 +1071,8 @@ function schClick(e) {
   }
   else if (t.dataset.ps) go("evento-" + t.dataset.ps);
   else if (t.dataset.jump) jumpTo(t.dataset.jump, t.dataset.jg);
-  else if (t.classList.contains("grow")) { S.navList = [...t.closest(".glist").querySelectorAll(".grow")].map(x => x.dataset.id); openProfile(t.dataset.id); }
+  else if (t.dataset.resall) { const id = +t.dataset.resall; S.resAll.has(id) ? S.resAll.delete(id) : S.resAll.add(id); drawTimeline(); }
+  else if (t.dataset.id) { const box = t.closest(".glist,.results"); S.navList = box ? [...box.querySelectorAll("[data-id]")].map(x => x.dataset.id) : [t.dataset.id]; openProfile(t.dataset.id); }
 }
 setInterval(() => { if ((location.hash.slice(1) || "").startsWith("horario") && !document.activeElement?.matches("input,textarea")) drawTimeline(); }, 60000);
 
