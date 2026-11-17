@@ -1,7 +1,137 @@
 # Caster Hub · Campeonato de España de Speedcubing 2026
 
-App con los datos de los 341 inscritos para los casters: psych sheets por evento, fichas de competidores, buscador, filtros y palmarés.
-Todos los datos vienen de la API pública de la WCA.
+App para los casters del campeonato (5–7 de diciembre de 2026) con los datos de los 339 competidores: psych sheets, horario y grupos, resultados en directo de WCA Live, fichas de cada competidor y palmarés.
+Todos los datos vienen de la WCA y de WCA Live.
+
+> **¿Eres caster y es tu primera vez con la app?** Empieza por la [Guía para casters](#guía-para-casters). Si solo necesitas instalarla, ve a [Usar la app](#1-usar-la-app-no-hace-falta-instalar-nada).
+
+---
+
+## Guía para casters
+
+### Antes del directo (5 minutos)
+
+1. **Abre la app**: en la tablet, el icono *Caster Hub*; en el PC de cabina, el acceso directo del escritorio (ver [Usar la app](#1-usar-la-app-no-hace-falta-instalar-nada)).
+2. **Activa WCA Live**: pestaña **Horario → "○ Activar WCA Live"**. Se queda activado y actualiza resultados cada minuto (necesita internet).
+3. **Fija a quien vayas a comentar**: toca la estrella **☆** junto a su nombre. Los tendrás juntos en *Resumen* y con el filtro **★ Fijados**.
+4. **Apunta lo que quieras decir** en las *Notas del caster* de cada ficha (pronunciación, anécdotas…).
+5. Si vas a leer de lejos, pulsa **Aa** (texto grande).
+
+> Fijados, notas, tema y vista elegida se guardan **solo en ese dispositivo**. Lo que apuntes en la tablet no aparece en el PC.
+
+### La pantalla
+
+- **Barra de secciones** (a la izquierda; abajo con la tablet en vertical): **Resumen · Eventos · Horario · Competidores · Palmarés**.
+- **Cabecera**:
+  - **‹ Volver**: aparece al pasar de una vista a otra y te devuelve a donde estabas (mismo sitio, mismos grupos abiertos).
+  - **Buscador**: nombre, WCA ID o país, sin preocuparte de las tildes. En el PC, la tecla `/` lo activa.
+  - **Aa**: texto grande. **☾**: tema claro u oscuro.
+- **Pasa el ratón por cualquier dato** y te explica qué es. Solo funciona con ratón; en la tablet consulta el [glosario](#glosario-rápido).
+
+### Resumen
+
+Las cifras del campeonato y una tarjeta por evento con:
+- el **favorito** (el mejor español inscrito) y su marca;
+- el **mejor general**, de cualquier país;
+- el **campeón de 2025**, y si defiende título o no está inscrito;
+- cuántos inscritos tienen un récord nacional vigente.
+
+Toca una tarjeta para ir a su psych sheet. Si tienes fijados, aparecen aquí arriba.
+
+### Eventos (psych sheet)
+
+La clasificación de inscritos de cada evento, ordenada por su mejor marca: media en casi todos, single en 3BLD, 4BLD, 5BLD y Multi-BLD.
+
+- **Arriba**: los eventos para cambiar de uno a otro (también con `←` `→` en el PC), el favorito, los 3 mejores españoles y el campeón de 2025.
+- **Filtros**: *Todos · Solo españoles · Extranjeros · ★ Fijados*; *Top 10 · 20 · 50 · Todos*; y un campo para buscar por nombre.
+- **Columnas**: toca una cabecera para ordenar por ella.
+  - *#*: puesto en el psych sheet (oro, plata y bronce para los 3 primeros).
+  - *ESP*: puesto entre españoles.
+  - *Single · Media* y su ranking *NR* (nacional) y *WR* (mundial).
+  - *Mejor 12 m*: la mejor marca del último año, o sea, su forma actual.
+  - *Media 12 m*: lo regular que es.
+  - *Δ año*: cuánto ha mejorado frente al año anterior (verde, mejora; rojo, empeora).
+  - *Títulos · Podios · Mejor puesto* en el Campeonato de España, y podios en Europeos y Mundiales (EC/WC).
+- **Etiquetas bajo el nombre**:
+  - **NR**: tiene ahora el récord nacional (S single, M media).
+  - **N× campeón**: veces campeón de España en el evento.
+  - **Vigente**: campeón de 2025.
+- **Cara a cara**: pulsa el botón y toca de 2 a 4 competidores para compararlos lado a lado. En verde, el mejor de cada dato.
+- Toca a un competidor para abrir su **ficha**.
+
+### Horario y grupos
+
+1. Elige el **día** (y, si quieres, la sala: *Pabellón* o *Sala Auxiliar*). Las horas son de Madrid.
+2. Durante el campeonato, la prueba en curso sale en **verde** y el botón **"Ahora: …"** te lleva a ella. Las terminadas se atenúan.
+3. Cada prueba muestra:
+   - el formato: *Ao5* (media de 5), *Mo3* (media de 3) o *Bo3* (mejor de 3);
+   - el número de grupos y de competidores;
+   - cuántos **pasan** a la siguiente ronda;
+   - cuántos **★ destacados** tiene.
+4. **Toca la prueba** para ver sus grupos, ordenados por escenario: **Araba · Bizkaia · Gipuzkoa** se juegan a la vez.
+   - Cada tarjeta adelanta los nombres importantes: los **★ destacados** o, si no hay, los mejores seeds.
+5. **Toca uno o varios grupos** para ver sus competidores. Se ponen uno al lado del otro y se reparten el ancho.
+   - Con un solo grupo abierto aparecen más columnas: forma, Δ año, ranking, historial en la final del Campeonato de España, competiciones, medallas y tus notas.
+   - Puedes cambiar entre vista **Tabla** (por defecto) y **Compacta**.
+6. **"¿En qué grupo compite…?"**: escribe un nombre y verás todos sus grupos de los tres días. Toca uno para saltar a él.
+
+**★ Destacado** = competidor marcado como destacado por la organización en ese grupo (todos están en el escenario Bizkaia).
+
+#### Resultados en directo (WCA Live)
+
+Con **WCA Live activado** (y conexión a internet):
+- **Cabecera de cada prueba**: muestra su estado, por ejemplo "● En directo · 45/96", "Terminada · 20 pasan" o "20 clasificados".
+- **Al abrir una prueba**: aparece la **tabla de resultados** con puesto, intentos, mejor y media.
+  - En verde, los que **pasan**; en amarillo, los que **pasarían** si la ronda acabara ahora.
+  - Los **récords** (NR, ER, WR) se marcan en cuanto se baten.
+- **Dentro de cada grupo**: cada competidor lleva su resultado en vivo (por ejemplo, "6.21 · 3º · pasa").
+- **Segundas rondas y finales**: antes de que se publiquen sus grupos, verás la lista de **clasificados**, ordenados por su puesto en la ronda anterior. Cuando la organización publique los grupos, la app los carga sola.
+
+Si se va internet, la app sigue mostrando lo último que descargó. **En el enlace de claude.ai WCA Live no funciona**; usa el APK o el Hub instalado en el PC.
+
+### Competidores
+
+- **Buscador**: por nombre, WCA ID o país.
+- **Filtros**:
+  - por nacionalidad, país y evento;
+  - rápidos: *Campeones de España*, *Récord nacional vigente*, *Podio Europeo/Mundial*, *Primer Cto. de España*, *Debutantes*, *Top 20 en algún evento*, *★ Fijados* y *✎ Con notas*.
+- **Orden**: por mejor seed, nombre, medallas, títulos de España o competiciones.
+
+### Ficha del competidor
+
+Se abre tocando a cualquier competidor, en cualquier sección.
+- **Cifras**: competiciones, solves oficiales, medallas WCA, récords batidos y títulos de España.
+- **Datos clave para el directo**: frases cortas listas para decir en antena.
+- **Notas del caster**: se guardan solas. Quien tiene notas aparece marcado con ✎.
+- **En este campeonato**: cada evento en el que compite, con su seed, marcas, forma y títulos. Toca un evento para abrir su psych sheet.
+- **Palmarés**: participaciones y podios en Campeonatos de España, de Europa y del Mundo.
+- **Navegar**: `←` `→` pasan al competidor anterior o siguiente de la lista de la que vienes; `F` lo fija; `Esc` cierra la ficha.
+
+### Palmarés
+
+Podios del Campeonato de España desde 2004, por evento y año. En color, quienes compiten este año. Filtra por evento o por *Solo podios con inscritos de 2026*.
+
+### Glosario rápido
+
+| Término | Qué es |
+|---|---|
+| **Psych sheet** | Lista de inscritos de un evento ordenada por su mejor marca: es la "parrilla de salida" |
+| **Seed (#)** | Puesto de alguien en el psych sheet. *ESP* = su puesto entre españoles |
+| **PB** | Récord personal (*personal best*) |
+| **Single / Media** | Mejor intento suelto / mejor media oficial (Ao5: media de 5 quitando el mejor y el peor; Mo3: media de 3) |
+| **NR · ER · WR** | Récord nacional · europeo · mundial. En los rankings: puesto nacional y mundial |
+| **Mejor 12 m · Δ año** | Mejor marca del último año (forma actual) · mejora respecto al año anterior |
+| **★ Destacado** | Competidor marcado por la organización como destacado en su grupo |
+| **Vigente** | Campeón de España 2025 del evento |
+| **Debutante** | Primera competición oficial: aún no tiene WCA ID ni marcas |
+| **WCA Live** | Web oficial de resultados en directo, de donde la app saca los tiempos de cada ronda |
+
+### Consejos para el directo
+
+- Antes de cada prueba, abre su psych sheet y su grupo en **Horario**: los destacados te dicen a quién mirar.
+- Para presentar a alguien, abre su ficha: **Datos clave** y **Notas** son lo que necesitas decir.
+- En segundas rondas y finales, la lista de **clasificados** y el **Δ año** dan contexto rápido: quién llega en forma y quién viene de abajo.
+- Si un dato no te suena, pasa el ratón por encima (en el PC) o mira el glosario.
 
 ---
 
@@ -36,16 +166,7 @@ Si actualizas los datos, vuelve a ejecutar el instalador para que el PC use la v
 - En el PC, la tecla `/` lleva directamente al buscador.
 - En Android la app gira con el dispositivo (respeta el bloqueo de rotación), va a pantalla completa y no deja que se apague la pantalla.
 
-### Herramientas para el directo
-
-- **Favorito:** en cada evento es el mejor español inscrito, con su ventaja sobre el segundo español. El mejor general sigue siendo el nº 1 de la tabla.
-- **Fijados (☆):** marca a los competidores que vas a comentar con la estrella de la tabla o de la ficha. Aparecen en *Resumen* y con el filtro **★ Fijados** de cada evento y de *Competidores*.
-- **Datos clave:** cada ficha abre con frases cortas listas para decir (títulos, récords vigentes, podios internacionales, forma actual, participaciones).
-- **Notas del caster:** en cada ficha, para pronunciación o anécdotas. Quien tiene notas sale marcado con ✎.
-- **Cara a cara:** en un evento, pulsa *Cara a cara* y toca de 2 a 4 competidores para compararlos lado a lado. En verde, el mejor dato de cada fila.
-- **Texto grande (Aa):** agranda nombres y tiempos para leer de lejos.
-- **Atajos de teclado:** `←` `→` cambian de evento, o de competidor si hay una ficha abierta; `F` fija al competidor de la ficha; `Esc` la cierra.
-- Los fijados y las notas se guardan **solo en ese dispositivo y navegador**: no se comparten entre el PC y la tablet.
+Cómo se usa cada sección: [Guía para casters](#guía-para-casters).
 
 ---
 
