@@ -1,5 +1,7 @@
 <title>Speedcubing Caster Hub</title>
 <meta name="claude:viewport-fit-sides" content="cover">
+<link rel="icon" type="image/png" href="__IMG_logo-iso__">
+<link rel="apple-touch-icon" href="__IMG_logo-iso__">
 <meta name="theme-color" content="#0D1330">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -286,17 +288,18 @@ td.key .t { font-size: calc(18px * var(--fz)); font-weight: 700; color: var(--ac
 .glists { display: grid; grid-template-columns: repeat(var(--gcols, 1), minmax(0, 1fr)); gap: 12px; }
 .grows { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); }
 .grows .grow { border-right: 1px solid var(--line); }
-/* group views: lista (one competitor per row, full names), tabla (one group per row, wide table), compacta (rows in columns) */
-.glists.v-lista .grows { grid-template-columns: 1fr; }
-.glists.v-lista .grow { padding: 10px 14px; grid-template-columns: 52px auto minmax(0, 1fr) auto; }
-.glists.v-lista .grow .gn b { white-space: normal; overflow: visible; font-size: calc(16px * var(--fz)); }
-.glists.v-lista .grow .gpb { font-size: calc(17px * var(--fz)); }
-.glists.v-tabla { grid-template-columns: 1fr !important; }
-.gtable table { min-width: 860px; }
+/* group views: tabla (default, compact columns sized to content; name column takes the rest) and compacta */
+.gtable table { min-width: 0; width: 100%; }
+.gtable thead th, .gtable tbody td { padding: 5px 8px; width: 1%; white-space: nowrap; }
+.gtable thead th.l.nmh, .gtable td.nmcell { width: auto; white-space: normal; }
+.gtable td.nmcell .who { gap: 8px; }
+.gtable td.nmcell .av { width: 30px; height: 30px; font-size: calc(12px * var(--fz)); }
+.gtable td.nmcell b { font-size: calc(15px * var(--fz)); }
+.gtable td.nmcell .tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 2px; }
+.gtable td.nmcell .tags:empty { display: none; }
+.gtable .seed { font-size: calc(19px * var(--fz)) !important; width: 1%; }
 .gtable tbody tr.feat td { background: color-mix(in srgb, var(--accent) 13%, transparent); }
 .gtable tbody tr.adv td:first-child { box-shadow: inset 4px 0 0 var(--green); }
-.gtable td.nmcell { white-space: normal; }
-.gtable td.nmcell b { font-size: calc(16px * var(--fz)); }
 .viewsel { margin-left: auto; }
 .live-on { background: var(--green) !important; color: #fff !important; border-color: var(--green) !important; }
 .livebar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: calc(13px * var(--fz)); color: var(--muted); }
@@ -852,7 +855,7 @@ const actFeat = a => a.groups.reduce((n, g) => n + g.feat.length, 0);
 const seedOf = (id, ev) => ROW[id]?.[ev]?.seed ?? 99999;
 const groupsOf = id => SCH.flatMap(a => a.groups.filter(g => g.comp.includes(id)).map(g => ({ a, g })));
 S.schDay = SDAYS.includes(dayKey(new Date().toISOString())) ? dayKey(new Date().toISOString()) : store.get("schDay", SDAYS[0]);
-S.schRoom = "all"; S.schOpen = new Set(); S.schSel = new Set(); S.schQ = ""; S.resAll = new Set(); S.gview = store.get("gview", "lista");
+S.schRoom = "all"; S.schOpen = new Set(); S.schSel = new Set(); S.schQ = ""; S.resAll = new Set(); S.gview = store.get("gview", "tabla") === "compacta" ? "compacta" : "tabla";
 
 /* ---- WCA Live: results, advancing and records as they are entered; WCIF: new group assignments ---- */
 const COMP_WCA = "SpanishChampionship2026";
@@ -1033,8 +1036,8 @@ function actBody(a) {
       <button class="chip" data-allg="${a.id}">${sel.length === a.groups.length ? "Cerrar todos los grupos" : "Abrir todos los grupos"}</button>
       ${a.groups.some(g => g.feat.length) ? `<button class="chip" data-featg="${a.id}">Abrir grupos con destacados</button>` : ""}
       <button class="chip" data-ps="${a.ev}">Psych sheet de ${esc(ev?.name || a.ev)} ›</button>
-      <div class="toggle viewsel" role="group" aria-label="Vista de los grupos">${[["lista", "Lista"], ["tabla", "Tabla"], ["compacta", "Compacta"]].map(([k, t]) => `<button data-gview="${k}" aria-pressed="${S.gview === k}">${t}</button>`).join("")}</div></div>
-    ${sel.length ? `<div class="glists v-${S.gview}" style="--gcols:${S.gview === "tabla" ? 1 : Math.min(sel.length, Math.max(1, Math.floor((($("#view")?.clientWidth || 1200) - 70) / (S.gview === "lista" ? 430 : 360))))}">${sel.map(g => S.gview === "tabla" ? gTable(a, g) : gList(a, g)).join("")}</div>` : ""}
+      <div class="toggle viewsel" role="group" aria-label="Vista de los grupos">${[["tabla", "Tabla"], ["compacta", "Compacta"]].map(([k, t]) => `<button data-gview="${k}" aria-pressed="${S.gview === k}">${t}</button>`).join("")}</div></div>
+    ${sel.length ? `<div class="glists v-${S.gview}" style="--gcols:${Math.min(sel.length, Math.max(1, Math.floor((($("#view")?.clientWidth || 1200) - 70) / (S.gview === "tabla" ? 540 : 360))))}">${sel.map(g => S.gview === "tabla" ? gTable(a, g) : gList(a, g)).join("")}</div>` : ""}
     ${liveTable(a)}
   </div>`;
 }
@@ -1072,17 +1075,16 @@ function gTable(a, g) {
   return `<section class="glist gtable" style="--sc:${stageColor(g.stage)}">
     <header><b>${esc(g.stage ? g.stage + " " : "")}Grupo ${g.n ?? ""}</b><span>${hm(g.start)}–${hm(g.end)} · ${g.comp.length} competidores${g.feat.length ? ` · ★ ${g.feat.length} destacados` : ""}</span>
       <button class="iconbtn" data-closeg="${g.id}" aria-label="Cerrar grupo" style="width:34px;height:34px">✕</button></header>
-    <div class="tablewrap" style="border:0;border-radius:0"><table><thead><tr><th>Seed</th><th>ESP</th><th class="l">Competidor</th><th>País</th><th>PB single</th><th>PB media</th><th class="l">Datos</th>${hasLive ? "<th>En vivo</th>" : ""}</tr></thead><tbody>
+    <div class="tablewrap" style="border:0;border-radius:0"><table><thead><tr><th>Seed</th><th>ESP</th><th class="l nmh">Competidor</th><th>Single</th><th>Media</th>${hasLive ? "<th>En vivo</th>" : ""}</tr></thead><tbody>
     ${ids.map(id => {
       const p = PERS[id], r = ROW[id]?.[a.ev], f = g.feat.includes(id), lx = lr?.res?.find(x => x.id === id), hit = q.length > 1 && p?._q.includes(q);
-      const tags = [f ? `<span class="pill feat">★ Destacado</span>` : "", r?.nrv?.length ? `<span class="pill nr">NR ${r.nrv.join("+")}</span>` : "", r?.tit ? `<span class="pill ch">${r.tit}× campeón</span>` : "",
-        ev?.champ2025?.es === id ? `<span class="pill ok">Vigente</span>` : "", p?.newcomer ? `<span class="pill new">Debutante</span>` : "", recPill(lx?.sT), recPill(lx?.aT)].join(" ");
+      const tags = [cc(p?.iso || ""), f ? `<span class="pill feat">★ Destacado</span>` : "", r?.nrv?.length ? `<span class="pill nr">NR ${r.nrv.join("+")}</span>` : "", r?.tit ? `<span class="pill ch">${r.tit}× campeón</span>` : "",
+        ev?.champ2025?.es === id ? `<span class="pill ok">Vigente</span>` : "", p?.newcomer ? `<span class="pill new">Debutante</span>` : "", recPill(lx?.sT), recPill(lx?.aT)].join("");
       return `<tr data-id="${id}" class="${f ? "feat" : ""} ${lx?.adv ? "adv" : ""}" ${hit ? 'style="outline:2px solid var(--accent);outline-offset:-2px"' : ""}>
-        <td class="seed" style="font-size:calc(22px * var(--fz))">${r ? r.seed : "—"}</td><td class="seedes">${r?.seedES || ""}</td>
-        <td class="l nmcell"><div class="who">${starBtn(id)}${av(p)}<div><b>${esc(p?.name || id)}</b>${marks(id).replace(/<span class="mark" title="Fijado">★<\/span>/, "")}</div></div></td>
-        <td>${cc(p?.iso || "")}</td>
+        <td class="seed">${r ? r.seed : "—"}</td><td class="seedes">${r?.seedES || ""}</td>
+        <td class="l nmcell"><div class="who">${starBtn(id)}${av(p)}<div><b>${esc(p?.name || id)}</b>${marks(id).replace(/<span class="mark" title="Fijado">★<\/span>/, "")}<div class="tags">${tags}</div></div></div></td>
         <td class="${ev?.metric === "single" ? "key" : ""}"><span class="t">${esc(r?.pbS || "—")}</span></td><td class="${ev?.metric !== "single" ? "key" : ""}"><span class="t">${esc(r?.pbA || "—")}</span></td>
-        <td class="l" style="white-space:normal">${tags}</td>${hasLive ? `<td><span class="t">${esc(liveTxt(a, lx) || "—")}</span></td>` : ""}</tr>`;
+        ${hasLive ?`<td><span class="t">${esc(liveTxt(a, lx) || "—")}</span></td>` : ""}</tr>`;
     }).join("")}</tbody></table></div></section>`;
 }
 
