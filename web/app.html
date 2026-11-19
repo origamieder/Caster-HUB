@@ -17,12 +17,7 @@
   --gold: #E9B949; --silver: #AEB7C4; --bronze: #CC8A5A; --up-bg: rgba(34,184,102,.16); --down-bg: rgba(232,66,78,.16);
   --shadow: 0 12px 40px rgba(0,0,0,.5); --logo-dark: block; --logo-light: none;
   --card: rgba(20, 28, 68, .64); --card-line: rgba(80, 98, 170, .32);
-  --bg-grad: radial-gradient(60% 55% at 92% 4%, rgba(243,146,0,.46), transparent 100%),
-             radial-gradient(55% 60% at 4% 50%, rgba(0,139,59,.42), transparent 100%),
-             radial-gradient(60% 50% at 55% 104%, rgba(179,13,27,.42), transparent 100%),
-             radial-gradient(45% 50% at 100% 72%, rgba(90,114,208,.40), transparent 100%),
-             radial-gradient(50% 45% at 38% 18%, rgba(110,134,230,.26), transparent 100%),
-             linear-gradient(160deg, #1E2E80 0%, #142062 45%, #0F1848 100%);
+  --bg-grad: linear-gradient(170deg, #17225A 0%, #0F1744 60%, #0D1330 100%);
   --rail-grad: linear-gradient(180deg, #1A2557 0%, #121A3E 100%);
   --f-display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", system-ui, sans-serif;
   --f-body: "IBM Plex Sans", "Segoe UI", Roboto, system-ui, sans-serif;
@@ -36,12 +31,7 @@
   --gold: #C9971B; --silver: #8C96A5; --bronze: #A8693B; --up-bg: rgba(0,139,59,.12); --down-bg: rgba(179,13,27,.10);
   --shadow: 0 12px 40px rgba(37,52,108,.18); --logo-dark: none; --logo-light: block; color-scheme: light;
   --card: rgba(255,255,255,.76); --card-line: rgba(37,52,108,.14);
-  --bg-grad: radial-gradient(60% 55% at 92% 4%, rgba(243,146,0,.32), transparent 100%),
-             radial-gradient(55% 60% at 4% 50%, rgba(0,139,59,.24), transparent 100%),
-             radial-gradient(60% 50% at 55% 104%, rgba(179,13,27,.20), transparent 100%),
-             radial-gradient(45% 50% at 100% 72%, rgba(37,52,108,.20), transparent 100%),
-             radial-gradient(50% 45% at 38% 18%, rgba(37,52,108,.10), transparent 100%),
-             linear-gradient(160deg, #FFFFFF 0%, #F1F3FA 50%, #E9ECF6 100%);
+  --bg-grad: linear-gradient(170deg, #FFFFFF 0%, #F3F4F9 60%, #EDEFF6 100%);
   --rail-grad: linear-gradient(180deg, #FFFFFF 0%, #F3F5FB 100%); } }
 :root[data-theme="light"] {
   --bg: #F3F4F9; --panel: #FFFFFF; --panel2: #ECEEF6; --line: #D6DAE8; --fg: #1A2350; --muted: #535D84; --dim: #8D94B2;
@@ -50,12 +40,7 @@
   --gold: #C9971B; --silver: #8C96A5; --bronze: #A8693B; --up-bg: rgba(0,139,59,.12); --down-bg: rgba(179,13,27,.10);
   --shadow: 0 12px 40px rgba(37,52,108,.18); --logo-dark: none; --logo-light: block; color-scheme: light;
   --card: rgba(255,255,255,.76); --card-line: rgba(37,52,108,.14);
-  --bg-grad: radial-gradient(60% 55% at 92% 4%, rgba(243,146,0,.32), transparent 100%),
-             radial-gradient(55% 60% at 4% 50%, rgba(0,139,59,.24), transparent 100%),
-             radial-gradient(60% 50% at 55% 104%, rgba(179,13,27,.20), transparent 100%),
-             radial-gradient(45% 50% at 100% 72%, rgba(37,52,108,.20), transparent 100%),
-             radial-gradient(50% 45% at 38% 18%, rgba(37,52,108,.10), transparent 100%),
-             linear-gradient(160deg, #FFFFFF 0%, #F1F3FA 50%, #E9ECF6 100%);
+  --bg-grad: linear-gradient(170deg, #FFFFFF 0%, #F3F4F9 60%, #EDEFF6 100%);
   --rail-grad: linear-gradient(180deg, #FFFFFF 0%, #F3F5FB 100%); }
 :root[data-theme="dark"] { --logo-dark: block; --logo-light: none; }
 
@@ -76,7 +61,14 @@ a { color: var(--blue); }
 .logo img { width: 100%; height: 100%; display: block; }
 .lg-dark { display: var(--logo-dark); } .lg-light { display: var(--logo-light); }
 .hero { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; }
-.hero img { height: 130px; width: auto; max-width: 100%; }
+.hero img { height: 84px; width: auto; max-width: 100%; }
+.hero { margin-bottom: 18px; gap: 22px; }
+.kline { display: flex; flex-wrap: wrap; gap: 6px 18px; color: var(--muted); font-size: calc(14px * var(--fz)); }
+.kline b { color: var(--fg); font-weight: 700; }
+.ok { color: var(--green); font-weight: 700; }
+#evtable:not(.more) { min-width: 760px; }
+details.hist > summary { cursor: pointer; color: var(--muted); font-weight: 600; padding: 8px 0; }
+details.hist > summary:hover { color: var(--fg); }
 .hero .txt { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .brandbar { height: 4px; display: grid; grid-template-columns: repeat(4, 1fr); }
 .brandbar i:nth-child(1) { background: var(--b-green); } .brandbar i:nth-child(2) { background: var(--b-navy); }
@@ -128,7 +120,7 @@ h2 { font-size: calc(24px * var(--fz)); }
 .evcard .fav .t { font-size: calc(20px * var(--fz)); color: var(--accent); }
 .evcard .row { display: flex; justify-content: space-between; gap: 8px; font-size: calc(13px * var(--fz)); color: var(--muted); }
 .evcard .row b { color: var(--fg); font-weight: 600; text-align: right; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.evcard .foot { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 2px; }
+
 
 /* pills & chips */
 .pill { display: inline-flex; align-items: center; gap: 4px; height: 22px; padding: 0 8px; border-radius: 11px; font-size: calc(11px * var(--fz)); font-weight: 700; letter-spacing: .04em; white-space: nowrap; background: var(--panel2); color: var(--muted); border: 1px solid var(--line); }
@@ -156,7 +148,7 @@ select.field { padding-right: 30px; }
 .count { color: var(--muted); font-size: calc(13px * var(--fz)); margin-left: auto; }
 
 /* event header */
-.evhead { display: grid; grid-template-columns: minmax(0, 1.2fr) repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+.evhead { display: grid; grid-template-columns: minmax(0, 1fr) repeat(2, minmax(0, 1.2fr)); gap: 12px; margin-top: 14px; }
 .evtitle { display: flex; flex-direction: column; justify-content: center; gap: 4px; padding-left: 14px; border-left: 6px solid var(--evc); }
 .evtitle h1 { font-size: calc(52px * var(--fz)); }
 .box { background: var(--card); border: 1px solid var(--card-line); border-radius: 14px; padding: 12px 14px; min-width: 0; }
@@ -202,7 +194,7 @@ td.key .t { font-size: calc(18px * var(--fz)); font-weight: 700; color: var(--ac
 .pcard .av { width: 52px; height: 52px; font-size: calc(19px * var(--fz)); }
 .pcard .info { min-width: 0; flex: 1; }
 .pcard .nm { font-weight: 700; font-size: calc(16px * var(--fz)); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.pcard .line { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-top: 4px; font-size: calc(12px * var(--fz)); color: var(--muted); }
+.pcard .line { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-top: 5px; font-size: calc(12px * var(--fz)); color: var(--muted); }
 .pcard .stats { display: flex; gap: 14px; margin-top: 6px; font-size: calc(13px * var(--fz)); }
 .pcard .stats b { font-family: var(--f-display); font-size: calc(18px * var(--fz)); }
 .filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
@@ -219,7 +211,7 @@ td.key .t { font-size: calc(18px * var(--fz)); font-weight: 700; color: var(--ac
 .phead { display: flex; gap: 18px; align-items: center; }
 .phead .av { width: 92px; height: 92px; font-size: calc(32px * var(--fz)); border-width: 3px; }
 .phead h1 { font-size: calc(44px * var(--fz)); }
-.phead .line { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 6px; color: var(--muted); }
+.phead .line { margin-top: 6px; color: var(--muted); }
 .close { margin-left: auto; align-self: flex-start; }
 .tiles { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin: 18px 0; }
 .tile { background: var(--card); border: 1px solid var(--card-line); border-radius: 12px; padding: 10px 12px; }
@@ -254,7 +246,7 @@ td.key .t { font-size: calc(18px * var(--fz)); font-weight: 700; color: var(--ac
 .mark.n { color: var(--blue); }
 .facts { margin: 8px 0 0; padding-left: 20px; display: grid; gap: 5px; font-size: calc(15px * var(--fz)); }
 .facts li::marker { color: var(--accent); }
-.notes { display: block; width: 100%; min-height: 88px; resize: vertical; border-radius: 12px; border: 1px solid var(--line); background: var(--panel); padding: 10px 12px; font: inherit; color: inherit; }
+.notes { display: block; width: 100%; min-height: 64px; resize: vertical; border-radius: 12px; border: 1px solid var(--line); background: var(--panel); padding: 10px 12px; font: inherit; color: inherit; }
 .iconbtn[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 #evtable td.l, #evtable thead th[data-k="name"] { position: sticky; left: 0; z-index: 1; }
 #evtable thead th[data-k="name"] { z-index: 2; }
@@ -450,7 +442,7 @@ function facts(p) {
 }
 
 /* ---------------- state & routing ---------------- */
-const S = { ev: store.get("ev", DATA.events[0].id), nat: store.get("nat", "all"), lim: store.get("lim", 20), sort: null, evq: "",
+const S = { ev: store.get("ev", DATA.events[0].id), nat: store.get("nat", "all"), lim: Math.max(20, store.get("lim", 20)), more: store.get("more", false), sort: null, evq: "",
             q: "", pNat: "all", pIso: "", pEv: "", pFlags: new Set(), pSort: "seed", palEv: "", palHere: false, cmpMode: false, cmp: [], navList: [], cur: null };
 function go(hash) { if (location.hash !== "#" + hash) location.hash = hash; else render(); }
 window.addEventListener("hashchange", render);
@@ -475,15 +467,9 @@ function viewHome(v) {
   v.innerHTML = `
     <div class="hero">
       <img class="lg-dark" src="__IMG_logo-h-dark__" alt="Campeonato de España · Espainiako Txapelketa 2026"><img class="lg-light" src="__IMG_logo-h-light__" alt="Campeonato de España · Espainiako Txapelketa 2026">
-      <div class="txt"><div class="eyebrow">5 – 7 diciembre 2026 · Datos WCA a ${new Date(DATA.meta.updated).toLocaleDateString("es-ES")}</div>
-      <h1>Resumen del campeonato</h1></div>
-    </div>
-    <div class="kpis">
-      <div class="kpi"><b>${k.competitors}</b><span>competidores<br>inscritos</span></div>
-      <div class="kpi"><b>${k.countries}</b><span>países</span></div>
-      <div class="kpi"><b>${k.newcomers}</b><span>debutantes<br>sin WCA ID</span></div>
-      <div class="kpi"><b>${k.events}</b><span>eventos</span></div>
-      <div class="kpi"><b>${k.defend}<small style="font-size:calc(22px * var(--fz));color:var(--muted)">/${k.events}</small></b><span>campeones 2025<br>defienden título</span></div>
+      <div class="txt"><h1>Resumen</h1>
+      <div class="kline"><span><b>${k.competitors}</b> competidores</span><span><b>${k.countries}</b> países</span><span><b>${k.newcomers}</b> debutantes</span><span><b>${k.defend}/${k.events}</b> campeones 2025 defienden título</span></div>
+      <div class="note" style="margin:0">5 – 7 diciembre 2026 · datos WCA a ${new Date(DATA.meta.updated).toLocaleDateString("es-ES")}</div></div>
     </div>
     ${PINS.size ? `<div class="sect" style="margin:0 0 22px"><h2>★ Fijados</h2><div class="pgrid">${[...PINS].map(id => pCard(PERS[id])).join("")}</div></div>` : ""}
     <div class="evgrid">${DATA.events.map(evCard).join("")}</div>`;
@@ -493,56 +479,57 @@ function viewHome(v) {
 }
 function evCard(e) {
   const top = e.rows[0], f = favOf(e), c = e.champ2025;
-  const nrs = e.rows.filter(r => r.seed <= 20 && r.nrv.length).length;
   return `<button class="evcard" data-ev="${e.id}" style="--evc:${EVC[e.id]}">
-    <div style="display:flex;justify-content:space-between;align-items:center"><h3>${esc(e.name)}</h3><span class="pill">${e.rows.length + e.newcomers.length} inscritos</span></div>
+    <h3>${esc(e.name)}</h3>
     <div class="fav"><span class="name">${esc(name(f.id))}</span><span class="t">${esc(pbOf(e, f))}</span></div>
-    <div class="row"><span>Mejor general</span><b>${esc(name(top.id))} <span class="t" style="color:var(--muted)">${esc(pbOf(e, top))}</span></b></div>
-    <div class="row"><span>Campeón 2025</span><b>${esc(c.esName || "—")}</b></div>
-    <div class="foot">${c.es ? `<span class="pill ${c.defends ? "ok" : "no"}">${c.defends ? "Defiende título" : "No defiende"}</span>` : ""}
-      ${nrs ? `<span class="pill nr">${nrs} con NR vigente</span>` : ""}<span class="pill">por ${ES[e.metric[0]]}</span></div>
+    ${top.id !== f.id ? `<div class="row"><span>Mejor absoluto</span><b>${esc(name(top.id))} <span class="t" style="color:var(--muted)">${esc(pbOf(e, top))}</span></b></div>` : ""}
+    <div class="row"><span>Campeón 2025</span><b class="${c.es && !c.defends ? "zero" : ""}">${esc(c.esName || "—")}${c.es ? (c.defends ? ` <span class="ok" title="Defiende título">✓</span>` : " · no compite") : ""}</b></div>
   </button>`;
 }
 
 /* ---------------- event ---------------- */
+/* x: 1 = solo en «Más datos». Por defecto, lo que se dice en directo: puesto, nombre, marcas, forma y títulos. */
 const COLS = [
-  { k: "seed", t: "#", g: "c" }, { k: "seedES", t: "ESP", g: "c" }, { k: "name", t: "Competidor", g: "c", l: 1 },
-  { k: "pbS", t: "Single", g: "pb", time: 1 }, { k: "nrS", t: "NR", g: "pb" }, { k: "pbA", t: "Media", g: "pb", time: 1 }, { k: "nrA", t: "NR", g: "pb" }, { k: "wr", t: "WR", g: "pb" },
-  { k: "b12", t: "Mejor 12 m", g: "f", time: 1 }, { k: "m12", t: "Media 12 m", g: "f", time: 1 }, { k: "iy", t: "Δ año", g: "f" }, { k: "spark", t: "Evolución", g: "f", ns: 1 },
-  { k: "tit", t: "Títulos", g: "h" }, { k: "pod", t: "Podios", g: "h" }, { k: "bp", t: "Mejor puesto", g: "h" }, { k: "intl", t: "Europa / Mundo", g: "h", ns: 1 },
+  { k: "seed", t: "#", g: "c" }, { k: "seedES", t: "ESP", g: "c", tip: "Puesto entre españoles" }, { k: "name", t: "Competidor", g: "c", l: 1 },
+  { k: "pbS", t: "Single", g: "pb", time: 1 }, { k: "nrS", t: "NR", g: "pb", x: 1 }, { k: "pbA", t: "Media", g: "pb", time: 1 }, { k: "nrA", t: "NR", g: "pb", x: 1 }, { k: "wr", t: "WR", g: "pb", x: 1 },
+  { k: "b12", t: "Mejor 12 m", g: "f", time: 1, tip: "Mejor marca de los últimos 12 meses" }, { k: "m12", t: "Media 12 m", g: "f", time: 1, x: 1 },
+  { k: "iy", t: "Δ año", g: "f", tip: "Mejor marca de los últimos 12 meses frente a los 12 anteriores (verde = ha mejorado)" },
+  { k: "spark", t: "Evolución", g: "f", ns: 1, x: 1, tip: "Mejor marca de cada año (abajo = más rápido)" },
+  { k: "tit", t: "Títulos", g: "h", tip: "Títulos de España en este evento" }, { k: "pod", t: "Podios", g: "h", x: 1 }, { k: "bp", t: "Mejor puesto", g: "h", x: 1 }, { k: "intl", t: "Europa / Mundo", g: "h", ns: 1, x: 1 },
 ];
-const GROUPS = [["c", "Competidor", 3, "var(--fg)"], ["pb", "Marcas personales", 5, "var(--blue)"], ["f", "Forma actual", 4, "var(--green)"], ["h", "Historial Cto. España y fuera", 4, "var(--accent)"]];
+const GROUPS = [["c", "Competidor", "var(--fg)"], ["pb", "Marcas personales", "var(--blue)"], ["f", "Forma actual", "var(--green)"], ["h", "Historial Cto. España y fuera", "var(--accent)"]];
+const visCols = () => COLS.filter(c => S.more || !c.x);
 function viewEvent(v) {
   const e = EVBYID[S.ev];
   const fav = favOf(e), es2 = e.rows.find(r => r.seedES === 2);
   const tf = toSec(pbOf(e, fav)), t2 = es2 && toSec(pbOf(e, es2));
   const gap = fav.seedES === 1 && e.id !== "333mbf" && tf != null && t2 != null ? t2 - tf : null;
-  const c = e.champ2025, top3es = e.rows.filter(r => r.seedES && r.seedES <= 3).sort((a, b) => a.seedES - b.seedES);
+  const c = e.champ2025;
   v.innerHTML = `
     <div class="chips" role="toolbar" aria-label="Eventos">${DATA.events.map(x => `<button class="chip" style="--evc:${EVC[x.id]}" data-ev="${x.id}" aria-pressed="${x.id === e.id}"><i></i>${esc(x.name)}</button>`).join("")}</div>
     <div class="evhead" style="--evc:${EVC[e.id]}">
-      <div class="evtitle"><div class="eyebrow">Psych sheet · ordenado por ${ES[e.metric[0]].toLowerCase()}</div><h1>${esc(e.name)}</h1>
-        <div class="sub" style="color:var(--muted);font-size:calc(13px * var(--fz))">${e.rows.length} con marca previa${e.newcomers.length ? ` · ${e.newcomers.length} debutantes` : ""}</div></div>
-      <div class="box"><div class="eyebrow">Favorito</div><div class="big">${esc(name(fav.id))}</div><div class="sub"><span class="t" style="color:var(--accent);font-size:calc(16px * var(--fz))">${esc(pbOf(e, fav))}</span> · ${esc(PERS[fav.id].country)} · ${fav.seed}º gral.</div>${gap != null ? `<div class="sub">${gap > 0 ? fmtDiff(gap) + " de ventaja sobre el 2º español" : "Empatado con el 2º español"}</div>` : ""}</div>
-      <div class="box"><div class="eyebrow">Mejores españoles</div>${top3es.map(r => `<div class="sub" style="color:var(--fg)"><b style="color:var(--red)">${r.seedES}.</b> ${esc(name(r.id))} <span class="t" style="color:var(--muted)">${esc(pbOf(e, r))}</span> <span style="color:var(--dim)">(${r.seed}º gral.)</span></div>`).join("") || "—"}</div>
+      <div class="evtitle"><h1>${esc(e.name)}</h1>
+        <div class="sub" style="color:var(--muted);font-size:calc(13px * var(--fz))">Por ${ES[e.metric[0]].toLowerCase()} · ${e.rows.length + e.newcomers.length} inscritos</div></div>
+      <div class="box"><div class="eyebrow">Favorito</div><div class="big">${esc(name(fav.id))} <span class="t" style="color:var(--accent)">${esc(pbOf(e, fav))}</span></div>${gap != null ? `<div class="sub">${gap > 0 ? fmtDiff(gap) + " de ventaja sobre el 2º español" : "Empatado con el 2º español"}</div>` : ""}</div>
       <div class="box"><div class="eyebrow">Campeón de España 2025</div><div class="big">${esc(c.esName || "—")}</div>
-        <div class="sub">${c.es ? `<span class="pill ${c.defends ? "ok" : "no"}">${c.defends ? "Defiende título" : "No compite"}</span>` : ""} ${c.abs.length ? "Ganador absoluto: " + c.abs.map(a => esc(a.name) + " " + cc(a.iso)).join(", ") : ""}</div></div>
+        ${c.es ? `<div class="sub">${c.defends ? `<span class="ok">✓</span> Defiende título` : "No compite este año"}</div>` : ""}</div>
     </div>
     <div class="controls">
-      <div class="toggle" role="group" aria-label="Nacionalidad">${[["all", "Todos"], ["es", "Solo españoles"], ["fx", "Extranjeros"], ["pin", `★ Fijados (${PINS.size})`]].map(([k, t]) => `<button data-v="${k}" data-nat aria-pressed="${S.nat === k}">${t}</button>`).join("")}</div>
-      <div class="toggle" role="group" aria-label="Cuántos">${[[10, "Top 10"], [20, "Top 20"], [50, "Top 50"], [9999, "Todos"]].map(([k, t]) => `<button data-lim="${k}" aria-pressed="${S.lim == k}">${t}</button>`).join("")}</div>
+      <div class="toggle" role="group" aria-label="Nacionalidad">${[["all", "Todos"], ["es", "Españoles"], ["fx", "Extranjeros"], ["pin", `★ Fijados (${PINS.size})`]].map(([k, t]) => `<button data-v="${k}" data-nat aria-pressed="${S.nat === k}">${t}</button>`).join("")}</div>
+      <div class="toggle" role="group" aria-label="Cuántos">${[[20, "Top 20"], [50, "Top 50"], [9999, "Todos"]].map(([k, t]) => `<button data-lim="${k}" aria-pressed="${S.lim == k}">${t}</button>`).join("")}</div>
       <button class="fchip" id="cmpBtn" aria-pressed="${S.cmpMode}" title="Compara de 2 a 4 competidores lado a lado">Cara a cara</button>
-      <input class="field" id="evq" type="search" placeholder="Filtrar por nombre…" value="${esc(S.evq)}" style="width:220px">
-      <span class="count" id="evcount"></span>
+      <button class="fchip" id="moreBtn" aria-pressed="${S.more}" title="Ver también NR, WR, evolución, podios y resultados internacionales">Más datos</button>
+      <input class="field" id="evq" type="search" placeholder="Filtrar por nombre…" value="${esc(S.evq)}" style="width:200px">
     </div>
     <div id="cmp"></div>
     <div class="tablewrap"><table id="evtable"></table></div>
-    <div class="note">Atajos: ← → cambia de evento (o de competidor con la ficha abierta) · F fija al competidor de la ficha · / busca · ☆ fija a un competidor para tenerlo a mano en «Fijados».</div>
-    <div class="note">Δ año: mejor marca de los últimos 12 meses frente a los 12 anteriores (verde = ha mejorado). Evolución: mejor marca de cada año ${DATA.meta.years[0]}–${DATA.meta.years.at(-1)} (abajo = más rápido; pasa el dedo o el ratón para ver los tiempos). Títulos/podios: Campeonato de España en este evento (entre españoles).</div>`;
+    <div class="note">← → cambia de evento · / busca · ☆ fija a un competidor · pasa el ratón por las cabeceras para ver qué es cada columna.</div>`;
   v.querySelectorAll(".chip").forEach(b => b.addEventListener("click", () => { S.sort = null; go("evento-" + b.dataset.ev); }));
   v.querySelectorAll("[data-nat]").forEach(b => b.addEventListener("click", () => { S.nat = b.dataset.v; store.set("nat", S.nat); viewEvent(v); avFix(); }));
   v.querySelectorAll("[data-lim]").forEach(b => b.addEventListener("click", () => { S.lim = +b.dataset.lim; store.set("lim", S.lim); viewEvent(v); avFix(); }));
   $("#evq").addEventListener("input", ev => { S.evq = ev.target.value; drawEvTable(e); avFix(); });
+  $("#moreBtn").addEventListener("click", () => { S.more = !S.more; store.set("more", S.more); if (S.sort && !visCols().some(c => c.k === S.sort.k)) S.sort = null;
+    $("#moreBtn").setAttribute("aria-pressed", S.more); drawEvTable(e); avFix(); });
   $("#cmpBtn").addEventListener("click", () => { S.cmpMode = !S.cmpMode; $("#cmpBtn").setAttribute("aria-pressed", S.cmpMode); drawEvTable(e); drawCmp(e); avFix(); });
   drawEvTable(e); drawCmp(e);
 }
@@ -586,12 +573,13 @@ function drawEvTable(e) {
     rows.sort((a, b) => { const x = val(a), y = val(b); if (x == null) return 1; if (y == null) return -1; return (x > y ? 1 : x < y ? -1 : 0) * dir; });
   }
   const key = e.metric === "single" ? "pbS" : "pbA";
-  const t = $("#evtable");
-  t.innerHTML = `<thead><tr>${GROUPS.map(g => `<th class="grp" colspan="${g[2]}" style="--gc:${g[3]}">${g[1]}</th>`).join("")}</tr>
-    <tr>${COLS.map(c => `<th data-k="${c.k}" class="${c.l ? "l" : ""} ${S.sort?.k === c.k ? "sorted" : ""}">${c.t}${S.sort?.k === c.k ? (S.sort.dir > 0 ? " ▲" : " ▼") : ""}</th>`).join("")}</tr></thead>
-    <tbody>${rows.map(r => evRow(e, r, key)).join("")}
-    ${S.lim > 50 && S.nat !== "fx" && e.newcomers.length && !S.evq ? `<tr class="newrow"><td colspan="${COLS.length}">+ ${e.newcomers.length} debutante(s) sin WCA ID inscritos en este evento</td></tr>` : ""}</tbody>`;
-  $("#evcount").textContent = `${rows.length} competidores`;
+  const t = $("#evtable"), cols = visCols();
+  t.classList.toggle("more", S.more);
+  const grpHead = S.more ? `<tr>${GROUPS.map(g => `<th class="grp" colspan="${cols.filter(c => c.g === g[0]).length}" style="--gc:${g[2]}">${g[1]}</th>`).join("")}</tr>` : "";
+  t.innerHTML = `<thead>${grpHead}
+    <tr>${cols.map(c => `<th data-k="${c.k}" class="${c.l ? "l" : ""} ${S.sort?.k === c.k ? "sorted" : ""}"${c.tip ? ` title="${esc(c.tip)}"` : ""}>${c.t}${S.sort?.k === c.k ? (S.sort.dir > 0 ? " ▲" : " ▼") : ""}</th>`).join("")}</tr></thead>
+    <tbody>${rows.map(r => evRow(e, r, key, cols)).join("")}
+    ${S.lim > 50 && S.nat !== "fx" && e.newcomers.length && !S.evq ? `<tr class="newrow"><td colspan="${cols.length}">+ ${e.newcomers.length} debutante(s) sin WCA ID inscritos en este evento</td></tr>` : ""}</tbody>`;
   S.navList = rows.map(r => r.id);
   t.querySelectorAll("th[data-k]").forEach(th => th.addEventListener("click", () => {
     const k = th.dataset.k; if (COLS.find(c => c.k === k).ns) return;
@@ -603,24 +591,27 @@ function drawEvTable(e) {
     if (S.cmp.includes(id)) S.cmp = S.cmp.filter(x => x !== id); else if (S.cmp.length < 4) S.cmp.push(id); else return;
     tr.classList.toggle("sel", S.cmp.includes(id)); drawCmp(e); avFix(); }));
 }
-function evRow(e, r, key) {
+function evRow(e, r, key, cols) {
   const p = PERS[r.id], wr = e.metric === "single" ? r.wrS : r.wrA;
-  const badges = [r.nrv.length ? `<span class="pill nr">NR ${r.nrv.join("+")}</span>` : "", r.tit ? `<span class="pill ch">${r.tit}× campeón</span>` : "",
-                  e.champ2025.es === r.id ? `<span class="pill ok">Vigente</span>` : ""].join("");
-  const td = (k, extra = "") => `<td class="${k === key ? "key" : ""} ${extra}"><span class="t">${esc(r[k] || "—")}</span></td>`;
-  return `<tr data-id="${r.id}" class="${r.seed <= 3 && S.nat === "all" ? "p" + r.seed : ""}${S.cmpMode && S.cmp.includes(r.id) ? " sel" : ""}">
-    <td class="seed">${r.seed}</td><td class="seedes">${r.seedES || ""}</td>
-    <td class="l"><div class="who">${starBtn(r.id)}${av(p)}<div><div class="nm">${esc(p.name)}${NOTES[r.id] ? ` <span class="mark n" title="Tiene notas">✎</span>` : ""}</div><div class="meta">${cc(p.iso)}${badges}</div></div></div></td>
-    ${td("pbS")}<td class="rk">${r.nrS ?? "—"}</td>${td("pbA")}<td class="rk">${r.nrA ?? "—"}</td><td class="rk">${wr ?? "—"}</td>
-    <td><span class="t">${esc(r.b12 || "—")}</span></td><td><span class="t" style="color:var(--muted)">${esc(r.m12 || (e.id === "333mbf" ? r.n12 + " int." : "—"))}</span></td>
-    <td>${delta(r.iy)}</td><td>${spark(r.years)}</td>
-    <td>${r.tit ? `<span class="tit">${r.tit}</span>` : `<span class="zero">0</span>`}</td><td>${r.pod || `<span class="zero">0</span>`}</td>
-    <td>${r.bp ? r.bp + "º" : `<span class="zero">—</span>`}</td>
-    <td>${r.intl.map(x => `<span class="pill intl" title="${x[0]} ${x[1]}">${x[2]}º ${x[0] === "Mundial" ? "WC" : "EC"} ${String(x[1]).slice(2)}</span>`).join(" ") || `<span class="zero">—</span>`}</td></tr>`;
+  const badges = [r.nrv.length ? `<span class="pill nr">NR</span>` : "", e.champ2025.es === r.id ? `<span class="pill ch">Vigente</span>` : ""].join("");
+  const tm = k => `<td class="${k === key ? "key" : ""}"><span class="t">${esc(r[k] || "—")}</span></td>`;
+  const zero = x => `<span class="zero">${x}</span>`;
+  const C = {
+    seed: () => `<td class="seed">${r.seed}</td>`, seedES: () => `<td class="seedes">${r.seedES || ""}</td>`,
+    name: () => `<td class="l"><div class="who">${starBtn(r.id)}${av(p)}<div><div class="nm">${esc(p.name)}${NOTES[r.id] ? ` <span class="mark n" title="Tiene notas">✎</span>` : ""}</div><div class="meta">${cc(p.iso)}${badges}</div></div></div></td>`,
+    pbS: () => tm("pbS"), pbA: () => tm("pbA"), b12: () => tm("b12"),
+    nrS: () => `<td class="rk">${r.nrS ?? "—"}</td>`, nrA: () => `<td class="rk">${r.nrA ?? "—"}</td>`, wr: () => `<td class="rk">${wr ?? "—"}</td>`,
+    m12: () => `<td><span class="t" style="color:var(--muted)">${esc(r.m12 || (e.id === "333mbf" ? r.n12 + " int." : "—"))}</span></td>`,
+    iy: () => `<td>${delta(r.iy)}</td>`, spark: () => `<td>${spark(r.years)}</td>`,
+    tit: () => `<td>${r.tit ? `<span class="tit">${r.tit}</span>` : zero("·")}</td>`,
+    pod: () => `<td>${r.pod || zero("0")}</td>`, bp: () => `<td>${r.bp ? r.bp + "º" : zero("—")}</td>`,
+    intl: () => `<td>${r.intl.map(x => `<span class="pill intl" title="${x[0]} ${x[1]}">${x[2]}º ${x[0] === "Mundial" ? "WC" : "EC"} ${String(x[1]).slice(2)}</span>`).join(" ") || zero("—")}</td>`,
+  };
+  return `<tr data-id="${r.id}" class="${r.seed <= 3 && S.nat === "all" ? "p" + r.seed : ""}${S.cmpMode && S.cmp.includes(r.id) ? " sel" : ""}">${cols.map(c => C[c.k]()).join("")}</tr>`;
 }
 
 /* ---------------- people ---------------- */
-const FLAGS = [["champ", "Campeones de España"], ["nr", "Récord nacional vigente"], ["intl", "Podio Europeo / Mundial"], ["firstES", "Primer Cto. de España"], ["new", "Debutantes"], ["top20", "Top 20 en algún evento"], ["pin", "★ Fijados"], ["note", "✎ Con notas"]];
+const FLAGS = [["champ", "Campeones de España"], ["nr", "Récord nacional vigente"], ["intl", "Podio Europeo / Mundial"], ["firstES", "Primer Cto. de España"], ["new", "Debutantes"], ["pin", "★ Fijados"], ["note", "✎ Con notas"]];
 function peopleList() {
   const q = norm(S.q);
   let L = DATA.persons.filter(p => (!q || p._q.includes(q)) &&
@@ -642,7 +633,7 @@ function viewPeople(v) {
       <select class="field" id="pSort" aria-label="Ordenar"><option value="seed">Orden: mejor seed</option><option value="name">Orden: nombre</option><option value="medals">Orden: más medallas</option><option value="titles">Orden: más títulos de España</option><option value="comps">Orden: más competiciones</option></select>
     </div>
     <div class="filters">${FLAGS.map(([k, t]) => `<button class="fchip" data-f="${k}" aria-pressed="${S.pFlags.has(k)}">${t}</button>`).join("")}
-      <button class="fchip" id="clear">Limpiar filtros</button><span class="count" id="pcount"></span></div>
+      <button class="fchip" id="clear">Limpiar</button><span class="count" id="pcount"></span></div>
     <div class="pgrid" id="pgrid" style="margin-top:14px"></div>`;
   $("#pSort").value = S.pSort;
   const draw = () => {
@@ -662,12 +653,12 @@ function viewPeople(v) {
   draw();
 }
 function pCard(p) {
-  const seedTxt = S.pEv && p.seeds?.[S.pEv] ? `#${p.seeds[S.pEv][0]} en ${EVBYID[S.pEv].name}` : (p._bestSeed < 99999 ? `Mejor seed #${p._bestSeed}` : "");
+  const bestEv = p.seeds && Object.keys(p.seeds).filter(e => p.seeds[e][0] === p._bestSeed).map(e => EVBYID[e]?.name).filter(Boolean);
+  const seedTxt = S.pEv && p.seeds?.[S.pEv] ? `${p.seeds[S.pEv][0]}º en ${EVBYID[S.pEv].name}` : (p._bestSeed < 99999 ? `${p._bestSeed}º en ${listEs(bestEv.slice(0, 2))}${bestEv.length > 2 ? "…" : ""}` : "");
   return `<button class="pcard" data-id="${p.id}">${av(p)}<div class="info">
     <div class="nm">${esc(p.name)}${marks(p.id)}</div>
-    <div class="line">${cc(p.iso)} ${esc(p.country)} ${p.newcomer ? `<span class="pill new">Debutante</span>` : `· ${esc(p.id)}`}</div>
-    ${!p.medals ? `<div class="line">${p.events.length} eventos</div>` : `<div class="stats"><span><b class="m1">${p.medals[0]}</b> oros</span><span><b>${p._medals}</b> medallas</span><span><b>${p.comps}</b> comps</span>${p._titles ? `<span><b style="color:var(--accent)">${p._titles}</b> títulos ESP</span>` : ""}</div>
-    <div class="line">${seedTxt}${p.nrv?.length ? ` <span class="pill nr">NR</span>` : ""}${p._intl ? ` <span class="pill intl">Podio internacional</span>` : ""}</div>`}
+    <div class="line">${cc(p.iso)} ${p.newcomer ? `<span class="pill new">Debutante</span> · ${p.events.length} eventos` : esc(seedTxt)}</div>
+    ${p._titles || p.nrv?.length || p._intl ? `<div class="line">${p._titles ? `<span class="pill ch">${p._titles} ${p._titles > 1 ? "títulos" : "título"} ESP</span>` : ""}${p.nrv?.length ? `<span class="pill nr">NR</span>` : ""}${p._intl ? `<span class="pill intl">Podio internacional</span>` : ""}</div>` : ""}
   </div></button>`;
 }
 
@@ -679,35 +670,29 @@ function openProfile(id, push = true) {
   const chev = dir => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="${dir < 0 ? "M15 5l-7 7 7 7" : "M9 5l7 7-7 7"}"/></svg>`;
   const podsHtml = (arr) => arr?.length ? `<div class="podlist">${arr.map(x => `<span class="pod ${["", "g", "s", "b"][x[2]]}"><i></i>${esc(x[0])} ${x[1]}</span>`).join("")}</div>` : `<span class="zero">Sin podios</span>`;
   const evs = p.events.filter(e => EVBYID[e]).map(eid => ({ e: EVBYID[eid], r: ROW[id]?.[eid] }));
+  const notesBox = `<div class="sect"><div class="eyebrow" style="margin-bottom:6px">Notas del caster</div>
+      <textarea class="notes" id="pnote" placeholder="Pronunciación, anécdotas, qué contar en directo… (se guardan solas en este dispositivo)" aria-label="Notas del caster">${esc(NOTES[id] || "")}</textarea></div>`;
   d.innerHTML = `
     <div class="phead">${av(p)}<div style="min-width:0"><div class="eyebrow">${p.newcomer ? "Debutante" : esc(p.id)}</div><h1>${esc(p.name)}</h1>
-      <div class="line">${cc(p.iso)} ${esc(p.country)} ${p.debut ? `· compite desde ${p.debut}` : ""} ${p.url ? `· <a href="${esc(p.url)}" target="_blank" rel="noopener">Perfil WCA ↗</a>` : ""}</div></div>
+      <div class="line">${cc(p.iso)} <span>${esc(p.country)}${p.debut ? ` · compite desde ${p.debut}` : ""}${p.comps ? ` · ${p.comps} competiciones` : ""}${p.url ? ` · <a href="${esc(p.url)}" target="_blank" rel="noopener">WCA ↗</a>` : ""}</span></div></div>
       <div class="pbtns">${ni >= 0 && nav.length > 1 ? `<span class="count" style="margin:0">${ni + 1} / ${nav.length}</span><button class="iconbtn" id="prevP" aria-label="Competidor anterior" title="Anterior (←)">${chev(-1)}</button><button class="iconbtn" id="nextP" aria-label="Competidor siguiente" title="Siguiente (→)">${chev(1)}</button>` : ""}
         ${starBtn(id)}<button class="iconbtn" id="closeP" aria-label="Cerrar ficha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div>
-    ${!p.medals ? `<p class="note" style="font-size:calc(15px * var(--fz))">${p.newcomer ? "Primera competición oficial: todavía no tiene resultados WCA" : "Sin datos WCA descargados"}. Inscrito en ${p.events.map(e => EVBYID[e]?.name || e).join(", ")}.</p>` : `
-    <div class="tiles">
-      <div class="tile"><b>${p.comps}</b><span>competiciones</span></div>
-      <div class="tile"><b>${(p.solves || 0).toLocaleString("es-ES")}</b><span>solves oficiales</span></div>
-      <div class="tile"><div class="medals"><em class="m1">${p.medals[0]}</em><em class="m2">${p.medals[1]}</em><em class="m3">${p.medals[2]}</em></div><span>medallas WCA (oro · plata · bronce)</span></div>
-      <div class="tile"><b>${p.records[0]}<small style="font-size:calc(16px * var(--fz));color:var(--muted)"> NR</small> ${p.records[1]}<small style="font-size:calc(16px * var(--fz));color:var(--muted)"> ER</small> ${p.records[2]}<small style="font-size:calc(16px * var(--fz));color:var(--muted)"> WR</small></b><span>récords batidos</span></div>
-      <div class="tile"><b style="color:var(--accent)">${p._titles}</b><span>títulos de Campeón de España</span></div>
-    </div>
-    ${F.length ? `<div class="box"><div class="eyebrow">Datos clave para el directo</div><ul class="facts">${F.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}
+    ${!p.medals ? `<p class="note" style="font-size:calc(15px * var(--fz))">${p.newcomer ? "Primera competición oficial: todavía no tiene resultados WCA" : "Sin datos WCA descargados"}. Inscrito en ${p.events.map(e => EVBYID[e]?.name || e).join(", ")}.</p>${notesBox}` : `
+    ${F.length ? `<div class="box" style="margin-top:18px"><div class="eyebrow">Datos clave para el directo</div><ul class="facts">${F.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}
+    ${notesBox}
     <div class="sect"><h2>En este campeonato</h2>
-      <div class="tablewrap ptable"><table><thead><tr><th class="l">Evento</th><th>Seed</th><th>ESP</th><th>Single</th><th>Media</th><th>Mejor 12 m</th><th>Δ año</th><th>Evolución</th><th>Títulos</th><th>Mejor puesto</th></tr></thead><tbody>
+      <div class="tablewrap ptable"><table><thead><tr><th class="l">Evento</th><th title="Puesto en el psych sheet">#</th><th title="Puesto entre españoles">ESP</th><th>Single</th><th>Media</th><th title="Mejor marca de los últimos 12 meses">Mejor 12 m</th><th title="Mejora respecto al año anterior">Δ año</th><th title="Títulos de España en este evento">Títulos</th></tr></thead><tbody>
       ${evs.map(({ e, r }) => r ? `<tr data-ev="${e.id}"><td class="l"><b>${esc(e.name)}</b></td><td class="seed" style="font-size:calc(20px * var(--fz))">${r.seed}</td><td class="seedes">${r.seedES || ""}</td>
         <td class="${e.metric === "single" ? "key" : ""}"><span class="t">${esc(r.pbS || "—")}</span></td><td class="${e.metric !== "single" ? "key" : ""}"><span class="t">${esc(r.pbA || "—")}</span></td>
-        <td><span class="t">${esc(r.b12 || "—")}</span></td><td>${delta(r.iy)}</td><td>${spark(r.years)}</td><td>${r.tit ? `<span class="tit">${r.tit}</span>` : `<span class="zero">0</span>`}</td><td>${r.bp ? r.bp + "º" : "—"}</td></tr>`
-        : `<tr><td class="l"><b>${esc(e.name)}</b></td><td colspan="9" class="zero">Primera vez en este evento</td></tr>`).join("")}
-      </tbody></table></div><div class="note">Toca un evento para abrir su clasificación.</div></div>
-    <div class="sect cols3">
+        <td><span class="t">${esc(r.b12 || "—")}</span></td><td>${delta(r.iy)}</td><td>${r.tit ? `<span class="tit">${r.tit}</span>` : `<span class="zero">·</span>`}</td></tr>`
+        : `<tr><td class="l"><b>${esc(e.name)}</b></td><td colspan="7" class="zero">Primera vez en este evento</td></tr>`).join("")}
+      </tbody></table></div></div>
+    <details class="sect hist"><summary>Historial en campeonatos · España ${p.es.years.length} · Europa ${p.eu.years.length} · Mundial ${p.wc.years.length}</summary><div class="cols3" style="margin-top:10px">
       <div class="box"><div class="eyebrow">Campeonato de España · ${p.es.years.length} ediciones</div>${podsHtml(p.es.pod)}<div class="yrs">${p.es.years.map(y => `<span>${y}</span>`).join("")}</div></div>
       <div class="box"><div class="eyebrow">Campeonato de Europa · ${p.eu.years.length} ediciones</div>${podsHtml(p.eu.pod)}<div class="yrs">${p.eu.years.map(y => `<span>${y}</span>`).join("")}</div></div>
       <div class="box"><div class="eyebrow">Mundial · ${p.wc.years.length} ediciones</div>${podsHtml(p.wc.pod)}<div class="yrs">${p.wc.years.map(y => `<span>${y}</span>`).join("")}</div></div>
-    </div>`}
-    <div class="sect"><h2>Notas del caster</h2>
-      <textarea class="notes" id="pnote" placeholder="Pronunciación del nombre, anécdotas, qué contar en directo…" aria-label="Notas del caster">${esc(NOTES[id] || "")}</textarea>
-      <div class="note">Se guardan solas, solo en este dispositivo. Quien tiene notas aparece marcado con ✎.</div></div>`;
+    </div></details>`}
+`;
   $("#pnote").addEventListener("input", ev => { if (ev.target.value.trim()) NOTES[id] = ev.target.value; else delete NOTES[id]; store.set("notes", NOTES); });
   $("#prevP")?.addEventListener("click", () => stepProfile(-1));
   $("#nextP")?.addEventListener("click", () => stepProfile(1));
